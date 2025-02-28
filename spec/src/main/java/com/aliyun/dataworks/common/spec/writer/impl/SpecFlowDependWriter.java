@@ -15,19 +15,15 @@
 
 package com.aliyun.dataworks.common.spec.writer.impl;
 
-import java.util.List;
+import java.util.Optional;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 
 import com.aliyun.dataworks.common.spec.annotation.SpecWriter;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecDepend;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
 import com.aliyun.dataworks.common.spec.writer.SpecWriterContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 
 /**
  * @author 聿剑
@@ -49,19 +45,8 @@ public class SpecFlowDependWriter extends DefaultJsonObjectWriter<SpecFlowDepend
 
         JSONObject json = writeJsonObject(specObj, true);
         json.put("nodeId", specObj.getNodeId().getId());
-        json.put("depends", writeDepends(specObj.getDepends()));
+        Optional.ofNullable(buildJsonArray(specObj.getDepends())).ifPresent(depends -> json.put("depends", depends));
+        Optional.ofNullable(buildJsonArray(specObj.getVariableDepends())).ifPresent(depends -> json.put("variableDepends", depends));
         return json;
-    }
-
-    private JSONArray writeDepends(List<SpecDepend> depends) {
-        if (CollectionUtils.isEmpty(depends)) {
-            return null;
-        }
-
-        JSONArray jsonArray = new JSONArray();
-        ListUtils.emptyIfNull(depends).stream()
-            .map(this::writeByWriter)
-            .forEach(jsonArray::add);
-        return jsonArray;
     }
 }

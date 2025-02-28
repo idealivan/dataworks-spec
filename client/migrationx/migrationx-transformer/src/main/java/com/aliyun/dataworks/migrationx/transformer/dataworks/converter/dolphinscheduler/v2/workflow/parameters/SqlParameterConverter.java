@@ -16,27 +16,23 @@ import java.util.stream.Collectors;
 
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableType;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecDatasource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.DagData;
-import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.DolphinSchedulerV2Context;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.TaskDefinition;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.entity.DataSource;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.enums.DbType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.task.sql.SqlParameters;
 import com.aliyun.dataworks.migrationx.transformer.core.common.Constants;
-import com.aliyun.dataworks.migrationx.transformer.core.utils.EmrCodeUtils;
 import com.aliyun.migrationx.common.utils.GsonUtils;
-import com.aliyun.migrationx.common.utils.JSONUtils;
 
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang.StringUtils;
 
 @Slf4j
 public class SqlParameterConverter extends AbstractParameterConverter<SqlParameters> {
@@ -80,40 +76,47 @@ public class SqlParameterConverter extends AbstractParameterConverter<SqlParamet
 
         script.setPath(getScriptPath(specNode));
         String content = parameter.getSql();
-
-        if (CodeProgramType.EMR_HIVE.name().equals(codeProgramType) || CodeProgramType.EMR_SPARK.name().equals(codeProgramType)) {
-            content = EmrCodeUtils.toEmrCode(codeProgramType, taskDefinition.getName(), content);
-        }
-
+        content = replaceCodeWithParams(content, specVariableList);
         script.setContent(content);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        SpecDatasource datasource = getDataSource(codeProgramType);
+        specNode.setDatasource(datasource);
+        postHandle("SQL", script);
     }
 
-    private String getConnectionName(String codeProgramType) {
-        String mappingJson = properties.getProperty(Constants.WORKFLOW_CONVERTER_CONNECTION_MAPPING);
-        if (StringUtils.isNotEmpty(mappingJson)) {
-            Map<String, String> connectionMapping = JSONUtils.parseObject(mappingJson, Map.class);
-            if (connectionMapping == null) {
-                log.error("parse connection mapping with {} error", mappingJson);
-            } else {
-                String connectionName = connectionMapping.get(codeProgramType);
-                log.info("Got connectionName {} by {}", connectionName, codeProgramType);
-                return connectionName;
-            }
+    private SpecDatasource getDataSource(CodeProgramType codeProgramType) {
+        DataSource dataSource = getDataSourceById(parameter.getDatasource());
+        String connName = null;
+        if (dataSource != null) {
+            connName = dataSource.getName();
         }
-
-        if (!CodeProgramType.EMR_HIVE.name().equals(codeProgramType) && !CodeProgramType.EMR_SPARK.name().equals(codeProgramType)) {
-            //add ref datasource
-            List<DataSource> datasources = DolphinSchedulerV2Context.getContext().getDataSources();
-            if (parameter.getDatasource() > 0) {
-                return CollectionUtils.emptyIfNull(datasources).stream()
-                        .filter(s -> s.getId() == parameter.getDatasource())
-                        .findFirst()
-                        .map(s -> s.getName())
-                        .orElse(null);
-            }
+        String type = null;
+        switch (codeProgramType) {
+            case MYSQL:
+                type = "mysql";
+                break;
+            case POSTGRESQL:
+                type = "postgresql";
+                break;
+            case EMR_HIVE:
+                type = "emr";
+                break;
+            case CLICK_SQL:
+                type = "clickhouse";
+                break;
+            case Oracle:
+                type = "oracle";
+                break;
+            case ODPS_SQL:
+                type = "odps";
+        }
+        if (connName != null) {
+            SpecDatasource datasource = new SpecDatasource();
+            datasource.setName(connName);
+            datasource.setType(type);
+            return datasource;
         }
         return null;
     }

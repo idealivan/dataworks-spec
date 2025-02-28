@@ -28,7 +28,6 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.hivecli.HiveCliParameters;
 import com.aliyun.dataworks.migrationx.domain.dataworks.utils.DataStudioCodeUtils;
 import com.aliyun.dataworks.migrationx.transformer.core.common.Constants;
-import com.aliyun.dataworks.migrationx.transformer.core.utils.EmrCodeUtils;
 
 import com.google.common.base.Joiner;
 import org.apache.commons.collections4.ListUtils;
@@ -47,7 +46,14 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
 
         SpecScript script = new SpecScript();
         //script.setId(generateUuid());
-        String type = getConverterType();
+        String hiveType = this.parameter.getHiveCliTaskExecutionType();
+        String type;
+        if (HiveCliConstants.TYPE_SCRIPT.equals(hiveType)) {
+            type = getScriptConverterType();
+        } else {
+            type = getConverterType();
+        }
+
         CodeProgramType codeProgramType = CodeProgramType.getNodeTypeByName(type);
         String language = codeToLanguageIdentifier(codeProgramType);
         script.setLanguage(language);
@@ -58,17 +64,16 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         script.setRuntime(runtime);
 
         script.setPath(getScriptPath(specNode));
-        //String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
         String cmd = buildCommand(codeProgramType, this.parameter);
-        String code = EmrCodeUtils.toEmrCode(codeProgramType, taskDefinition.getName(), cmd);
+        String code = cmd;
         String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
-
-        //String code = convertCode(codeProgramType, taskDefinition.getName());
+        code = replaceCodeWithParams(code, specVariableList);
         script.setContent(resourceReference + code);
         script.setContent(code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("HIVECLI", script);
     }
 
     protected String buildFileResourceReference(SpecNode specNode, String prefix) {
@@ -80,18 +85,6 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         return stringBuilder.append("\n").toString();
     }
 
-    private String buildPathImportCode(SpecNode specNode) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("import os\n").append("import sys\n\n");
-        Optional.ofNullable(specNode).map(SpecNode::getFileResources).ifPresent(fileResources ->
-                fileResources.forEach(fileResource -> {
-                    String fileName = fileResource.getName();
-                    stringBuilder.append(String.format("sys.path.append(os.path.dirname(os.path.abspath('%s')))%n", fileName));
-                }));
-        stringBuilder.append("\n");
-        return stringBuilder.toString();
-    }
-
     private String buildCommand(CodeProgramType codeProgramType, HiveCliParameters hiveCliParameters) {
         final String type = hiveCliParameters.getHiveCliTaskExecutionType();
 
@@ -101,8 +94,10 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
             if (resourceInfos != null && resourceInfos.size() > 0) {
                 resName = resourceInfos.get(0).getResourceName();
             }
-        } else {
+        } else if (HiveCliConstants.TYPE_SCRIPT.equals(type)) {
             String sqlContent = hiveCliParameters.getHiveSqlScript();
+            return sqlContent;
+        } else {
             resName = Joiner.on("_").join(processDefinition.getName(), taskDefinition.getName()) + ".sql";
         }
 
@@ -118,13 +113,21 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         }
 
         String command = String.join(" ", args);
-
         return command;
     }
 
     private String getConverterType() {
-        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_SHELL_NODE_TYPE_AS);
+        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_NODE_TYPE_AS);
         String defaultConvertType = CodeProgramType.EMR_SHELL.name();
+        return getConverterType(convertType, defaultConvertType);
+    }
+
+    private String getScriptConverterType() {
+        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_SCRIPT_NODE_TYPE_AS);
+        if (convertType == null) {
+            convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_NODE_TYPE_AS);
+        }
+        String defaultConvertType = CodeProgramType.EMR_HIVE.name();
         return getConverterType(convertType, defaultConvertType);
     }
 }

@@ -101,7 +101,7 @@ ManualWorkflowSpec是手动触发工作流`ManualWorkflow`的定义描述
 | `runtimeResource` |   [`RuntimeResource`](#runtimeResource)    | 否    | 节点的运行时资源定义或引用                                                   |
 |   `recurrence`    |                   string                   | 否    | `recurrence`定义周期调度节点的调度状态, 具体值参考枚举类型: [Recurrence](#recurrence) |
 |    `priority`     |                  integer                   | 否    | 定义节点的优先级, 数值越大优先级越高                                             |
-|     `timeout`     |                  integer                   | 否    | 定义节点的超时时间，运行超过指定时间后，节点将会被kill掉，单位为秒                             |
+|     `timeout`     |                  integer                   | 否    | 定义节点的超时时间，运行超过指定时间后，节点将会被kill掉，单位为小时                            |
 |  `instanceMode`   |                   string                   | 否    | 节点的实例化模式，具体值参考枚举类型：[InstanceMode](#instancemode)                |
 |    `rerunMode`    |                   string                   | 否    | 节点重试策略，具体值参考枚举类型：[RerunMode](#rerunmode)                        |
 

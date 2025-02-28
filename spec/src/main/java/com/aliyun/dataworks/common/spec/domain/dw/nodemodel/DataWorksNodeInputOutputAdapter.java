@@ -251,6 +251,11 @@ public class DataWorksNodeInputOutputAdapter {
                         outCtx.setValueExpr(i.getValue());
                         break;
                     }
+                    case PAI_OUTPUT: {
+                        outCtx.setCtxType(OutputContext.CTX_TYPE_PAI_OUTPUTS);
+                        outCtx.setValueExpr(i.getName());
+                        break;
+                    }
                     case PASS_THROUGH: {
                         outCtx.setCtxType(OutputContext.CTX_TYPE_PARAMETER_NODE_OUTPUTS);
                         outCtx.setValueExpr(getIoContextRefKey(i.getReferenceVariable(), true));

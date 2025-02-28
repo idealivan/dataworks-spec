@@ -39,6 +39,7 @@ import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrCode;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrJobType;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrLauncher;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.MultiLanguageScriptingCode;
+import com.aliyun.dataworks.common.spec.domain.dw.codemodel.PaiflowYamlCode;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.SparkSubmitCode;
 import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter.Context;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
@@ -47,6 +48,8 @@ import com.aliyun.dataworks.common.spec.domain.enums.SpecVersion;
 import com.aliyun.dataworks.common.spec.domain.interfaces.LabelEnum;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecBranch;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecLogic;
+import com.aliyun.dataworks.common.spec.domain.paiflow.PaiflowArgumentsWrapper;
+import com.aliyun.dataworks.common.spec.domain.paiflow.PaiflowScriptContent;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
@@ -121,6 +124,11 @@ public class DataWorksNodeCodeAdapter implements DataWorksNodeAdapterContextAwar
 
             if (SparkSubmitCode.class.equals(codeClass)) {
                 return getSparkSubmitCode(script);
+            }
+
+            if (PaiflowYamlCode.class.equals(codeClass)) {
+                // paiflow的内部节点，需要对代码内容做处理
+                return getPaiflowCode(script);
             }
 
             // common default logic to get content
@@ -316,6 +324,23 @@ public class DataWorksNodeCodeAdapter implements DataWorksNodeAdapterContextAwar
         codeModel.setLauncher(launcher);
         codeModel.getProperties().setTags(Arrays.asList(ProductModule.DATA_STUDIO.getName(), SpecConstants.FLOW_SPEC + "/" + SpecVersion.V_1_1_0));
         return code.getContent();
+    }
+
+    private String getPaiflowCode(SpecScript script) {
+        // paiflow内部节点，传入的script content中，需要有paiflowPipeline的内容，该方法会根据dataworks spec和paiflowPipeline的内容，拼接出paiflowArguments
+        CodeModel<PaiflowYamlCode> code = CodeModelFactory.getCodeModel(script.getRuntime().getCommand(), script.getContent());
+        PaiflowYamlCode codeModel = code.getCodeModel();
+
+        if (!StringUtils.equalsIgnoreCase(script.getRuntime().getCommand(), CodeProgramType.PAI_FLOW.getName())) {
+            // 内部节点根据script重新计算paiflowArguments
+            PaiflowScriptContent paiflowScriptContent = codeModel.getPaiflowScriptContent();
+
+            // 根据script的paiflowConf重新设置paiflowArguments
+            paiflowScriptContent.setPaiflowArguments(new PaiflowArgumentsWrapper(codeModel.buildPaiflowArguments(script)));
+
+        }
+
+        return null != context && context.isDeployToScheduler() ? codeModel.getSchedulerContent() : codeModel.getContent();
     }
 
     private String getMultiLanguageScriptingCode(SpecScript script) {

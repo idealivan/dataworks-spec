@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableType;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecDatasource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DagData;
-import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DolphinSchedulerV3Context;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.TaskDefinition;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.entity.DataSource;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.enums.DbType;
@@ -45,11 +45,11 @@ public class ProcedureParameterConverter extends AbstractParameterConverter<Proc
         List<SpecVariable> specVariableList = convertSpecNodeParam(specNode);
 
         convertFileResourceList(specNode);
-        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_SHELL_NODE_TYPE_AS, CodeProgramType.DIDE_SHELL.name());
-        CodeProgramType codeProgramType = CodeProgramType.getNodeTypeByName(convertType);
+        String dbType = getType();
+        CodeProgramType codeProgramType = CodeProgramType.of(dbType);
+        String language = codeToLanguageIdentifier(codeProgramType);
 
         SpecScript script = new SpecScript();
-        String language = codeToLanguageIdentifier(codeProgramType);
         script.setLanguage(language);
         //runtime
         SpecScriptRuntime runtime = new SpecScriptRuntime();
@@ -58,41 +58,61 @@ public class ProcedureParameterConverter extends AbstractParameterConverter<Proc
         script.setRuntime(runtime);
 
         script.setPath(getScriptPath(specNode));
-        //todo
-        //String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
-        //script.setContent(resourceReference + parameter.getRawScript());
-        script.setContent(getCode());
+        String code = this.parameter.getMethod();
+        code = replaceCodeWithParams(code, specVariableList);
+        script.setContent(code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        SpecDatasource datasource = getDataSource(codeProgramType);
+        specNode.setDatasource(datasource);
+        postHandle("PROCEDURE", script);
     }
 
-    public String getCode() {
+    private String getType() {
         String sqlNodeMapStr = properties.getProperty(
                 Constants.CONVERTER_TARGET_SQL_NODE_TYPE_MAP, "{}");
-        Map<String, DbType> sqlTypeNodeTypeMapping = GsonUtils.fromJsonString(sqlNodeMapStr,
-                new TypeToken<Map<String, DbType>>() {}.getType());
+        Map<DbType, String> sqlTypeNodeTypeMapping = GsonUtils.fromJsonString(sqlNodeMapStr,
+                new TypeToken<Map<DbType, String>>() {}.getType());
         sqlTypeNodeTypeMapping = Optional.ofNullable(sqlTypeNodeTypeMapping).orElse(new HashMap<>(1));
+        DbType dbType = DbType.valueOf(parameter.getType());
+        String codeProgramType = sqlTypeNodeTypeMapping.get(dbType);
 
-        String defaultNodeTypeIfNotSupport = getConverterType();
-
-        DbType codeProgramType = sqlTypeNodeTypeMapping.get(parameter.getType());
-
-        //add ref datasource
-        List<DataSource> datasources = DolphinSchedulerV3Context.getContext().getDataSources();
-        if (parameter.getDatasource() > 0) {
-            //todo
-            //CollectionUtils.emptyIfNull(datasources).stream()
-            //        .filter(s -> s.getId() == parameter.getDatasource())
-            //        .findFirst()
-            //        .ifPresent(s -> dwNode.setConnection(s.getName()));
-        }
-        String code = parameter.getMethod();
-        return code;
+        return codeProgramType;
     }
 
-    private String getConverterType() {
-        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_UNSUPPORTED_NODE_TYPE_AS);
-        return getConverterType(convertType, CodeProgramType.VIRTUAL.name());
+    private SpecDatasource getDataSource(CodeProgramType codeProgramType) {
+        DataSource dataSource = getDataSourceById(parameter.getDatasource());
+        String connName = null;
+        if (dataSource != null) {
+            connName = dataSource.getName();
+        }
+        String type = null;
+        switch (codeProgramType) {
+            case MYSQL:
+                type = "mysql";
+                break;
+            case POSTGRESQL:
+                type = "postgresql";
+                break;
+            case EMR_HIVE:
+                type = "emr";
+                break;
+            case CLICK_SQL:
+                type = "clickhouse";
+                break;
+            case Oracle:
+                type = "oracle";
+                break;
+            case ODPS_SQL:
+                type = "odps";
+        }
+        if (connName != null) {
+            SpecDatasource datasource = new SpecDatasource();
+            datasource.setName(connName);
+            datasource.setType(type);
+            return datasource;
+        }
+        return null;
     }
 }

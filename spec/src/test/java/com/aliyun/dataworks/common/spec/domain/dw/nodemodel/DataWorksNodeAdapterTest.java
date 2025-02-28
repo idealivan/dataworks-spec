@@ -194,6 +194,43 @@ public class DataWorksNodeAdapterTest {
     }
 
     @Test
+    public void testPaiflow() throws IOException {
+        String spec = IOUtils.toString(
+            Objects.requireNonNull(DataWorksNodeAdapterTest.class.getClassLoader().getResource("spec/examples/json/paiflow.json")),
+            StandardCharsets.UTF_8);
+
+        System.out.println(spec);
+        Specification<DataWorksWorkflowSpec> specObj = SpecUtil.parseToDomain(spec);
+        Assert.assertNotNull(specObj);
+        System.out.println(SpecUtil.writeToSpec(specObj));
+
+        DataWorksWorkflowSpec specification = specObj.getSpec();
+        Assert.assertNotNull(specification);
+        Assert.assertEquals(1, CollectionUtils.size(specification.getNodes()));
+
+        SpecNode paiflow = specification.getNodes().get(0);
+        Assert.assertNotNull(paiflow);
+
+        Assert.assertNotNull(paiflow.getPaiflow());
+        Assert.assertNotNull(paiflow.getPaiflow().getNodes());
+        Assert.assertEquals(3, CollectionUtils.size(paiflow.getInnerNodes()));
+        Assert.assertNotNull(paiflow.getInnerDependencies());
+
+        ListUtils.emptyIfNull(specObj.getSpec().getNodes().get(0).getInnerNodes()).forEach(inner -> {
+            DataWorksNodeAdapter adapter = new DataWorksNodeAdapter(specObj, inner);
+            log.info("name: {}, inputs: {}, outputs: {}", inner.getName(), adapter.getInputs(), adapter.getOutputs());
+            Assert.assertTrue(CollectionUtils.isNotEmpty(adapter.getOutputs()));
+            Assert.assertEquals(inner.getId(), ((SpecNodeOutput)adapter.getOutputs().get(0)).getData());
+
+            log.info("name: {}, input-contexts: {}, output-contexts: {}", inner.getName(), adapter.getInputContexts(), adapter.getOutputContexts());
+            Assert.assertTrue(CollectionUtils.isNotEmpty(adapter.getOutputContexts()));
+
+            Map<String, Object> extConfig = adapter.getExtConfig();
+            log.info("ext config:{}", extConfig);
+        });
+    }
+
+    @Test
     public void testShell() throws IOException {
         String spec = IOUtils.toString(
             Objects.requireNonNull(DataWorksNodeAdapterTest.class.getClassLoader().getResource("nodemodel/dide_shell.json")),

@@ -48,6 +48,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
 import com.aliyun.dataworks.common.spec.exception.SpecException;
+import com.google.common.collect.Lists;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -76,6 +77,7 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
 
     private static final Logger logger = LoggerFactory.getLogger(DataWorksNodeAdapter.class);
     private static final String DELAY_SECONDS = "delaySeconds";
+    private static final List<String> METADATA_KEYS = Lists.newArrayList("sourceType", "sourceResourceUuid");
 
     /**
      * @author 聿剑
@@ -275,6 +277,10 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
             .map(String::valueOf).filter(StringUtils::isNumeric)
             .map(Integer::valueOf)
             .ifPresent(i -> extConfig.put(STREAM_LAUNCH_MODE, i));
+
+        Optional.ofNullable(specNode.getMetadata()).ifPresent(metadata ->
+            METADATA_KEYS.stream().filter(metadata::containsKey).forEach(key -> extConfig.put(key, metadata.get(key))));
+
         return extConfig;
     }
 
@@ -331,6 +337,9 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
             .filter(MapUtils::isNotEmpty)
             .ifPresent(settings::putAll);
         Optional.ofNullable(delegate.getScript()).map(SpecScript::getRuntime).map(SpecScriptRuntime::getAdbJobConfig)
+            .filter(MapUtils::isNotEmpty)
+            .ifPresent(settings::putAll);
+        Optional.ofNullable(delegate.getScript()).map(SpecScript::getRuntime).map(SpecScriptRuntime::getLindormJobConfig)
             .filter(MapUtils::isNotEmpty)
             .ifPresent(settings::putAll);
         Optional.ofNullable(delegate.getScript()).map(SpecScript::getRuntime).map(SpecScriptRuntime::getSparkConf)

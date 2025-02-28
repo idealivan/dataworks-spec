@@ -74,6 +74,7 @@ public class SqoopParameterConverter extends AbstractParameterConverter<SqoopPar
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("SQOOP", script);
     }
 
     public String convertCode() {

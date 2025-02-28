@@ -23,7 +23,6 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.utils.ArgsUtils;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DagData;
-import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DolphinSchedulerV3Context;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.TaskDefinition;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.model.ProgramType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.model.ResourceInfo;
@@ -32,7 +31,6 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task
 import com.aliyun.dataworks.migrationx.transformer.core.common.Constants;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,9 +53,18 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
         List<SpecVariable> specVariableList = convertSpecNodeParam(specNode);
 
         convertFileResourceList(specNode);
-        String type = getSparkConverterType();
-        CodeProgramType codeProgramType = CodeProgramType.getNodeTypeByName(type);
 
+        ProgramType programType = this.parameter.getProgramType();
+        // bin/spark-sql -f fileName
+        String type;
+        if (ProgramType.SQL == programType &&
+                SparkConstants.TYPE_SCRIPT.equals(this.parameter.getSqlExecutionType())) {
+            type = getSparkSqlConverterType();
+        } else {
+            type = getSparkConverterType();
+        }
+
+        CodeProgramType codeProgramType = CodeProgramType.getNodeTypeByName(type);
         SpecScript script = new SpecScript();
         String language = codeToLanguageIdentifier(codeProgramType);
         script.setLanguage(language);
@@ -69,18 +76,20 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
         script.setPath(getScriptPath(specNode));
         
         String code = convertCode(codeProgramType);
+        code = replaceCodeWithParams(code, specVariableList);
         script.setContent(code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("SPARK", script);
     }
 
     public String convertCode(CodeProgramType codeProgramType) {
-        if (CodeProgramType.EMR_SPARK.equals(codeProgramType)) {
+        if (codeProgramType.name().startsWith("EMR")) {
             List<String> cmd = populateSparkOptions(parameter);
             String code = String.join(" ", cmd);
             return code;
-        } else if (CodeProgramType.ODPS_SPARK.equals(codeProgramType)) {
+        } else if (codeProgramType.name().startsWith("ODPS")) {
             OdpsSparkCode odpsSparkCode = populateSparkOdpsCode();
             return odpsSparkCode.toString();
         } else {
@@ -92,11 +101,21 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
         List<String> args = new ArrayList<>();
 
         ProgramType programType = sparkParameters.getProgramType();
+        //code
+        if (ProgramType.SQL == programType) {
+            if (SparkConstants.TYPE_SCRIPT.equals(sparkParameters.getSqlExecutionType())) {
+                String sqlContent = sparkParameters.getRawScript();
+                args.add(sqlContent);
+                return args;
+            }
+        }
+
+        //resource file
         ResourceInfo mainJar = sparkParameters.getMainJar();
         if (programType != ProgramType.SQL) {
             String resource = mainJar.getResourceName();
             if (StringUtils.isEmpty(resource)) {
-                resource = getResourceName(mainJar.getId());
+                resource = getResourceNameById(mainJar.getId());
             }
 
             if (resource != null) {
@@ -164,6 +183,19 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
             args.add(mainArgs);
         }
 
+        // bin/spark-sql -f fileName
+        if (ProgramType.SQL == programType) {
+            String resourceFileName = "";
+            args.add(SparkConstants.SQL_FROM_FILE);
+            if (SparkConstants.TYPE_FILE.equals(sparkParameters.getSqlExecutionType())) {
+                final List<ResourceInfo> resourceInfos = sparkParameters.getResourceList();
+                if (resourceInfos.size() > 1) {
+                    log.warn("more than 1 files detected, use the first one by default");
+                }
+                resourceFileName = resourceInfos.get(0).getResourceName();
+            }
+            args.add(resourceFileName);
+        }
         return args;
     }
 
@@ -175,7 +207,7 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
         ResourceInfo mainJar = parameter.getMainJar();
         String resource = mainJar.getResourceName();
         if (StringUtils.isEmpty(resource)) {
-            resource = getResourceName(mainJar.getId());
+            resource = getResourceNameById(mainJar.getId());
         }
 
         if (resource != null) {
@@ -255,31 +287,15 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
         }
     }
 
-    private String getResourceName(Integer id) {
-        if (id == null) {
-            return null;
-        }
-        DolphinSchedulerV3Context context = DolphinSchedulerV3Context.getContext();
-        return CollectionUtils.emptyIfNull(context.getResources())
-                .stream()
-                .filter(r -> r.getId() == id)
-                .findAny()
-                .map(r -> {
-                    String name = r.getName();
-                    if (StringUtils.isEmpty(name)) {
-                        name = r.getFileName();
-                    }
-                    if (StringUtils.isEmpty(name)) {
-                        name = r.getFullName();
-                    }
-                    return name;
-                })
-                .orElse("");
-    }
-
     private String getSparkConverterType() {
         String convertType = properties.getProperty(Constants.CONVERTER_TARGET_SPARK_SUBMIT_TYPE_AS);
         String defaultConvertType = CodeProgramType.EMR_SPARK_SHELL.name();
+        return getConverterType(convertType, defaultConvertType);
+    }
+
+    private String getSparkSqlConverterType() {
+        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_SPARK_SQL_TYPE_AS);
+        String defaultConvertType = CodeProgramType.EMR_SPARK_SQL.name();
         return getConverterType(convertType, defaultConvertType);
     }
 }

@@ -15,10 +15,12 @@
 
 package com.aliyun.dataworks.common.spec.domain.ref.runtime;
 
+import java.util.List;
 import java.util.Map;
 
 import com.aliyun.dataworks.common.spec.domain.SpecNoRefEntity;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
+import com.aliyun.dataworks.common.spec.domain.paiflow.PaiflowParameter;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.container.SpecContainer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -60,6 +62,10 @@ public class SpecScriptRuntime extends SpecNoRefEntity {
      */
     private Map<String, Object> adbJobConfig;
     /**
+     * Lindorm job config
+     */
+    private Map<String, Object> lindormJobConfig;
+    /**
      * spark configurations for emr job
      * <a href="https://spark.apache.org/docs/latest/configuration.html#application-properties">Spark Configuration</a>
      */
@@ -72,6 +78,10 @@ public class SpecScriptRuntime extends SpecNoRefEntity {
      * streaming job config
      */
     private Map<String, Object> streamJobConfig;
+    /**
+     * paiflow configurations
+     */
+    private Map<String, Object> paiflowConf;
     /**
      * runtime container info
      */

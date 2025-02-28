@@ -18,6 +18,8 @@ package com.aliyun.dataworks.common.spec.domain.dw.codemodel;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.ListUtils;
+
 /**
  * @author 聿剑
  * @date 2022/12/28
@@ -85,6 +87,10 @@ public interface Code {
      * @return List of program type
      */
     List<String> getProgramTypes();
+
+    default boolean support(String programType) {
+        return ListUtils.emptyIfNull(getProgramTypes()).stream().anyMatch(x -> x.equalsIgnoreCase(programType));
+    }
 
     /**
      * 类集成层级

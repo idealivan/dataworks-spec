@@ -63,7 +63,7 @@ def run_command(app_type, main_class=None):
         "-DappType=" + app_type,
         "com.aliyun.dataworks.client.command.CommandAppEntrance" if not main_class else main_class
     ]
-
+    print(cmd)
     verbose = True if 'CLIENT_VERBOSE' not in os.environ else bool(os.environ['CLIENT_VERBOSE'])
     if verbose:
         logging_file = os.path.abspath(os.path.join(get_log_path(), app_type + ".log"))

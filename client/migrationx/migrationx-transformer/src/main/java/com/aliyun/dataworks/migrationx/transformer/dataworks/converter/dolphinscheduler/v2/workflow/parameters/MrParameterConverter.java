@@ -16,9 +16,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrAllocationSpec;
-import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrCode;
-import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrLauncher;
+import com.aliyun.dataworks.common.spec.domain.dw.codemodel.OdpsSparkCode;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableType;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
@@ -36,7 +34,6 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.task
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v2.utils.ParameterUtils;
 import com.aliyun.dataworks.migrationx.domain.dataworks.utils.DataStudioCodeUtils;
 import com.aliyun.dataworks.migrationx.transformer.core.common.Constants;
-import com.aliyun.dataworks.migrationx.transformer.core.utils.EmrCodeUtils;
 
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
@@ -74,21 +71,21 @@ public class MrParameterConverter extends AbstractParameterConverter<MapReducePa
         script.setRuntime(runtime);
 
         script.setPath(getScriptPath(specNode));
-        //todo
-        //String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
         String code = convertCode(codeProgramType, taskDefinition.getName());
+        code = replaceCodeWithParams(code, specVariableList);
         //script.setContent(resourceReference + parameter.getRawScript());
         script.setContent(code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("MR", script);
     }
 
     public String convertCode(CodeProgramType codeProgramType, String taskName) {
         // convert to EMR_MR
         if (StringUtils.equalsIgnoreCase(CodeProgramType.EMR_MR.name(), codeProgramType.getName())) {
             String cmd = buildCommand(parameter);
-            return EmrCodeUtils.toEmrCode(codeProgramType, taskName, cmd);
+            return cmd;
         } else if (StringUtils.equalsIgnoreCase(CodeProgramType.ODPS_MR.name(), codeProgramType.getName())) {
             ResourceInfo mainJar = parameter.getMainJar();
             List<String> codeLines = new ArrayList<>();
@@ -104,7 +101,6 @@ public class MrParameterConverter extends AbstractParameterConverter<MapReducePa
                 resources.add(resourceName);
                 codeLines.add(DataStudioCodeUtils.addResourceReference(codeProgramType, "", resources));
             }
-
             // convert to ODPS_MR
             String command = Joiner.on(" ").join(
                     "jar", "-resources",
@@ -117,17 +113,15 @@ public class MrParameterConverter extends AbstractParameterConverter<MapReducePa
             );
             codeLines.add(command);
 
-            String code = Joiner.on("\n").join(codeLines);
-            code = EmrCodeUtils.toEmrCode(codeProgramType, taskName, code);
-            EmrCode emrCode = EmrCodeUtils.asEmrCode(codeProgramType.getName(), code);
-            Optional.ofNullable(emrCode).map(EmrCode::getLauncher)
-                    .map(EmrLauncher::getAllocationSpec)
-                    .map(EmrAllocationSpec::of)
-                    .ifPresent(spec -> {
-                        spec.setQueue(parameter.getQueue());
-                        emrCode.getLauncher().setAllocationSpec(spec.toMap());
-                    });
-            return emrCode.getContent();
+            OdpsSparkCode odpsSparkCode = new OdpsSparkCode();
+            odpsSparkCode.setResourceReferences(codeLines);
+            odpsSparkCode.setSparkJson(new OdpsSparkCode.CodeJson());
+            odpsSparkCode.getSparkJson().setMainClass(parameter.getMainClass());
+            odpsSparkCode.getSparkJson().setVersion("2.x");
+            odpsSparkCode.getSparkJson().setLanguage("java");
+            odpsSparkCode.getSparkJson().setMainJar(parameter.getMainJar().getResourceName());
+            odpsSparkCode.getSparkJson().setArgs(parameter.getMainArgs());
+            return odpsSparkCode.toString();
         } else {
             throw new RuntimeException("not support type " + codeProgramType.getName());
         }

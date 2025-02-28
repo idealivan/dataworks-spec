@@ -27,6 +27,7 @@ public class OutputContext {
     public static final String CTX_TYPE_CONST = "CONST";
     public static final String CTX_TYPE_CONST_SYSTEM_VARIABLE = "SYSTEM_VARIABLE";
     public static final String CTX_TYPE_SCRIPT_OUTPUTS = "SCRIPT_OUTPUTS";
+    public static final String CTX_TYPE_PAI_OUTPUTS = "PAI_OUTPUTS";
     public static final String CTX_TYPE_PARAMETER_NODE_OUTPUTS = "PARAMETER_NODE_OUTPUTS";
 
     private String key;

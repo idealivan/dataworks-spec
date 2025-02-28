@@ -9,7 +9,6 @@
 package com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v2.workflow.parameters;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -51,23 +50,11 @@ public class PythonParameterConverter extends AbstractParameterConverter<PythonP
 
         script.setPath(getScriptPath(specNode));
 
-        String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
-        String pathImportCode = buildPathImportCode(specNode);
-        script.setContent(resourceReference + pathImportCode + parameter.getRawScript());
+        String code = replaceCodeWithParams(parameter.getRawScript(), specVariableList);
+        script.setContent(code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
-    }
-
-    private String buildPathImportCode(SpecNode specNode) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("import os\n").append("import sys\n\n");
-        Optional.ofNullable(specNode).map(SpecNode::getFileResources).ifPresent(fileResources ->
-                fileResources.forEach(fileResource -> {
-                    String fileName = fileResource.getName();
-                    stringBuilder.append(String.format("sys.path.append(os.path.dirname(os.path.abspath('%s')))%n", fileName));
-                }));
-        stringBuilder.append("\n");
-        return stringBuilder.toString();
+        postHandle("PYTHON", script);
     }
 }

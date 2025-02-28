@@ -25,6 +25,7 @@ import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinsc
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.CustomParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.DataxParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.DependentParameterConverter;
+import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.FlinkParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.HiveCliParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.MrParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters.ProcedureParameterConverter;
@@ -75,6 +76,8 @@ public class TaskConverterFactoryV3 {
                 return new DataxParameterConverter(properties, specWorkflow, processMeta, taskDefinition);
             case PROCEDURE:
                 return new ProcedureParameterConverter(properties, specWorkflow, processMeta, taskDefinition);
+            case FLINK:
+                return new FlinkParameterConverter(properties, specWorkflow, processMeta, taskDefinition);
             default:
                 throw new UnSupportedTypeException(taskDefinition.getTaskType());
         }

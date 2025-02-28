@@ -15,6 +15,8 @@
 
 package com.aliyun.dataworks.common.spec.domain.noref;
 
+import java.util.Map;
+
 import com.aliyun.dataworks.common.spec.domain.SpecNoRefEntity;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
@@ -35,4 +37,10 @@ public class SpecDepend extends SpecNoRefEntity {
     private SpecNode nodeId;
     private DependencyType type;
     private SpecNodeOutput output;
+
+    public void replaceNodeId(Map<String, String> replaceNodeIdMap) {
+        if (null != nodeId && replaceNodeIdMap.containsKey(nodeId.getId())) {
+            nodeId.setId(replaceNodeIdMap.get(nodeId.getId()));
+        }
+    }
 }

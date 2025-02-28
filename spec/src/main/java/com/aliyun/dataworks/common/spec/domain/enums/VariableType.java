@@ -42,6 +42,11 @@ public enum VariableType implements LabelEnum {
     NODE_OUTPUT("NodeOutput"),
 
     /**
+     * Variables output by node script at runtime
+     */
+    PAI_OUTPUT("PaiOutput"),
+
+    /**
      * PassThrough variable
      */
     PASS_THROUGH("PassThrough");

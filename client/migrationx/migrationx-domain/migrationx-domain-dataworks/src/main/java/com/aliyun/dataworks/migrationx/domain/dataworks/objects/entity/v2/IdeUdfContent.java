@@ -32,4 +32,6 @@ public class IdeUdfContent {
     private String paramDesc;
     private String returnValue;
     private String example;
+    private String resourceType;
+    private String embeddedCode;
 }
