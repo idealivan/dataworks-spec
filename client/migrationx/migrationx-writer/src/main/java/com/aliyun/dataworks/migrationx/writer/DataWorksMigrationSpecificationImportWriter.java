@@ -44,6 +44,10 @@ public class DataWorksMigrationSpecificationImportWriter extends CommandApp {
     private static final int IMPORT_STATUS_CHECKING_COUNT_THRESHOLD = 20;
     private static final String DATA_WORKS_ENDPOINT = "dataworks.%s.aliyuncs.com";
 
+    public static void main(String[] args) throws Exception {
+        DataWorksMigrationSpecificationImportWriter app = new DataWorksMigrationSpecificationImportWriter();
+        app.run(args);
+    }
     @Override
     public void run(String[] args) throws Exception {
         CommandLine commandLine = getCommandLine(getOptions(), args);

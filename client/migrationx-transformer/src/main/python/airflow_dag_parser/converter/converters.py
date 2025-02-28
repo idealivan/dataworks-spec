@@ -70,7 +70,14 @@ class BashOperatorTaskConverter(BaseTaskConverter, LoggingMixin):
         runtime.engine = 'General'
         runtime.command = Config.get_node_type_or_default(self.task.__class__.__name__)
         script = SpecScript()
-        script.language = 'shell-script'
+        if runtime.command.endswith("SHELL") or runtime.command.endswith("SSH"):
+            script.language = 'shell-script'
+        else:
+            script.language = None
+        # check code content for type specific converting
+        if self._is_hard_converting(code, runtime.command):
+            code = self._process_hard_converting_content(code)
+
         script.path = self.node.name
         script.content = code
         script.runtime = runtime
@@ -81,6 +88,19 @@ class BashOperatorTaskConverter(BaseTaskConverter, LoggingMixin):
         if self.parameters:
             return self.parameters
         return super(BashOperatorTaskConverter, self).get_node_parameters()
+
+    def _is_hard_converting(self, code_content, runtime_command):
+        if runtime_command == 'ODPS_SQL' and 'spark-submit' in code_content and '/task/' in code_content:
+            return True
+        return False
+
+    def _process_hard_converting_content(self, code):
+        file_name_pattern = r'.*(spark-submit).*task/(.*).py.*'
+        matched = re.search(file_name_pattern, code)
+        if matched and len(matched.groups()) > 1 and matched.group(1) == "spark-submit":
+            code = matched.group(2) + ".py"
+        # TODO: read file for SQL converting
+        return code
 
     def _process_hive_run_sql_file_command(self, code):
         tokens = code.split(" ")
