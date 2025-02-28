@@ -7,6 +7,10 @@
   "filterTasks": [
     "*"
   ],
+  "scriptDir": "scripts",
+  "postHandlers": {
+    "SHELL": "shell_converter.py"
+  },
   "settings": {
     "workflow.converter.shellNodeType": {
       "ff.shell1.shell2": "DIDE_SHELL",

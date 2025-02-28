@@ -15,31 +15,23 @@
 
 package com.aliyun.dataworks.common.spec.domain.ref;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import com.alibaba.fastjson2.annotation.JSONField;
-
 import com.aliyun.dataworks.common.spec.domain.SpecRefEntity;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRerunModeType;
 import com.aliyun.dataworks.common.spec.domain.interfaces.Input;
 import com.aliyun.dataworks.common.spec.domain.interfaces.Output;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecBranch;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecDoWhile;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecForEach;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecJoin;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecNodeRef;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecParamHub;
-import com.aliyun.dataworks.common.spec.domain.noref.SpecSubFlow;
+import com.aliyun.dataworks.common.spec.domain.noref.*;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.collections4.ListUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author yiwei.qyw
@@ -131,6 +123,9 @@ public class SpecNode extends SpecRefEntity implements Container, InputOutputWir
     @EqualsAndHashCode.Include
     private SpecSubFlow subflow;
 
+    @EqualsAndHashCode.Include
+    private SpecPaiflow paiflow;
+
     @Override
     @JSONField(serialize = false)
     public List<SpecNode> getInnerNodes() {
@@ -146,6 +141,8 @@ public class SpecNode extends SpecRefEntity implements Container, InputOutputWir
             Optional.of(foreach).ifPresent(fe -> nodes.addAll(ListUtils.emptyIfNull(foreach.getNodes())));
         } else if (combined != null) {
             Optional.of(combined).ifPresent(cb -> nodes.addAll(ListUtils.emptyIfNull(cb.getNodes())));
+        } else if (paiflow != null) {
+            Optional.of(paiflow).ifPresent(cb -> nodes.addAll(ListUtils.emptyIfNull(cb.getNodes())));
         }
         return Collections.unmodifiableList(ListUtils.emptyIfNull(nodes));
     }
@@ -166,6 +163,10 @@ public class SpecNode extends SpecRefEntity implements Container, InputOutputWir
 
         if (combined != null) {
             return combined.getDependencies();
+        }
+
+        if (paiflow != null) {
+            return paiflow.getFlow();
         }
 
         return null;

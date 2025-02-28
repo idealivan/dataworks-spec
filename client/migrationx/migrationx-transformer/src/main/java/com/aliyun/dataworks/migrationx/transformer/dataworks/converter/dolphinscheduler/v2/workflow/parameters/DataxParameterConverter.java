@@ -90,6 +90,7 @@ public class DataxParameterConverter extends AbstractParameterConverter<DataxPar
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("DATAX", script);
     }
 
     private String buildDataxJsonFile(Map<String, Property> paramsMap) {

@@ -59,9 +59,12 @@ public class ShellParameterConverter extends AbstractParameterConverter<ShellPar
 
         script.setPath(getScriptPath(specNode));
         String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
-        script.setContent(resourceReference + parameter.getRawScript());
+
+        String code = replaceCodeWithParams(parameter.getRawScript(), specVariableList);
+        script.setContent(resourceReference + code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("SHELL", script);
     }
 }

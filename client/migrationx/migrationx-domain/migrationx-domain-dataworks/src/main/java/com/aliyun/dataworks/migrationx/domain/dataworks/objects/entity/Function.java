@@ -20,6 +20,8 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.objects.serialize.CodeCo
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.DmObjectType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.ToString;
 
@@ -28,7 +30,7 @@ import lombok.ToString;
  * @date 2019/04/17
  */
 @ToString(callSuper = true)
-public class Function extends DmObject{
+public class Function extends DmObject {
     @JacksonXmlProperty(isAttribute = true, localName = "name")
     private String name;
 
@@ -71,6 +73,16 @@ public class Function extends DmObject{
     @JsonSerialize(converter = CodeControlCharEscapeConverter.class)
     @JsonDeserialize(converter = CodeControlCharUnEscapeConverter.class)
     private String description;
+
+    @JacksonXmlProperty(isAttribute = true, localName = "resourceType")
+    private String resourceType;
+
+    @JacksonXmlCData
+    @JacksonXmlElementWrapper(localName = "embeddedCode")
+    @JacksonXmlProperty(isAttribute = true, localName = "embeddedCode")
+    @JsonSerialize(converter = CodeControlCharEscapeConverter.class)
+    @JsonDeserialize(converter = CodeControlCharUnEscapeConverter.class)
+    private String embeddedCode;
 
     @JacksonXmlProperty(isAttribute = true, localName = "isOdps")
     private Boolean isOdps;
@@ -206,5 +218,23 @@ public class Function extends DmObject{
 
     public void setFunctionType(String functionType) {
         this.functionType = functionType;
+    }
+
+    public String getEmbeddedCode() {
+        return embeddedCode;
+    }
+
+    public Function setEmbeddedCode(String embeddedCode) {
+        this.embeddedCode = embeddedCode;
+        return this;
+    }
+
+    public String getResourceType() {
+        return resourceType;
+    }
+
+    public Function setResourceType(String resourceType) {
+        this.resourceType = resourceType;
+        return this;
     }
 }

@@ -68,10 +68,13 @@ public class SparkParameterConverter extends AbstractParameterConverter<SparkPar
         runtime.setCommand(codeProgramType.getName());
         script.setRuntime(runtime);
         script.setPath(getScriptPath(specNode));
-        script.setContent(convertCode(codeProgramType));
+        String code = convertCode(codeProgramType);
+        code = replaceCodeWithParams(code, specVariableList);
+        script.setContent(code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("SPARK", script);
     }
 
     public String convertCode(CodeProgramType codeProgramType) {

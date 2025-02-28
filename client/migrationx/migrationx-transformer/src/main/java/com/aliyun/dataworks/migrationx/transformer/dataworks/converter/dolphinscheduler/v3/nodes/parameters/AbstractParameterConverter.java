@@ -539,4 +539,22 @@ public abstract class AbstractParameterConverter<Parameter extends AbstractParam
         }
         return name;
     }
+
+    protected DataSource getDataSourceById(Integer id) {
+        if (id == null || id <= 0) {
+            log.warn("can not get dataSource by id {}", id);
+            return null;
+        }
+        List<DataSource> datasources = DolphinSchedulerV3Context.getContext().getDataSources();
+        if (CollectionUtils.isEmpty(datasources)) {
+            log.warn("can not get dataSources from context");
+        }
+        for (DataSource ds : datasources) {
+            if (ds.getId() == id.intValue()) {
+                return ds;
+            }
+        }
+        log.warn("can not get dataSource by id {}", id);
+        return null;
+    }
 }

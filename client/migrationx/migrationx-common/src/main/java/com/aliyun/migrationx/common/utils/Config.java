@@ -2,6 +2,7 @@ package com.aliyun.migrationx.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import lombok.Data;
@@ -74,6 +75,10 @@ public class Config {
     private String version;
 
     private boolean includeGlobalParam = true;
+
+    private String scriptDir;
+
+    private Map<String, String> postHandlers;
 
     @Data
     public static class Replaced {

@@ -735,6 +735,23 @@ public class SpecUtilTest {
     }
 
     @Test
+    public void testPaiflow() {
+        String spec = readJson("spec/examples/json/paiflow.json");
+
+        Specification<DataWorksWorkflowSpec> specObj = SpecUtil.parseToDomain(spec);
+        Assert.assertNotNull(specObj);
+
+        DataWorksWorkflowSpec specification = specObj.getSpec();
+        Assert.assertNotNull(specification);
+        Assert.assertNotNull(specification.getNodes());
+        Assert.assertEquals(1, specification.getNodes().size());
+        Assert.assertNotNull(specification.getNodes().get(0).getPaiflow());
+        Assert.assertNotNull(specification.getNodes().get(0).getPaiflow().getNodes());
+        Assert.assertEquals(3, specification.getNodes().get(0).getPaiflow().getNodes().size());
+
+        System.out.println(SpecUtil.writeToSpec(specObj));
+    }
+    @Test
     public void testFileResource() {
         String spec = readJson("spec/examples/json/file_resource.json");
         Specification<DataWorksWorkflowSpec> specObj = SpecUtil.parseToDomain(spec);

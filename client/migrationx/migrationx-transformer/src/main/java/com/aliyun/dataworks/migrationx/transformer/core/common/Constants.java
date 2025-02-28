@@ -63,6 +63,7 @@ public class Constants {
     public static final String CONVERTER_TARGET_SQL_NODE_TYPE_AS = "workflow.converter.sqlNodeType";
     public static final String CONVERTER_TARGET_MR_NODE_TYPE_AS = "workflow.converter.mrNodeType";
     public static final String CONVERTER_TARGET_SPARK_SUBMIT_TYPE_AS = "workflow.converter.sparkSubmitAs";
+    public static final String CONVERTER_TARGET_SPARK_SQL_TYPE_AS = "workflow.converter.sparkSqlAs";
     public static final String CONVERTER_TARGET_UNSUPPORTED_NODE_TYPE_AS
             = "workflow.converter.target.unknownNodeTypeAs";
     public static final String CONVERTER_TARGET_ENGINE_TYPE = "workflow.converter.target.engine.type";
@@ -72,7 +73,11 @@ public class Constants {
             = "workflow.converter.target.engine.datasource.type";
     public static final String CONVERTER_TARGET_SHELL_NODE_TYPE_AS = "workflow.converter.shellNodeType";
     public static final String CONVERTER_TARGET_HIVE_CLI_NODE_TYPE_AS = "workflow.converter.hiveCliNodeType";
+    public static final String CONVERTER_TARGET_HIVE_CLI_SCRIPT_NODE_TYPE_AS = "workflow.converter.hiveCliScriptNodeType";
     public static final String CONVERTER_TARGET_PYTHON_NODE_TYPE_AS = "workflow.converter.pythonNodeType";
+    public static final String CONVERTER_TARGET_FLINK_SQL_NODE_TYPE_AS = "workflow.converter.flinkSqlNodeType";
+    public static final String CONVERTER_TARGET_FLINK_PYTHON_NODE_TYPE_AS = "workflow.converter.flinkPythonNodeType";
+    public static final String CONVERTER_TARGET_FLINK_NODE_TYPE_AS = "workflow.converter.flinkNodeType";
     public static final String UNDEFINED_VARIABLE_VALUE = "UNDEFINED_VARIABLE_VALUE";
     public static final String OBJECT_CONFLICT_RESOLVE_STRATEGY = "object.conflict.resolve.strategy";
     public static final String WORKFLOW_PARAMETER_CONFLICT_RESOLVE_STRATEGY

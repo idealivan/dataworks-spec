@@ -61,6 +61,7 @@ public class SwitchParameterConverter extends AbstractParameterConverter<SwitchP
         SpecBranch branch = new SpecBranch();
         branch.setBranches(branchList);
         specNode.setBranch(branch);
+        postHandle("SWITCH", script);
     }
 
     public List<SpecBranches> convertParameter() {

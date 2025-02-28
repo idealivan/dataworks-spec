@@ -10,11 +10,7 @@ warnings.filterwarnings('ignore')
 
 formatted_mapping = {}
 engine_mapping = {
-    'da': 'xingye_da',
-    'dws_rec': 'dws_reco',
-    'ug': 'xingye_ug',
-    'risk_control': 'mn_risk_control',
-    'ad': 'xingye_ad'
+    'da': 'xx',
 }
 comment_annotation = '-- '
 sql_names = ['sql', 'TARGET_SQL']

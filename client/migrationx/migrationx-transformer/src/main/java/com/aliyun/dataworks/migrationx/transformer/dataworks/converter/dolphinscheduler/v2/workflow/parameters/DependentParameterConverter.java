@@ -63,6 +63,7 @@ public class DependentParameterConverter extends AbstractParameterConverter<Depe
         DolphinSchedulerV2Context context = DolphinSchedulerV2Context.getContext();
         List<Long> deps = convertDeps();
         context.getSpecNodeProcessCodeMap().put(specNode, deps);
+        postHandle("DEPENDENT", script);
     }
 
     public List<Long> convertDeps() {

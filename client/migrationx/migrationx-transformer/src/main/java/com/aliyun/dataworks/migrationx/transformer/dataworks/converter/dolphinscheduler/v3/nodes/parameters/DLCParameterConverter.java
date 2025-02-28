@@ -69,11 +69,7 @@ public class DLCParameterConverter extends AbstractParameterConverter<DLCParamet
     private final static Pattern DATE_PATTERN21 = Pattern.compile(regex21);
 
     private static final Map<String, String> MAPPED_ENGINE = ImmutableMap.of(
-            "da", "xingye_da",
-            "dws_rec", "dws_reco",
-            "ug", "xingye_ug",
-            "risk_control", "mn_risk_control",
-            "ad", "xingye_ad"
+            "da", "xx"
     );
 
     public DLCParameterConverter(DagData processMeta, TaskDefinition taskDefinition,

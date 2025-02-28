@@ -51,5 +51,6 @@ public class SubProcessParameterConverter extends AbstractParameterConverter<Sub
 
         long depProcessCode = parameter.getProcessDefinitionCode();
         DolphinSchedulerV2Context.getContext().getSubProcessCodeNodeMap().put(depProcessCode, specNode);
+        postHandle("SUB_PROCESS", script);
     }
 }

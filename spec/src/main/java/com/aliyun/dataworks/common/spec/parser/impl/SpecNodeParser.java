@@ -56,6 +56,7 @@ public class SpecNodeParser implements Parser<SpecNode> {
         SpecDevUtil.setSameKeyField(ctxMap, specNode, specParserContext);
         SpecDevUtil.setSpecObject(specNode, "doWhile", ctxMap.get(DoWhileParser.DO_WHILE), specParserContext);
         SpecDevUtil.setSpecObject(specNode, "foreach", ctxMap.get(SpecForEachParser.FOREACH), specParserContext);
+        SpecDevUtil.setSpecObject(specNode, SpecPaiflowParser.PAIFLOW, ctxMap.get(SpecPaiflowParser.PAIFLOW), specParserContext);
         SpecDevUtil.setSpecObject(specNode, "paramHub", ctxMap.get(SpecParamHubParser.PARAM_HUB), specParserContext);
         SpecDevUtil.setSpecObject(specNode, SubFlowParser.KEY_TYPE_SUBFLOW, ctxMap.get(SubFlowParser.KEY_TYPE_SUBFLOW), specParserContext);
 

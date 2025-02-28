@@ -16,11 +16,13 @@
 package com.aliyun.dataworks.common.spec.domain.noref;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aliyun.dataworks.common.spec.domain.SpecNoRefEntity;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.collections4.ListUtils;
 
 /**
  * @author yiwei.qyw
@@ -33,4 +35,20 @@ public class SpecFlowDepend extends SpecNoRefEntity {
     private SpecNode nodeId;
     @EqualsAndHashCode.Include
     private List<SpecDepend> depends;
+    @EqualsAndHashCode.Include
+    private List<SpecVariableFlowDepend> variableDepends;
+
+    /**
+     * replace nodeId by replaceNodeIdMap
+     *
+     * @param replaceNodeIdMap replaceNodeIdMap
+     */
+    public void replaceNodeId(Map<String, String> replaceNodeIdMap) {
+        if (null != nodeId && replaceNodeIdMap.containsKey(nodeId.getId())) {
+            nodeId.setId(replaceNodeIdMap.get(nodeId.getId()));
+        }
+
+        ListUtils.emptyIfNull(depends).forEach(depend -> depend.replaceNodeId(replaceNodeIdMap));
+        ListUtils.emptyIfNull(variableDepends).forEach(depend -> depend.replaceNodeId(replaceNodeIdMap));
+    }
 }

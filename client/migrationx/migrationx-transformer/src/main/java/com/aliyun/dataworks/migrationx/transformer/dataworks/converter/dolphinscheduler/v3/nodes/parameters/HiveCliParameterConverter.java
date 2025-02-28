@@ -42,6 +42,8 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         super(processMeta, taskDefinition, converterContext);
     }
 
+    private boolean isEmr;
+
     @Override
     public List<DwNode> convertParameter() throws IOException {
         String type;
@@ -52,9 +54,8 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         } else {
             type = getConverterType();
         }
-        if (!CodeProgramType.EMR_SHELL.name().equals(type) && !CodeProgramType.EMR_HIVE.name().equals(type)) {
-            throw new RuntimeException("not support HIVECLI type with " + type);
-        }
+        isEmr = isEmr(type);
+       
         dwNode.setType(type);
         Map<String, String> resourceMap = handleResourcesReference();
         List<String> resourceNames = new ArrayList<>();
@@ -110,15 +111,28 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         List<String> paths = new ArrayList<>();
         DataWorksTransformerConfig config = DataWorksTransformerConfig.getConfig();
         if (config != null) {
-            paths.add(CalcEngineType.EMR.getDisplayName(config.getLocale()));
+            if (isEmr) {
+                paths.add(CalcEngineType.EMR.getDisplayName(config.getLocale()));
+            } else {
+                paths.add(CalcEngineType.ODPS.getDisplayName(config.getLocale()));
+            }
             paths.add(LabelType.RESOURCE.getDisplayName(config.getLocale()));
         } else {
-            paths.add(CalcEngineType.EMR.getDisplayName(Locale.SIMPLIFIED_CHINESE));
+            if (isEmr) {
+                paths.add(CalcEngineType.EMR.getDisplayName(Locale.SIMPLIFIED_CHINESE));
+            } else {
+                paths.add(CalcEngineType.ODPS.getDisplayName(Locale.SIMPLIFIED_CHINESE));
+            }
             paths.add(LabelType.RESOURCE.getDisplayName(Locale.SIMPLIFIED_CHINESE));
         }
 
         pyRes.setFolder(Joiner.on(File.separator).join(paths));
-        pyRes.setType(CodeProgramType.EMR_FILE.name());
+        if (isEmr) {
+            pyRes.setType(CodeProgramType.EMR_FILE.name());
+        } else {
+            pyRes.setType(CodeProgramType.ODPS_FILE.name());
+        }
+
         pyRes.setExtend(ResourceType.FILE.name());
 
         File tmpFIle = new File(FileUtils.getTempDirectory(), pyRes.getName());
@@ -128,6 +142,10 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
         return pyRes.getName();
     }
 
+    private boolean isEmr(String type) {
+        return CodeProgramType.EMR_SHELL.name().equals(type) || CodeProgramType.EMR_HIVE.name().equals(type);
+    }
+
     private String getConverterType() {
         String convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_NODE_TYPE_AS);
         String defaultConvertType = CodeProgramType.EMR_SHELL.name();
@@ -135,7 +153,10 @@ public class HiveCliParameterConverter extends AbstractParameterConverter<HiveCl
     }
 
     private String getScriptConverterType() {
-        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_NODE_TYPE_AS);
+        String convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_SCRIPT_NODE_TYPE_AS);
+        if (convertType == null) {
+            convertType = properties.getProperty(Constants.CONVERTER_TARGET_HIVE_CLI_NODE_TYPE_AS);
+        }
         String defaultConvertType = CodeProgramType.EMR_HIVE.name();
         return getConverterType(convertType, defaultConvertType);
     }

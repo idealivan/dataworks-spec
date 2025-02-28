@@ -15,13 +15,17 @@
 
 package com.aliyun.dataworks.common.spec.writer.impl;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 
 import com.aliyun.dataworks.common.spec.annotation.SpecWriter;
 import com.aliyun.dataworks.common.spec.domain.SpecEntity;
 import com.aliyun.dataworks.common.spec.writer.SpecWriterContext;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 
 /**
@@ -49,5 +53,17 @@ public class DefaultJsonObjectWriter<T extends SpecEntity> extends AbstractWrite
             Optional.ofNullable(((T)specObj).getMetadata()).filter(MapUtils::isNotEmpty).ifPresent(metadata -> json.put("metadata", metadata));
         }
         return json;
+    }
+
+    protected <R> JSONArray buildJsonArray(List<R> depends) {
+        if (CollectionUtils.isEmpty(depends)) {
+            return null;
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        ListUtils.emptyIfNull(depends).stream()
+            .map(this::writeByWriter)
+            .forEach(jsonArray::add);
+        return jsonArray;
     }
 }

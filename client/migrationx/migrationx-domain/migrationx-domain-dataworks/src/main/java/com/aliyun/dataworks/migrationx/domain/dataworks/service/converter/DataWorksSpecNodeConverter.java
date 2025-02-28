@@ -28,6 +28,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecRuntimeResource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.file.SpecLocalFile;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.File;
@@ -321,6 +322,33 @@ public class DataWorksSpecNodeConverter {
                 if (StringUtils.isBlank(nodeId) || StringUtils.equalsIgnoreCase(innerNode.getId(), nodeId)) {
                     return innerNode;
                 }
+            }
+        }
+
+        for (SpecWorkflow specWorkflow : ListUtils.emptyIfNull(dataWorksWorkflowSpec.getWorkflows())) {
+            // workflow itself
+            if (StringUtils.isBlank(nodeId) || StringUtils.equalsIgnoreCase(specWorkflow.getId(), nodeId)) {
+                SpecNode nd = new SpecNode();
+                nd.setName(specWorkflow.getName());
+                nd.setId(specWorkflow.getId());
+                nd.setScript(specWorkflow.getScript());
+                nd.setMetadata(specWorkflow.getMetadata());
+                nd.setContext(specWorkflow.getContext());
+                nd.setOwner(specWorkflow.getOwner());
+                nd.setInputs(specWorkflow.getInputs());
+                nd.setOutputs(specWorkflow.getOutputs());
+                nd.setTrigger(specWorkflow.getTrigger());
+                nd.setDescription(specWorkflow.getDescription());
+                Optional.ofNullable(specWorkflow.getStrategy()).ifPresent(strategy -> {
+                    nd.setInstanceMode(strategy.getInstanceMode());
+                    nd.setRerunMode(strategy.getRerunMode());
+                    nd.setRerunTimes(strategy.getRerunTimes());
+                    nd.setRerunInterval(strategy.getRerunInterval());
+                    nd.setIgnoreBranchConditionSkip(strategy.getIgnoreBranchConditionSkip());
+                    nd.setTimeout(strategy.getTimeout());
+                    nd.setPriority(strategy.getPriority());
+                });
+                return nd;
             }
         }
 

@@ -9,15 +9,18 @@
 package com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.workflow.parameters;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
@@ -33,6 +36,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecFileResource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScheduleStrategy;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
@@ -41,10 +45,13 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DagD
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DolphinSchedulerV3Context;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.ProcessDefinition;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.TaskDefinition;
+import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.entity.DataSource;
+import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.entity.ResourceComponent;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.enums.Flag;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.enums.Priority;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.datax.DataxParameters;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.flink.FlinkParameters;
+import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.hivecli.HiveCliParameters;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.http.HttpParameters;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.mr.MapReduceParameters;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.parameters.AbstractParameters;
@@ -65,20 +72,31 @@ import com.aliyun.migrationx.common.exception.BizException;
 import com.aliyun.migrationx.common.exception.ErrorCode;
 import com.aliyun.migrationx.common.utils.BeanUtils;
 import com.aliyun.migrationx.common.utils.Config;
+import com.aliyun.migrationx.common.utils.Config.Replaced;
 import com.aliyun.migrationx.common.utils.GsonUtils;
+import com.aliyun.migrationx.common.utils.JSONUtils;
 import com.aliyun.migrationx.common.utils.UuidGenerators;
 
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 public abstract class AbstractParameterConverter<T extends AbstractParameters> {
 
     protected static final String RESOURCE_REFERENCE_FORMAT = "%s@resource_reference{\"%s\"}";
     protected static final String RESOURCE_REFERENCE_PREFIX = "##";
+    protected static final String DEFAULT_SCRIPT_PATH = "scripts";
+    protected static final String SCRIPT_CODE_ANNOTATION = "{\"_code_\":";
+    protected static final String SCRIPT_CODE_ANNOTATION_KEY = "_code_";
+    protected static final String SCRIPT_PARAMS_ANNOTATION = "{\"_params_\":";
+    protected static final String SCRIPT_PARAMS_ANNOTATION_KEY = "_params_";
 
     protected final TaskDefinition taskDefinition;
     protected final DagData processMeta;
@@ -110,6 +128,7 @@ public abstract class AbstractParameterConverter<T extends AbstractParameters> {
         taskTypeClassMap.put(TaskType.PYTHON, PythonParameters.class);
         taskTypeClassMap.put(TaskType.MR, MapReduceParameters.class);
         taskTypeClassMap.put(TaskType.SWITCH, SwitchParameters.class);
+        taskTypeClassMap.put(TaskType.HIVECLI, HiveCliParameters.class);
     }
 
     protected AbstractParameterConverter(Properties properties,
@@ -404,6 +423,73 @@ public abstract class AbstractParameterConverter<T extends AbstractParameters> {
         return languageEnum.getIdentifier();
     }
 
+    protected String replaceCodeWithParams(String code, List<SpecVariable> variables) {
+        if (Config.get().getReplaceMapping() == null) {
+            return code;
+        }
+
+        for (Replaced pattern : Config.get().getReplaceMapping()) {
+            if (taskDefinition.getTaskType().equalsIgnoreCase(pattern.getTaskType())) {
+                Matcher matcher = pattern.getParsedPattern().matcher(code);
+                if (matcher.find()) {
+                    SpecVariable specVariable = toSpecVariable(pattern.getParam());
+                    if (specVariable != null) {
+                        variables.add(specVariable);
+                    }
+                }
+                code = matcher.replaceAll(pattern.getTarget());
+            }
+        }
+        return code;
+    }
+
+    protected String replaceResourceFullName(Map<String, String> resourceMap, String code) {
+        if (MapUtils.isEmpty(resourceMap)) {
+            return code;
+        }
+        for (Map.Entry<String, String> entry : resourceMap.entrySet()) {
+            code = code.replace(entry.getKey(), entry.getValue());
+        }
+        return code;
+    }
+
+    protected SpecVariable toSpecVariable(String param) {
+        String[] params = param.split("=");
+        if (params.length < 2) {
+            return null;
+        }
+        SpecVariable specVariable = new SpecVariable();
+        specVariable.setId(UuidGenerators.generateUuid());
+        specVariable.setName(params[0]);
+        specVariable.setValue(params[1]);
+        specVariable.setType(VariableType.CONSTANT);
+        specVariable.setScope(VariableScopeType.NODE_PARAMETER);
+        return specVariable;
+    }
+
+    protected ResourceComponent getResourceById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        DolphinSchedulerV3Context context = DolphinSchedulerV3Context.getContext();
+        return CollectionUtils.emptyIfNull(context.getResources())
+                .stream()
+                .filter(r -> r.getId() == id)
+                .findAny().orElse(null);
+    }
+
+    protected String getResourceNameById(Integer id) {
+        ResourceComponent resourceComponent = getResourceById(id);
+        if (resourceComponent == null) {
+            return null;
+        }
+        String name = resourceComponent.getFileName();
+        if (StringUtils.isEmpty(name)) {
+            name = resourceComponent.getName();
+        }
+        return name;
+    }
+
     protected LanguageEnum codeToLanguage(CodeProgramType nodeType) {
         switch (nodeType) {
             case SHELL:
@@ -446,6 +532,16 @@ public abstract class AbstractParameterConverter<T extends AbstractParameters> {
                 return LanguageEnum.JSON;
             case HOLOGRES_SQL:
                 return LanguageEnum.HOLOGRES_SQL;
+            case MYSQL:
+                return LanguageEnum.MYSQL_SQL;
+            case Oracle:
+                return LanguageEnum.OB_ORACLE_SQL;
+            case SQLSERVER:
+                return LanguageEnum.SQL;
+            case StarRocks:
+                return LanguageEnum.MYSQL_SQL;
+            case Redshift:
+                return LanguageEnum.SQL;
             default:
                 return null;
         }
@@ -456,5 +552,107 @@ public abstract class AbstractParameterConverter<T extends AbstractParameters> {
         String processName = processDefinition.getName();
         String taskName = taskDefinition.getName();
         return ConverterTypeUtils.getConverterType(convertType, projectName, processName, taskName, defaultConvertType);
+    }
+
+    protected void postHandle(String taskType, SpecScript script) {
+        Pair<String, String> content = postHandle(taskType, script.getContent());
+        if (content.getLeft() != null) {
+            script.setContent(content.getLeft());
+        }
+        if (content.getRight() != null) {
+            for (String param : content.getRight().split(",")) {
+                SpecVariable specVariable = toSpecVariable(param);
+                if (specVariable != null) {
+                    script.getParameters().add(specVariable);
+                }
+            }
+        }
+    }
+
+    protected Pair<String, String> postHandle(String taskType, String code) {
+        Map<String, String> postHandlers = Config.get().getPostHandlers();
+        if (postHandlers != null && postHandlers.get(taskType) != null) {
+            String scriptName = postHandlers.get(taskType);
+            String scriptDir = Config.get().getScriptDir();
+            if (scriptDir == null) {
+                scriptDir = DEFAULT_SCRIPT_PATH;
+            }
+            String file = scriptDir + File.separator + scriptName;
+            File scriptFile = new File(file);
+            if (!scriptFile.exists()) {
+                throw new RuntimeException("script file " + file + " not exist");
+            }
+            List<String> lines = processScript(scriptFile, code);
+            String resCode = null;
+            String resParams = null;
+            for (String line : lines) {
+                if (line.startsWith(SCRIPT_CODE_ANNOTATION)) {
+                    Map<String, String> codes = JSONUtils.parseObject(line, Map.class);
+                    resCode = codes.get(SCRIPT_CODE_ANNOTATION_KEY);
+                } else if (line.startsWith(SCRIPT_PARAMS_ANNOTATION)) {
+                    Map<String, String> params = JSONUtils.parseObject(line, Map.class);
+                    resParams = params.get(SCRIPT_PARAMS_ANNOTATION_KEY);
+                }
+            }
+            if (resCode == null && resParams == null) {
+                log.warn("response from script error \n {}", JSONUtils.toJsonString(lines));
+                throw new RuntimeException("response from script error");
+            }
+            return Pair.of(resCode, resParams);
+        } else {
+            log.warn("no post handler");
+            return Pair.of(code, null);
+        }
+    }
+
+    protected List<String> processScript(File file, String code) {
+        log.info("read file cmd {}", file.getAbsolutePath());
+        String args = buildArgs();
+        ProcessBuilder processBuilder = new ProcessBuilder("python", file.getAbsolutePath(), code, args);
+        processBuilder.redirectErrorStream(true);
+        try {
+            Process process = processBuilder.start();
+            List<String> lines = IOUtils.readLines(IOUtils.toBufferedInputStream(process.getInputStream()), StandardCharsets.UTF_8);
+            log.debug("parse python file {} with res: \n {}", file.getAbsolutePath(), JSONUtils.toJsonString(lines));
+            log.info("waiting for process finished");
+            int exitCode = process.waitFor();
+            if (exitCode > 0) {
+                log.error("python res with code {}", exitCode);
+                throw new RuntimeException("exit with " + exitCode);
+            }
+            return lines;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String buildArgs() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("processCode", processDefinition.getCode());
+        args.put("processName", processDefinition.getName());
+        args.put("projectName", processDefinition.getProjectName());
+        args.put("taskName", taskDefinition.getName());
+        args.put("taskCode", taskDefinition.getCode());
+        args.put("taskParams", taskDefinition.getTaskParamList());
+        String argsStr = JSONUtils.toJsonString(args);
+        return argsStr;
+    }
+
+    protected DataSource getDataSourceById(Integer id) {
+        if (id == null || id <= 0) {
+            log.warn("can not get dataSource by id {}", id);
+            return null;
+        }
+        List<DataSource> datasources = DolphinSchedulerV3Context.getContext().getDataSources();
+        if (CollectionUtils.isEmpty(datasources)) {
+            log.warn("can not get dataSources from context");
+        }
+        for (DataSource ds : datasources) {
+            if (ds.getId() == id.intValue()) {
+                return ds;
+            }
+        }
+        log.warn("can not get dataSource by id {}", id);
+        return null;
     }
 }

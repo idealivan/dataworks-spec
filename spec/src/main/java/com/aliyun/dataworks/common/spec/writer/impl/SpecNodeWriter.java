@@ -37,6 +37,7 @@ import com.aliyun.dataworks.common.spec.parser.impl.DoWhileParser;
 import com.aliyun.dataworks.common.spec.parser.impl.SpecBranchParser;
 import com.aliyun.dataworks.common.spec.parser.impl.SpecForEachParser;
 import com.aliyun.dataworks.common.spec.parser.impl.SpecJoinParser;
+import com.aliyun.dataworks.common.spec.parser.impl.SpecPaiflowParser;
 import com.aliyun.dataworks.common.spec.parser.impl.SpecParamHubParser;
 import com.aliyun.dataworks.common.spec.parser.impl.SubFlowParser;
 import com.aliyun.dataworks.common.spec.writer.SpecWriterContext;
@@ -85,6 +86,7 @@ public class SpecNodeWriter extends DefaultJsonObjectWriter<SpecNode> {
         json.put(SpecParamHubParser.PARAM_HUB, writeByWriter(specObj.getParamHub()));
         json.put(DoWhileParser.DO_WHILE, writeByWriter(specObj.getDoWhile()));
         json.put(SpecForEachParser.FOREACH, writeByWriter(specObj.getForeach()));
+        json.put(SpecPaiflowParser.PAIFLOW, writeByWriter(specObj.getPaiflow()));
         json.put(SpecBranchParser.BRANCH, writeByWriter(specObj.getBranch()));
         json.put(SpecJoinParser.KEY_JOIN, writeByWriter(specObj.getJoin()));
         json.put(SubFlowParser.KEY_TYPE_COMBINED, writeByWriter(specObj.getCombined()));

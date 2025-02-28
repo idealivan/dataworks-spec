@@ -31,12 +31,11 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.Task
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.shell.ShellParameters;
 import com.aliyun.dataworks.migrationx.transformer.core.common.Constants;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 
-
+@Slf4j
 public class ShellParameterConverter extends AbstractParameterConverter<ShellParameters> {
-
-
     public ShellParameterConverter(Properties properties, SpecWorkflow specWorkflow, DagData processMeta, TaskDefinition taskDefinition) {
         super(properties, specWorkflow, processMeta, taskDefinition);
     }
@@ -48,7 +47,7 @@ public class ShellParameterConverter extends AbstractParameterConverter<ShellPar
         convertFileResourceList(specNode);
         String convertType = properties.getProperty(Constants.CONVERTER_TARGET_SHELL_NODE_TYPE_AS, CodeProgramType.DIDE_SHELL.name());
         CodeProgramType codeProgramType = CodeProgramType.getNodeTypeByName(convertType);
-        
+
         SpecScript script = new SpecScript();
         String language = codeToLanguageIdentifier(codeProgramType);
         script.setLanguage(language);
@@ -61,9 +60,11 @@ public class ShellParameterConverter extends AbstractParameterConverter<ShellPar
 
         script.setPath(getScriptPath(specNode));
         String resourceReference = buildFileResourceReference(specNode, RESOURCE_REFERENCE_PREFIX);
-        script.setContent(resourceReference + parameter.getRawScript());
+        String code = replaceCodeWithParams(parameter.getRawScript(), specVariableList);
+        script.setContent(resourceReference + code);
         script.setParameters(ListUtils.emptyIfNull(specVariableList).stream().filter(v -> !VariableType.NODE_OUTPUT.equals(v.getType()))
                 .collect(Collectors.toList()));
         specNode.setScript(script);
+        postHandle("SHELL", script);
     }
 }

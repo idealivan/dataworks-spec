@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
 import org.reflections.Reflections;
 
 /**
@@ -53,7 +52,7 @@ public class CodeModelFactory {
                     throw new RuntimeException(e);
                 }
             })
-            .filter(inst -> ListUtils.emptyIfNull(inst.getProgramTypes()).stream().anyMatch(t -> t.equalsIgnoreCase(programType)))
+            .filter(inst -> inst.support(programType))
             .collect(Collectors.toList());
         log.debug("code model list: {}", list);
         Code theOne = list.stream()

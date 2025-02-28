@@ -26,6 +26,7 @@ import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinsc
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.DLCParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.DataxParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.DependentParameterConverter;
+import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.FlinkParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.HiveCliParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.HttpParameterConverter;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.v3.nodes.parameters.MrParameterConverter;
@@ -89,6 +90,8 @@ public class TaskConverterFactoryV3 {
                 return new DataxParameterConverter(processMeta, taskDefinition, converterContext);
             case SQOOP:
                 return new SqoopParameterConverter(processMeta, taskDefinition, converterContext);
+            case FLINK:
+                return new FlinkParameterConverter(processMeta, taskDefinition, converterContext);
             case DLC:
                 return new DLCParameterConverter(processMeta, taskDefinition, converterContext);
             default:

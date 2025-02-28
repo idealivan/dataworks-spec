@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DagData;
-import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.DolphinSchedulerV3Context;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.TaskDefinition;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.entity.DataSource;
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.entity.Project;
@@ -33,11 +32,11 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.mode
 import com.aliyun.dataworks.migrationx.domain.dataworks.dolphinscheduler.v3.task.procedure.ProcedureParameters;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.DwNode;
 import com.aliyun.dataworks.migrationx.transformer.core.common.Constants;
+import com.aliyun.dataworks.migrationx.transformer.core.utils.EmrCodeUtils;
 import com.aliyun.dataworks.migrationx.transformer.dataworks.converter.dolphinscheduler.DolphinSchedulerConverterContext;
 import com.aliyun.migrationx.common.utils.GsonUtils;
 
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.collections4.CollectionUtils;
 
 public class ProcedureParameterConverter extends AbstractParameterConverter<ProcedureParameters> {
     public ProcedureParameterConverter(DagData processMeta, TaskDefinition taskDefinition,
@@ -58,17 +57,21 @@ public class ProcedureParameterConverter extends AbstractParameterConverter<Proc
 
         DwNode dwNode = newDwNode(taskDefinition);
         DbType codeProgramType = sqlTypeNodeTypeMapping.get(parameter.getType());
-        dwNode.setType(Optional.ofNullable(codeProgramType).map(Enum::name)
-                .orElse(defaultNodeTypeIfNotSupport));
+        String type = Optional.ofNullable(codeProgramType).map(Enum::name)
+                .orElse(defaultNodeTypeIfNotSupport);
+        dwNode.setType(type);
         //add ref datasource
-        List<DataSource> datasources = DolphinSchedulerV3Context.getContext().getDataSources();
-        if (parameter.getDatasource() > 0) {
-            CollectionUtils.emptyIfNull(datasources).stream()
-                    .filter(s -> s.getId() == parameter.getDatasource())
-                    .findFirst()
-                    .ifPresent(s -> dwNode.setConnection(s.getName()));
+        DataSource dataSource = getDataSourceById(parameter.getDatasource());
+        if (dataSource != null) {
+            dwNode.setConnection(dataSource.getName());
         }
-        dwNode.setCode(parameter.getMethod());
+        String code = parameter.getMethod();
+        code = replaceCode(code, dwNode);
+        dwNode.setCode(code);
+        if (type.startsWith("EMR") || type.startsWith("SPARK")) {
+            code = EmrCodeUtils.toEmrCode(dwNode);
+        }
+        dwNode.setCode(code);
         return Arrays.asList(dwNode);
     }
 
