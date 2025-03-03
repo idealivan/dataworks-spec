@@ -34,7 +34,7 @@ class BaseTaskConverter(LoggingMixin):
 
     def convert(self) -> SpecNode:
         self.log.debug("converting task: %s.%s, dag file: %s",
-                       self.task.dag.dag_id, self.task.task_id, self.task.dag.full_filepath)
+                       self.task.dag.dag_id, self.task.task_id, self.task.dag.fileloc)
         node = SpecNode()
         self.node = node
         node.id = self.generator_id(self.task.dag.dag_id, self.task.task_id)

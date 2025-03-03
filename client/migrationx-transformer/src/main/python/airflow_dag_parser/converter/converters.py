@@ -77,6 +77,8 @@ class BashOperatorTaskConverter(BaseTaskConverter, LoggingMixin):
         # check code content for type specific converting
         if self._is_hard_converting(code, runtime.command):
             code = self._process_hard_converting_content(code)
+            if code.startswith('ods/'):
+                return self._convert_as_di_offline_sync_node(code)
 
         script.path = self.node.name
         script.content = code
@@ -394,7 +396,7 @@ class ExternalTaskSensorConverter(BaseTaskConverter, LoggingMixin):
         else:
             upstream_task_id = ''
 
-        if upstream_dag_id != '' and upstream_task_id != '':
+        if upstream_dag_id != '' or upstream_task_id != '':
             # Adding cross DAG level task dependencies. (Not supported right now, take it as DAG dependency as below did).
             # io = SpecNodeIO()
             # io.output = self.generator_id(upstream_dag_id, upstream_task_id)
