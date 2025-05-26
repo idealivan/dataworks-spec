@@ -1084,4 +1084,22 @@ public class DataWorksNodeAdapterTest {
         Assert.assertEquals(4, (int)advanceSettings.getInteger("spark.executor.cores"));
         Assert.assertEquals("spark-submit --master yarn", dataWorksNodeAdapter.getCode());
     }
+
+    @Test
+    public void testEmptyParaValue() throws IOException {
+        String spec = IOUtils.toString(
+            Objects.requireNonNull(DataWorksNodeAdapterTest.class.getClassLoader().getResource("nodemodel/assignment.json")),
+            StandardCharsets.UTF_8);
+
+        System.out.println(spec);
+        Specification<DataWorksWorkflowSpec> specObj = SpecUtil.parseToDomain(spec);
+        DataWorksWorkflowSpec specification = specObj.getSpec();
+        Assert.assertNotNull(specification);
+
+        Assert.assertNotNull(specification.getNodes());
+        SpecNode node = specification.getNodes().get(0);
+        node.getScript().setParameters(null);
+        DataWorksNodeAdapter adapter = new DataWorksNodeAdapter(specObj, node);
+        Assert.assertEquals("", adapter.getParaValue());
+    }
 }

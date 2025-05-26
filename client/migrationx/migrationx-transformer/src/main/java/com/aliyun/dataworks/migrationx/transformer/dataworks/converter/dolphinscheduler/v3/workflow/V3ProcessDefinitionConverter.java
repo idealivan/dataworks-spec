@@ -127,7 +127,7 @@ public class V3ProcessDefinitionConverter {
         return specWorkflow;
     }
 
-    private boolean willConvert() {
+    public boolean willConvert() {
         List<String> codes = DolphinSchedulerV3Context.getContext().getSubProcessCodeMap(processDefinition.getCode());
         ReleaseState releaseState = processDefinition.getReleaseState();
         return DolphinFilter.willConvert(processDefinition.getName(),

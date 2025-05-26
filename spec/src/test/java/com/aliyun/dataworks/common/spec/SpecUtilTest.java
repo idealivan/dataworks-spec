@@ -41,8 +41,10 @@ import com.aliyun.dataworks.common.spec.domain.dw.codemodel.CodeModelFactory;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrCode;
 import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter;
 import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeCodeAdapter;
+import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
 import com.aliyun.dataworks.common.spec.domain.enums.FailureStrategy;
 import com.aliyun.dataworks.common.spec.domain.enums.FunctionType;
+import com.aliyun.dataworks.common.spec.domain.enums.SourceType;
 import com.aliyun.dataworks.common.spec.domain.enums.SpecKind;
 import com.aliyun.dataworks.common.spec.domain.enums.SpecVersion;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableScopeType;
@@ -69,6 +71,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecTable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
+import com.aliyun.dataworks.common.spec.domain.ref.calcengine.SpecCalcEngine;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import com.aliyun.dataworks.common.spec.parser.SpecParserContext;
 import com.aliyun.dataworks.common.spec.utils.GsonUtils;
@@ -77,6 +80,7 @@ import com.aliyun.dataworks.common.spec.writer.SpecWriterContext;
 import com.aliyun.dataworks.common.spec.writer.Writer;
 import com.aliyun.dataworks.common.spec.writer.WriterFactory;
 import com.aliyun.dataworks.common.spec.writer.impl.SpecificationWriter;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -751,6 +755,7 @@ public class SpecUtilTest {
 
         System.out.println(SpecUtil.writeToSpec(specObj));
     }
+
     @Test
     public void testFileResource() {
         String spec = readJson("spec/examples/json/file_resource.json");
@@ -2096,5 +2101,283 @@ public class SpecUtilTest {
         Assert.assertNotNull(js);
         Assert.assertTrue(js.containsKey("spec"));
         Assert.assertTrue(js.getJSONObject("spec").containsKey("flow"));
+    }
+
+    @Test
+    public void testParserScriptParameterWithFromVariable() {
+        String spec = "{\n"
+            + "\t\"version\": \"1.1.0\",\n"
+            + "\t\"kind\": \"CycleWorkflow\",\n"
+            + "\t\"spec\": {\n"
+            + "\t\t\"nodes\": [\n"
+            + "\t\t\t{\n"
+            + "\t\t\t\t\"recurrence\": \"Normal\",\n"
+            + "\t\t\t\t\"id\": \"5087177253148138797\",\n"
+            + "\t\t\t\t\"timeout\": 0,\n"
+            + "\t\t\t\t\"instanceMode\": \"T+1\",\n"
+            + "\t\t\t\t\"rerunMode\": \"Allowed\",\n"
+            + "\t\t\t\t\"rerunTimes\": 3,\n"
+            + "\t\t\t\t\"rerunInterval\": 120000,\n"
+            + "\t\t\t\t\"script\": {\n"
+            + "\t\t\t\t\t\"language\": \"odps-sql\",\n"
+            + "\t\t\t\t\t\"path\": \"业务流程/Workflow/test11\",\n"
+            + "\t\t\t\t\t\"runtime\": {\n"
+            + "\t\t\t\t\t\t\"command\": \"ODPS_SQL\",\n"
+            + "\t\t\t\t\t\t\"commandTypeId\": 10,\n"
+            + "\t\t\t\t\t\t\"cu\": \"0.25\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\"id\": \"6718099302539207849\",\n"
+            + "\t\t\t\t\t\"parameters\": [\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"artifactType\": \"Variable\",\n"
+            + "\t\t\t\t\t\t\t\"name\": \"aaaa\",\n"
+            + "\t\t\t\t\t\t\t\"scope\": \"NodeContext\",\n"
+            + "\t\t\t\t\t\t\t\"type\": \"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"value\": \"${outputs}\",\n"
+            + "\t\t\t\t\t\t\t\"id\": \"6405143779358903358\",\n"
+            + "\t\t\t\t\t\t\t\"from\": {\n"
+            + "\t\t\t\t\t\t\t\t\"name\": \"outputs\",\n"
+            + "\t\t\t\t\t\t\t\t\"scope\": \"NodeContext\",\n"
+            + "\t\t\t\t\t\t\t\t\"type\": \"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\t\"value\": \"${outputs}\",\n"
+            + "\t\t\t\t\t\t\t\t\"nodeUuid\": \"6649141278813321438\",\n"
+            + "\t\t\t\t\t\t\t\t\"nodeOutput\": \"6649141278813321438\",\n"
+            + "\t\t\t\t\t\t\t\t\"nodeName\": \"赋值11111\"\n"
+            + "\t\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t]\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"trigger\": {\n"
+            + "\t\t\t\t\t\"type\": \"Scheduler\",\n"
+            + "\t\t\t\t\t\"id\": \"7632969190307402363\",\n"
+            + "\t\t\t\t\t\"cron\": \"00 29 00 * * ?\",\n"
+            + "\t\t\t\t\t\"startTime\": \"1970-01-01 00:00:00\",\n"
+            + "\t\t\t\t\t\"endTime\": \"9999-01-01 00:00:00\",\n"
+            + "\t\t\t\t\t\"timezone\": \"GMT+8\",\n"
+            + "\t\t\t\t\t\"delaySeconds\": 0\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"runtimeResource\": {\n"
+            + "\t\t\t\t\t\"resourceGroup\": \"group_524257424564736\",\n"
+            + "\t\t\t\t\t\"id\": \"8393194769092633224\",\n"
+            + "\t\t\t\t\t\"resourceGroupId\": \"50414322\"\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"name\": \"test11\",\n"
+            + "\t\t\t\t\"owner\": \"1107550004253538\",\n"
+            + "\t\t\t\t\"metadata\": {\n"
+            + "\t\t\t\t\t\"owner\": \"1107550004253538\",\n"
+            + "\t\t\t\t\t\"ownerName\": \"dw_on_emr_qa3@test.aliyunid.com\",\n"
+            + "\t\t\t\t\t\"createTime\": \"2025-03-26 16:17:58\",\n"
+            + "\t\t\t\t\t\"tenantId\": \"524257424564736\",\n"
+            + "\t\t\t\t\t\"project\": {\n"
+            + "\t\t\t\t\t\t\"projectIdentifier\": \"test_upgrade_032502\",\n"
+            + "\t\t\t\t\t\t\"projectName\": \"test_upgrade_032502\",\n"
+            + "\t\t\t\t\t\t\"projectId\": \"723665\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\"projectId\": \"723665\"\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"inputs\": {\n"
+            + "\t\t\t\t\t\"nodeOutputs\": [\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\": \"test_upgrade_032502_root\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\": \"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\": false\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t],\n"
+            + "\t\t\t\t\t\"variables\": [\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"inputName\": \"aaaa\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\": \"Variable\",\n"
+            + "\t\t\t\t\t\t\t\"name\": \"outputs\",\n"
+            + "\t\t\t\t\t\t\t\"scope\": \"NodeContext\",\n"
+            + "\t\t\t\t\t\t\t\"type\": \"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"value\": \"${outputs}\",\n"
+            + "\t\t\t\t\t\t\t\"id\": \"6108609295212879780\",\n"
+            + "\t\t\t\t\t\t\t\"node\": {\n"
+            + "\t\t\t\t\t\t\t\t\"nodeId\": \"6649141278813321438\",\n"
+            + "\t\t\t\t\t\t\t\t\"output\": \"6649141278813321438\",\n"
+            + "\t\t\t\t\t\t\t\t\"refTableName\": \"赋值11111\"\n"
+            + "\t\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t]\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"outputs\": {\n"
+            + "\t\t\t\t\t\"nodeOutputs\": [\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\": \"5087177253148138797\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\": \"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"refTableName\": \"test11\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\": true\n"
+            + "\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\": \"test_upgrade_032502.test11\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\": \"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"refTableName\": \"test11\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\": false\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t]\n"
+            + "\t\t\t\t}\n"
+            + "\t\t\t}\n"
+            + "\t\t],\n"
+            + "\t\t\"flow\": [\n"
+            + "\t\t\t{\n"
+            + "\t\t\t\t\"nodeId\": \"5087177253148138797\",\n"
+            + "\t\t\t\t\"depends\": [\n"
+            + "\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\"type\": \"Normal\",\n"
+            + "\t\t\t\t\t\t\"output\": \"6649141278813321438\",\n"
+            + "\t\t\t\t\t\t\"refTableName\": \"赋值11111\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\"type\": \"Normal\",\n"
+            + "\t\t\t\t\t\t\"output\": \"test_upgrade_032502_root\"\n"
+            + "\t\t\t\t\t}\n"
+            + "\t\t\t\t]\n"
+            + "\t\t\t}\n"
+            + "\t\t]\n"
+            + "\t}\n"
+            + "}";
+        Specification<DataWorksWorkflowSpec> specification = SpecUtil.parseToDomain(spec);
+        Assert.assertNotNull(specification);
+        Assert.assertNotNull(specification.getSpec());
+        Assert.assertNotNull(specification.getSpec().getNodes());
+        SpecNode node = specification.getSpec().getNodes().get(0);
+        Assert.assertNotNull(node);
+        log.info("node: {}", JSON.toJSONString(SpecUtil.write(node, new SpecWriterContext()), Feature.PrettyFormat));
+    }
+
+    @Test
+    public void testWriteTableDomainToSpec() {
+        SpecTable tableSpec = new SpecTable();
+        tableSpec.setEngineType("ODPS");
+        tableSpec.setEntityType("TABLE");
+        tableSpec.setLogicTableUuid("logicTableUuid");
+        tableSpec.setName("name");
+        tableSpec.setGuid("tableGuid");
+        tableSpec.setDdl("create table ...");
+        tableSpec.setHasPartition(false);
+        tableSpec.setIsVisible(false);
+        tableSpec.setId("tableId");
+
+        SpecCalcEngine specCalcEngine = new SpecCalcEngine();
+        SpecDatasource specDatasource = new SpecDatasource();
+        specDatasource.setId("datasourceId");
+        specCalcEngine.setDatasource(specDatasource);
+        tableSpec.setCalcEngine(specCalcEngine);
+
+        Specification<DataWorksWorkflowSpec> specification = new Specification<DataWorksWorkflowSpec>();
+        specification.setKind(SpecKind.TABLE.getLabel());
+        specification.setVersion("1.0");
+        DataWorksWorkflowSpec dataWorksWorkflowSpec = new DataWorksWorkflowSpec();
+        dataWorksWorkflowSpec.setTables(Lists.newArrayList(tableSpec));
+        specification.setSpec(dataWorksWorkflowSpec);
+
+        String spec = SpecUtil.writeToSpec(specification);
+        Assert.assertEquals("{\n"
+            + "\t\"version\":\"1.0\",\n"
+            + "\t\"kind\":\"Table\",\n"
+            + "\t\"spec\":{\n"
+            + "\t\t\"tables\":[\n"
+            + "\t\t\t{\n"
+            + "\t\t\t\t\"name\":\"name\",\n"
+            + "\t\t\t\t\"artifactType\":\"Table\",\n"
+            + "\t\t\t\t\"guid\":\"tableGuid\",\n"
+            + "\t\t\t\t\"ddl\":\"create table ...\",\n"
+            + "\t\t\t\t\"hasPartition\":false,\n"
+            + "\t\t\t\t\"isVisible\":false,\n"
+            + "\t\t\t\t\"calcEngine\":{\n"
+            + "\t\t\t\t\t\"datasource\":{\n"
+            + "\t\t\t\t\t\t\"id\":\"datasourceId\"\n"
+            + "\t\t\t\t\t}\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"engineType\":\"ODPS\",\n"
+            + "\t\t\t\t\"entityType\":\"TABLE\",\n"
+            + "\t\t\t\t\"logicTableUuid\":\"logicTableUuid\",\n"
+            + "\t\t\t\t\"id\":\"tableId\"\n"
+            + "\t\t\t}\n"
+            + "\t\t]\n"
+            + "\t}\n"
+            + "}", spec);
+    }
+
+    @Test
+    public void testParseTableSpecToDomain() {
+        String tableSpec = "{\n"
+            + "  \"version\" : \"1.0\",\n"
+            + "  \"kind\" : \"Table\",\n"
+            + "  \"spec\" : {\n"
+            + "    \"tables\" : [ {\n"
+            + "      \"name\" : \"name\",\n"
+            + "      \"artifactType\" : \"Table\",\n"
+            + "      \"guid\" : \"tableGuid\",\n"
+            + "      \"ddl\" : \"create table ...\",\n"
+            + "      \"hasPartition\" : false,\n"
+            + "      \"isVisible\" : false,\n"
+            + "      \"calcEngine\" : {\n"
+            + "        \"datasource\" : {\n"
+            + "          \"id\" : \"datasourceId\"\n"
+            + "        }\n"
+            + "      },\n"
+            + "      \"engineType\" : \"ODPS\",\n"
+            + "      \"entityType\" : \"TABLE\",\n"
+            + "      \"logicTableUuid\" : \"logicTableUuid\",\n"
+            + "      \"id\" : \"tableId\"\n"
+            + "    } ]\n"
+            + "  }\n"
+            + "}";
+        Specification<DataWorksWorkflowSpec> specSpecification = SpecUtil.parseToDomain(tableSpec);
+        Assert.assertEquals("1.0", specSpecification.getVersion());
+        Assert.assertEquals(SpecKind.TABLE.getLabel(), specSpecification.getKind());
+        Assert.assertNotNull(specSpecification.getSpec());
+
+        DataWorksWorkflowSpec dataWorksWorkflowSpec = specSpecification.getSpec();
+        SpecTable spec = dataWorksWorkflowSpec.getTables().get(0);
+        Assert.assertEquals("ODPS", spec.getEngineType());
+        Assert.assertEquals("TABLE", spec.getEntityType());
+        Assert.assertEquals("logicTableUuid", spec.getLogicTableUuid());
+        Assert.assertEquals("name", spec.getName());
+        Assert.assertEquals("tableGuid", spec.getGuid());
+        Assert.assertEquals("create table ...", spec.getDdl());
+        Assert.assertFalse(spec.getHasPartition());
+        Assert.assertFalse(spec.getIsVisible());
+        Assert.assertEquals("tableId", spec.getId());
+        Assert.assertNotNull(spec.getCalcEngine());
+        Assert.assertNotNull(spec.getCalcEngine().getDatasource());
+        Assert.assertEquals("datasourceId", spec.getCalcEngine().getDatasource().getId());
+    }
+
+    @Test
+    public void testSourceType() {
+        Specification<DataWorksWorkflowSpec> specObj = new Specification<>();
+        specObj.setKind(SpecKind.CYCLE_WORKFLOW.getLabel());
+        specObj.setVersion(SpecVersion.V_1_2_0.getLabel());
+        DataWorksWorkflowSpec spec = new DataWorksWorkflowSpec();
+        specObj.setSpec(spec);
+        SpecWriterContext context = new SpecWriterContext();
+        SpecificationWriter writer = new SpecificationWriter(context);
+        SpecNode node1 = new SpecNode();
+        node1.setName("node1");
+        node1.setId("node1");
+        SpecNodeOutput input1 = new SpecNodeOutput();
+        input1.setData("autotest.12345_out");
+        input1.setSourceType(SourceType.CODE_PARSE);
+        SpecVariable outVar1 = new SpecVariable();
+        outVar1.setName("outputvar1");
+        outVar1.setSourceType(SourceType.SYSTEM);
+        node1.setInputs(List.of(input1));
+        node1.setOutputs(List.of(outVar1));
+        spec.setNodes(List.of(node1));
+        SpecFlowDepend flow = new SpecFlowDepend();
+        flow.setNodeId(node1);
+        SpecDepend depend1 = new SpecDepend();
+        depend1.setOutput(input1);
+        depend1.setSourceType(input1.getSourceType());
+        depend1.setType(DependencyType.NORMAL);
+        flow.setDepends(List.of(depend1));
+        spec.setFlow(List.of(flow));
+        JSONObject outputSpec = writer.write(specObj, context);
+        System.out.println(outputSpec.toJSONString(Feature.PrettyFormat));
+        Assert.assertEquals(SourceType.CODE_PARSE.getLabel(), outputSpec.getByPath("spec.nodes[0].inputs.nodeOutputs[0].sourceType"));
+        Assert.assertEquals(SourceType.SYSTEM.getLabel(), outputSpec.getByPath("spec.nodes[0].outputs.variables[0].sourceType"));
+        Assert.assertEquals(SourceType.CODE_PARSE.getLabel(), outputSpec.getByPath("spec.flow[0].depends[0].sourceType"));
     }
 }

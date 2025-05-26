@@ -102,7 +102,7 @@ Node is the definition of workflow node.
 | `runtimeResource` |   [`RuntimeResource`](#runtimeResource)    | No       | runtime resource define or reference of the node                                                    |
 |   `recurrence`    |                   string                   | No       | `recurrence` defines cycle schedule state of node, see enumerated values: [Recurrence](#recurrence) |
 |    `priority`     |                  integer                   | No       | priority of the node, the larger the value, the higher the priority                                 |
-|     `timeout`     |                  integer                   | No       | timeout in hours of the node, node instance will be killed when timed out after specified hours     |
+|     `timeout`     |                  integer                   | No       | timeout in seconds of the node, node instance will be killed when timed out after specified seconds |
 |  `instanceMode`   |                   string                   | No       | instance mode of the node, see enumerated values [InstanceMode](#instancemode)                      |
 |    `rerunMode`    |                   string                   | No       | the rerun strategy of the node instance, see enumerated values [RerunMode](#rerunmode)              |
 

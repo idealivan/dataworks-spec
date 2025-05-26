@@ -66,6 +66,7 @@ public enum CodeProgramType {
     ODPS_XLIB(8, "ODPS_XLIB", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mc.xlib.py"),
     ODPS_PERL(9, "odps_pl", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mc.pl"),
     ODPS_SQL(10, "ODPS_SQL", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".sql"),
+    LIGHTNING_SQL(61, "LIGHTNING_SQL", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".sql"),
     EXTREME_STORAGE(30, "EXTREME_STORAGE", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mc.extreme.store.sh"),
     ODPS_SPARK_SQL(226, "ODPS_SPARK_SQL", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".sql"),
     ODPS_MR(11, "ODPS_MR", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mr.sql"),

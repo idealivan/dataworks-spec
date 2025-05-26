@@ -96,6 +96,14 @@ public class GsonUtils {
         return null;
     }
 
+    public static JsonObject toJsonObject(Object object) {
+        if (object == null) {
+            return null;
+        }
+        String jsonString = toJsonString(object);
+        return gson.fromJson(jsonString, JsonObject.class);
+    }
+
     public static class LocaleAdapter implements JsonSerializer<Locale>, JsonDeserializer<Locale> {
         @Override
         public Locale deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)

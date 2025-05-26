@@ -29,6 +29,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecFunction;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecRuntimeResource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecTable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
@@ -48,6 +49,7 @@ import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.MANUAL_WORK
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.NODE;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.PAIFLOW;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.RESOURCE;
+import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.TABLE;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.TEMPORARY_WORKFLOW;
 
 /**
@@ -75,6 +77,7 @@ public class DataWorksWorkflowSpec extends SpecRefEntity implements Spec {
     private List<SpecWorkflow> workflows;
     private List<SpecComponent> components;
     private List<SpecFlowDepend> flow;
+    private List<SpecTable> tables;
 
     @Override
     public List<SpecKind> getKinds() {
@@ -91,6 +94,7 @@ public class DataWorksWorkflowSpec extends SpecRefEntity implements Spec {
             COMPONENT,
             NODE,
             RESOURCE,
-            FUNCTION);
+            FUNCTION,
+            TABLE);
     }
 }

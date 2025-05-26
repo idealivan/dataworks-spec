@@ -274,4 +274,15 @@ public class V3ProcessDefinitionConverter
                 .build();
         TransformerContext.getCollector().markSkippedProcess(metrics);
     }
+
+    /**
+     * Static factory method for creating instances
+     *
+     * @param dagData the dag data
+     * @param context the context
+     * @return the converter instance
+     */
+    public static V3ProcessDefinitionConverter newInstance(DagData dagData, DolphinSchedulerConverterContext context) {
+        return new V3ProcessDefinitionConverter(context, dagData);
+    }
 }

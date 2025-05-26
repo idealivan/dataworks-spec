@@ -176,15 +176,13 @@ public class DataWorksNodeInputOutputAdapter {
     }
 
     private String getInputContextKey(SpecVariable i) {
-        return Optional.ofNullable(objectDelegate.getScript()).map(SpecScript::getParameters)
-            .map(params -> params.stream()
+        return Optional.ofNullable(objectDelegate.getScript())
+            .map(SpecScript::getParameters).flatMap(params -> params.stream()
                 .filter(param -> param.getReferenceVariable() != null)
                 .filter(param -> matchVariable(i, param.getReferenceVariable()))
-                .map(SpecVariable::getName).findAny()
-                .orElseThrow(() -> new SpecException(SpecErrorCode.PARSE_ERROR,
-                    "inputs variable missing binding in script.parameters: " + i.getName())))
-            .orElseThrow(() -> new SpecException(SpecErrorCode.PARSE_ERROR,
-                "inputs variable missing binding in script.parameters: " + i.getName()));
+                .map(SpecVariable::getName).findAny())
+            .or(() -> Optional.ofNullable(i.getInputName()))
+            .orElseThrow(() -> new SpecException(SpecErrorCode.PARSE_ERROR, "inputs variable missing binding in script.parameters: " + i.getName()));
     }
 
     private static boolean matchVariable(SpecVariable varA, SpecVariable varB) {

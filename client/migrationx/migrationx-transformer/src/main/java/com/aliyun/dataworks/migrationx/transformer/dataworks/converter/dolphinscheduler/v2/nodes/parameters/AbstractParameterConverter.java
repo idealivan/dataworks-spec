@@ -150,7 +150,7 @@ public abstract class AbstractParameterConverter<Parameter extends AbstractParam
         }
     }
 
-    private List<DwNode> doConvert() throws IOException {
+    protected List<DwNode> doConvert() throws IOException {
         if (dwWorkflow.getNodes() == null) {
             dwWorkflow.setNodes(new ArrayList<>());
         }

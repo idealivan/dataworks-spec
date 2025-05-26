@@ -66,6 +66,7 @@ public class PaiflowYamlCode extends AbstractBaseCode implements YamlFormCode {
 
     public static final String PAIFLOW_CONF_KEY_ARGUMENT_PARAMETER = "parameters";
     private static final Pattern PAIFLOW_ARTIFACT_REGEX_PATTERN = Pattern.compile("\\{\\{pipelines\\.([^.]+)\\.outputs\\.artifacts\\.([^.]+)}}");
+    private static final String METADATA_PAIFLOW_KEY = "paiflow";
 
     private PaiflowScriptContent paiflowScriptContent;
 
@@ -116,7 +117,9 @@ public class PaiflowYamlCode extends AbstractBaseCode implements YamlFormCode {
         specObj.setVersion(SpecVersion.V_1_1_0.getLabel());
         specObj.setKind(SpecKind.PAIFLOW.getLabel());
         specObj.setContext(new SpecParserContext());
-        dwSpec.setMetadata(paiflowScriptContent.getPaiflowPipeline().getMetadata());
+        Map<String, Object> metadata = Maps.newHashMap();
+        metadata.put(METADATA_PAIFLOW_KEY, paiflowScriptContent.getPaiflowPipeline().getMetadata());
+        dwSpec.setMetadata(metadata);
         specObj.setSpec(dwSpec);
 
         // paiflow内部节点的依赖flow
@@ -239,7 +242,9 @@ public class PaiflowYamlCode extends AbstractBaseCode implements YamlFormCode {
         PaiflowArguments arguments = nodeSpec.getArguments();
         SpecScriptRuntime specScriptRuntime = new SpecScriptRuntime();
 
-        nodeObj.setMetadata(nodeMetadata);
+        Map<String, Object> metadata = Maps.newHashMap();
+        metadata.put(METADATA_PAIFLOW_KEY, nodeMetadata);
+        nodeObj.setMetadata(metadata);
         nodeObj.setScript(script);
 
         // 设置节点的名称，DataWorks的名称不支持-，需要转为下划线

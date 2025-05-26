@@ -464,6 +464,13 @@ public class FileDetailEntityAdapter implements DwNodeEntity {
         return DwNodeEntity.super.getCu();
     }
 
+    @Override
+    public String getStorageUri() {
+        return Optional.ofNullable(file)
+            .map(File::getStorageUri)
+            .orElse(null);
+    }
+
     private NodeContext toNodeContext(FileNodeInputOutputContext nodeInputOutputContext) {
         if (nodeInputOutputContext == null) {
             return null;

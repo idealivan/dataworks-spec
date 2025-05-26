@@ -193,6 +193,7 @@ public class NodeSpecAdapter extends SpecAdapter<DwNodeEntity, SpecNode> {
             art.setData(dep.getData());
             art.setArtifactType(ArtifactType.NODE_OUTPUT);
             art.setRefTableName(dep.getRefTableName());
+            art.setSourceType(dep.getSourceType());
             specDepend.setOutput(art);
             return specDepend;
         }).collect(Collectors.toList()));
@@ -206,6 +207,7 @@ public class NodeSpecAdapter extends SpecAdapter<DwNodeEntity, SpecNode> {
                     SpecNodeOutput art = new SpecNodeOutput();
                     art.setData(out);
                     art.setArtifactType(ArtifactType.NODE_OUTPUT);
+                    specDepend.setSourceType(art.getSourceType());
                     specDepend.setOutput(art);
                     return specDepend;
                 }).forEach(sp -> flowDepend.getDepends().add(sp));

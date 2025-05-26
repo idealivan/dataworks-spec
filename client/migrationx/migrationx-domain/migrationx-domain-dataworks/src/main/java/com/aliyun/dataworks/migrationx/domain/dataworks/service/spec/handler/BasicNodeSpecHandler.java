@@ -43,6 +43,7 @@ import com.aliyun.dataworks.common.spec.domain.enums.ArtifactType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRerunModeType;
+import com.aliyun.dataworks.common.spec.domain.enums.SourceType;
 import com.aliyun.dataworks.common.spec.domain.enums.TriggerType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableScopeType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableType;
@@ -352,6 +353,7 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
                 refNode.setOutput(o);
                 ref.setNode(refNode);
                 ref.setName(kv[1]);
+                ref.setInputName(inCtx.getParamName());
                 ref.setType(VariableType.NODE_OUTPUT);
                 ref.setScope(VariableScopeType.NODE_CONTEXT);
                 specVariable.setReferenceVariable(ref);
@@ -364,7 +366,9 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
 
         Optional.ofNullable(specNode.getScript()).ifPresent(scr -> {
             List<SpecVariable> parameters = new ArrayList<>(Optional.ofNullable(scr.getParameters()).orElse(new ArrayList<>()));
-            parameters.addAll(ListUtils.emptyIfNull(inputVariables).stream().map(v -> (SpecVariable)v).collect(Collectors.toList()));
+            if (ListUtils.emptyIfNull(parameters).stream().noneMatch(p -> VariableType.NO_KV_PAIR_EXPRESSION.equals(p.getType()))) {
+                parameters.addAll(ListUtils.emptyIfNull(inputVariables).stream().map(v -> (SpecVariable)v).collect(Collectors.toList()));
+            }
             scr.setParameters(parameters);
         });
         specNode.setInputs(ListUtils.emptyIfNull(inputVariables).stream()
@@ -493,6 +497,21 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
             a.setArtifactType(ArtifactType.NODE_OUTPUT);
             a.setData(out.getData());
             a.setRefTableName(out.getRefTableName());
+            Optional.ofNullable(out.getParseType()).map(IoParseType::getByCode).ifPresent(parseType -> {
+                switch (parseType) {
+                    case MANUAL:
+                    case MANUAL_SOURCE:
+                        a.setSourceType(SourceType.MANUAL);
+                        break;
+                    case SYSTEM:
+                    case SYSTEM_ASSIGN:
+                        a.setSourceType(SourceType.SYSTEM);
+                        break;
+                    case AUTO:
+                        a.setSourceType(SourceType.CODE_PARSE);
+                    default:
+                }
+            });
             a.setIsDefault(Objects.equals(IoParseType.SYSTEM.getCode(), out.getParseType()));
             return (T)a;
         }).collect(Collectors.toList());

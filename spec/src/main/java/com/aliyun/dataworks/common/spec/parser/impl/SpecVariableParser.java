@@ -25,6 +25,9 @@ import com.aliyun.dataworks.common.spec.annotation.SpecParser;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableScopeType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableType;
 import com.aliyun.dataworks.common.spec.domain.interfaces.LabelEnum;
+import com.aliyun.dataworks.common.spec.domain.noref.SpecDepend;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.exception.SpecErrorCode;
 import com.aliyun.dataworks.common.spec.exception.SpecException;
@@ -44,10 +47,13 @@ import org.apache.commons.lang3.StringUtils;
 public class SpecVariableParser implements Parser<SpecVariable> {
     private static final String KEY_TYPE = "type";
     private static final String KEY_SCOPE = "scope";
+    private static final String KEY_INPUT_NAME = "inputName";
     private static final String KEY_NAME = "name";
     private static final String KEY_NODE = "node";
     private static final String KEY_DESC = "description";
     private static final String KEY_REFERENCE_VARIABLE = "referenceVariable";
+    // compatible field 'referenceVariable' and 'from' with the same meaning
+    private static final String KEY_FROM_VARIABLE = "from";
     private static final String KEY_VALUE = "value";
     private static final String KEY_ID = "id";
 
@@ -66,6 +72,7 @@ public class SpecVariableParser implements Parser<SpecVariable> {
         String id = (String)variableMap.get(KEY_ID);
         SpecVariable variable = new SpecVariable();
         variable.setId(id);
+        variable.setInputName(StringUtils.defaultString((String)variableMap.get(KEY_INPUT_NAME), null));
         parseName(variableMap, variable);
         parseScope(variableMap, variable);
         variable.setType(Optional.ofNullable((VariableType)LabelEnum.getByLabel(VariableType.class, type))
@@ -74,7 +81,32 @@ public class SpecVariableParser implements Parser<SpecVariable> {
         variable.setDescription((String)variableMap.get(KEY_DESC));
         SpecDevUtil.setSpecObject(variable, KEY_NODE, variableMap.get(KEY_NODE), contextMeta);
         SpecDevUtil.setSpecObject(variable, KEY_REFERENCE_VARIABLE, variableMap.get(KEY_REFERENCE_VARIABLE), contextMeta);
+        if (variableMap.containsKey(KEY_FROM_VARIABLE)) {
+            //noinspection unchecked
+            processFromVariable(variable, (Map<String, Object>)variableMap.get(KEY_FROM_VARIABLE), contextMeta);
+        }
         return variable;
+    }
+
+    private void processFromVariable(SpecVariable variable, Map<String, Object> fromVariable, SpecParserContext contextMeta) {
+        SpecDevUtil.setSpecObject(variable, KEY_REFERENCE_VARIABLE, fromVariable, contextMeta);
+        if (variable.getReferenceVariable() == null) {
+            return;
+        }
+
+        SpecDepend node = new SpecDepend();
+        if (fromVariable.containsKey("nodeUuid")) {
+            SpecNode nodeId = new SpecNode();
+            nodeId.setId((String)fromVariable.get("nodeUuid"));
+            node.setNodeId(nodeId);
+        }
+        if (fromVariable.containsKey("nodeOutput")) {
+            SpecNodeOutput nodeOutput = new SpecNodeOutput();
+            nodeOutput.setData((String)fromVariable.get("nodeOutput"));
+            nodeOutput.setRefTableName((String)fromVariable.get("nodeName"));
+            node.setOutput(nodeOutput);
+        }
+        variable.getReferenceVariable().setNode(node);
     }
 
     private static void parseName(Map<String, Object> variableMap, SpecVariable variable) {

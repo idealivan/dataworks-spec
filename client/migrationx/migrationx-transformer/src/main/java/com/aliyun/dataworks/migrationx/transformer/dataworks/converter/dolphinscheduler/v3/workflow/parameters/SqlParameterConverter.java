@@ -114,6 +114,12 @@ public class SqlParameterConverter extends AbstractParameterConverter<SqlParamet
                 break;
             case ODPS_SQL:
                 type = "odps";
+                break;
+            case StarRocks:
+                type = "starrocks";
+                break;
+            default:
+                type = codeProgramType.getName();
         }
         if (connName != null) {
             SpecDatasource datasource = new SpecDatasource();

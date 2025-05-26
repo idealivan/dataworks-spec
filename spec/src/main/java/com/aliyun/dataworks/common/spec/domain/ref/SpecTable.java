@@ -41,4 +41,21 @@ public class SpecTable extends SpecArtifact {
     private Boolean isVisible;
     @EqualsAndHashCode.Include
     private SpecCalcEngine calcEngine;
+
+    /////////////////   数据目录   /////////////////
+
+    /**
+     * 引擎类型:ODPS/HOLO/STARROCKS/FLINK/EMR
+     */
+    private String engineType;
+
+    /**
+     * 实体类型：TABLE/VIEW/MATERIALIZED_VIEW
+     */
+    private String entityType;
+
+    /**
+     * 逻辑表UUID
+     */
+    private String logicTableUuid;
 }

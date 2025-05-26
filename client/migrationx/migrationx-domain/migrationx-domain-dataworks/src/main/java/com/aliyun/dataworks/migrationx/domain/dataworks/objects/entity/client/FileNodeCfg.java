@@ -54,6 +54,8 @@ public class FileNodeCfg {
     List<FileNodeInputOutput> inputList;
     Integer isAutoParse;
     Integer nodeType;
+    String cu;
+    String customImageId;
     Integer isStop;
     Date lastModifyTime;
     String lastModifyUser;

@@ -234,7 +234,9 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
                 }
 
                 return getKvParaValue();
-            }).orElse(getKvParaValue());
+            })
+            .or(() -> Optional.ofNullable(getKvParaValue()))
+            .orElse("");
     }
 
     private String getKvParaValue() {
