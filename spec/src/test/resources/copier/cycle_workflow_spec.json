@@ -1,0 +1,1259 @@
+{
+  "version": "1.1.0",
+  "kind": "CycleWorkflow",
+  "spec": {
+    "name": "workflow1",
+    "id": "7322159560488851894",
+    "type": "CycleWorkflow",
+    "owner": "1107550004253538",
+    "workflows": [
+      {
+        "script": {
+          "path": "克隆测试1/workflow1",
+          "runtime": {
+            "command": "WORKFLOW"
+          },
+          "id": "7975172041965086428"
+        },
+        "id": "7322159560488851894",
+        "trigger": {
+          "type": "Scheduler",
+          "cron": "00 00 00 * * ?",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "GMT+8",
+          "delaySeconds": 0
+        },
+        "strategy": {
+          "timeout": 0,
+          "instanceMode": "T+1",
+          "rerunMode": "Allowed",
+          "rerunTimes": 3,
+          "rerunInterval": 180000,
+          "failureStrategy": "Break",
+          "recurrenceType": "Normal"
+        },
+        "name": "workflow1",
+        "owner": "1107550004253538",
+        "citable": false,
+        "metadata": {
+          "owner": "1107550004253538",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "reg_upgrade0702",
+            "projectName": "reg_upgrade0702",
+            "projectId": "873483"
+          },
+          "ownerName": "dw_on_emr_qa3_testcloud_com",
+          "projectId": "873483"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "7322159560488851894",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "workflow1",
+              "isDefault": true
+            },
+            {
+              "data": "reg_upgrade0702.workflow1",
+              "artifactType": "NodeOutput",
+              "refTableName": "workflow1",
+              "isDefault": false
+            }
+          ]
+        },
+        "nodes": [
+          {
+            "recurrence": "Normal",
+            "id": "5338330707779726879",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/canshu1",
+              "runtime": {
+                "command": "PARAM_HUB",
+                "commandTypeId": 1115,
+                "cu": "0.25"
+              },
+              "id": "5242230255115979449"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "name": "canshu1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:22:29",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "5338330707779726879",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "canshu1",
+                  "isDefault": true
+                }
+              ],
+              "variables": [
+                {
+                  "artifactType": "Variable",
+                  "name": "cc1",
+                  "scope": "NodeContext",
+                  "type": "Constant",
+                  "value": "1111",
+                  "id": "5032838759640803314",
+                  "node": {
+                    "nodeId": "5338330707779726879",
+                    "output": "5338330707779726879"
+                  },
+                  "referenceVariable": {
+                    "artifactType": "Variable",
+                    "name": "cc1",
+                    "scope": "NodeContext",
+                    "type": "Constant",
+                    "value": "$[yyyymmdd]",
+                    "node": {
+                      "nodeId": "5338330707779726879",
+                      "output": "5338330707779726879",
+                      "refTableName": "canshu1"
+                    }
+                  }
+                },
+                {
+                  "artifactType": "Variable",
+                  "name": "pp1",
+                  "scope": "NodeContext",
+                  "type": "PassThrough",
+                  "value": "6513832219288700312:outputs",
+                  "id": "4637860600504521571",
+                  "node": {
+                    "nodeId": "5338330707779726879",
+                    "output": "5338330707779726879"
+                  },
+                  "referenceVariable": {
+                    "artifactType": "Variable",
+                    "name": "outputs",
+                    "scope": "NodeContext",
+                    "type": "NodeOutput",
+                    "value": "6513832219288700312:outputs",
+                    "node": {
+                      "output": "6513832219288700312"
+                    }
+                  }
+                },
+                {
+                  "artifactType": "Variable",
+                  "name": "vv1",
+                  "scope": "NodeContext",
+                  "type": "System",
+                  "value": "$[yyyymmdd]",
+                  "id": "8641711885350837009",
+                  "node": {
+                    "nodeId": "5338330707779726879",
+                    "output": "5338330707779726879"
+                  },
+                  "referenceVariable": {
+                    "artifactType": "Variable",
+                    "name": "vv1",
+                    "scope": "NodeContext",
+                    "type": "System",
+                    "value": "$[yyyymmdd]",
+                    "node": {
+                      "nodeId": "5338330707779726879",
+                      "output": "5338330707779726879",
+                      "refTableName": "canshu1"
+                    }
+                  }
+                }
+              ]
+            },
+            "param-hub": {
+              "variables": [
+                {
+                  "artifactType": "Variable",
+                  "name": "cc1",
+                  "scope": "NodeContext",
+                  "type": "Constant",
+                  "value": "1111",
+                  "description": "1111"
+                },
+                {
+                  "artifactType": "Variable",
+                  "name": "vv1",
+                  "scope": "NodeContext",
+                  "type": "System",
+                  "value": "$[yyyymmdd]",
+                  "description": "222"
+                },
+                {
+                  "artifactType": "Variable",
+                  "name": "pp1",
+                  "scope": "NodeContext",
+                  "type": "PassThrough",
+                  "value": "6513832219288700312:outputs",
+                  "description": "333",
+                  "referenceVariable": {
+                    "artifactType": "Variable",
+                    "name": "outputs",
+                    "scope": "NodeContext",
+                    "type": "NodeOutput",
+                    "node": {
+                      "output": "6513832219288700312"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "6513832219288700312",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "datasource": {
+              "name": "cx_0619_upgrade3",
+              "type": "odps"
+            },
+            "script": {
+              "language": "shell-script",
+              "path": "克隆测试1/workflow1/fuzhi1",
+              "runtime": {
+                "command": "CONTROLLER_ASSIGNMENT",
+                "commandTypeId": 1100,
+                "cu": "0.25"
+              },
+              "id": "5863123307236219781"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "name": "fuzhi1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:22:18",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "6513832219288700312",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "fuzhi1",
+                  "isDefault": true
+                }
+              ],
+              "variables": [
+                {
+                  "artifactType": "Variable",
+                  "name": "outputs",
+                  "scope": "NodeContext",
+                  "type": "NodeOutput",
+                  "value": "${outputs}",
+                  "id": "5492749353689274158",
+                  "node": {
+                    "nodeId": "6513832219288700312",
+                    "output": "6513832219288700312"
+                  },
+                  "referenceVariable": {
+                    "artifactType": "Variable",
+                    "name": "outputs",
+                    "scope": "NodeContext",
+                    "type": "NodeOutput",
+                    "value": "${outputs}",
+                    "node": {
+                      "nodeId": "6513832219288700312",
+                      "output": "6513832219288700312",
+                      "refTableName": "fuzhi1"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "6967419104287817143",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/dowhile1",
+              "runtime": {
+                "command": "CONTROLLER_CYCLE",
+                "commandTypeId": 1103,
+                "cu": "0.25"
+              },
+              "id": "8136368267035089658"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "name": "dowhile1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:30:49",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "6967419104287817143",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "dowhile1",
+                  "isDefault": true
+                }
+              ]
+            },
+            "do-while": {
+              "nodes": [
+                {
+                  "recurrence": "Normal",
+                  "id": "8753685442611405236",
+                  "timeout": 0,
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 0,
+                  "rerunInterval": 120000,
+                  "script": {
+                    "path": "克隆测试1/workflow1/dowhile1/cycle_start",
+                    "runtime": {
+                      "engine": "General",
+                      "command": "CONTROLLER_CYCLE_START",
+                      "commandTypeId": 1104
+                    },
+                    "id": "7431144782044582361"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "S_res_group_524257424564736_1751013862820",
+                    "resourceGroupId": "86214319"
+                  },
+                  "name": "cycle_start",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "reg_upgrade0702",
+                      "projectName": "reg_upgrade0702",
+                      "projectId": "873483"
+                    },
+                    "ownerName": "dw_on_emr_qa3_testcloud_com",
+                    "createTime": "2025-07-08 14:30:50",
+                    "projectId": "873483"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "8753685442611405236",
+                        "artifactType": "NodeOutput",
+                        "refTableName": "cycle_start",
+                        "isDefault": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "recurrence": "Normal",
+                  "id": "9059317057272391178",
+                  "timeout": 0,
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 3,
+                  "rerunInterval": 120000,
+                  "script": {
+                    "language": "shell-script",
+                    "path": "克隆测试1/workflow1/dowhile1/dowhileshlell1",
+                    "runtime": {
+                      "command": "DIDE_SHELL",
+                      "commandTypeId": 6,
+                      "cu": "0.25"
+                    },
+                    "id": "8435059025013826034"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "Serverless_res_group_524257424564736_732170872572480",
+                    "resourceGroupId": "86414319"
+                  },
+                  "name": "dowhileshlell1",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "reg_upgrade0702",
+                      "projectName": "reg_upgrade0702",
+                      "projectId": "873483"
+                    },
+                    "ownerName": "dw_on_emr_qa3_testcloud_com",
+                    "createTime": "2025-07-08 14:31:10",
+                    "projectId": "873483"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "9059317057272391178",
+                        "artifactType": "NodeOutput",
+                        "sourceType": "System",
+                        "refTableName": "dowhileshlell1",
+                        "isDefault": true
+                      }
+                    ]
+                  }
+                }
+              ],
+              "flow": [
+                {
+                  "nodeId": "7390215571950315272",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "9059317057272391178",
+                      "refTableName": "dowhileshlell1"
+                    }
+                  ]
+                },
+                {
+                  "nodeId": "9059317057272391178",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "8753685442611405236",
+                      "refTableName": "cycle_start"
+                    }
+                  ]
+                }
+              ],
+              "while": {
+                "recurrence": "Normal",
+                "id": "7390215571950315272",
+                "timeout": 0,
+                "instanceMode": "T+1",
+                "rerunMode": "Allowed",
+                "rerunTimes": 0,
+                "rerunInterval": 120000,
+                "datasource": {
+                  "name": "cx_0619_upgrade3",
+                  "type": "odps"
+                },
+                "script": {
+                  "language": "odps-sql",
+                  "path": "克隆测试1/workflow1/dowhile1/cycle_end",
+                  "runtime": {
+                    "engine": "General",
+                    "command": "CONTROLLER_CYCLE_END",
+                    "commandTypeId": 1105
+                  },
+                  "id": "7017239230406144126"
+                },
+                "runtimeResource": {
+                  "resourceGroup": "S_res_group_524257424564736_1751013862820",
+                  "resourceGroupId": "86214319"
+                },
+                "name": "cycle_end",
+                "owner": "1107550004253538",
+                "metadata": {
+                  "owner": "1107550004253538",
+                  "tenantId": "524257424564736",
+                  "project": {
+                    "projectIdentifier": "reg_upgrade0702",
+                    "projectName": "reg_upgrade0702",
+                    "projectId": "873483"
+                  },
+                  "ownerName": "dw_on_emr_qa3_testcloud_com",
+                  "createTime": "2025-07-08 14:30:51",
+                  "projectId": "873483"
+                },
+                "inputs": {},
+                "outputs": {
+                  "nodeOutputs": [
+                    {
+                      "data": "7390215571950315272",
+                      "artifactType": "NodeOutput",
+                      "refTableName": "cycle_end",
+                      "isDefault": true
+                    }
+                  ]
+                }
+              },
+              "maxIterations": 128
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "7514068863288175700",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/join1",
+              "runtime": {
+                "command": "CONTROLLER_JOIN",
+                "commandTypeId": 1102,
+                "cu": "0.25"
+              },
+              "id": "5767037003868453280"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "join": {
+              "logic": {
+                "expression": ""
+              }
+            },
+            "name": "join1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:32:34",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "7514068863288175700",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "join1",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "7525339864785788978",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/branch",
+              "runtime": {
+                "command": "CONTROLLER_BRANCH",
+                "commandTypeId": 1101,
+                "cu": "0.25"
+              },
+              "id": "8159060808803814353"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "branch": {
+              "branches": [
+                {
+                  "when": "'x' in '${in1}'",
+                  "output": {
+                    "data": "reg_upgrade0702.x_in_input_true",
+                    "artifactType": "NodeOutput"
+                  }
+                },
+                {
+                  "when": "'x' not in '${in1}'",
+                  "output": {
+                    "data": "reg_upgrade0702.x_in_input_false",
+                    "artifactType": "NodeOutput"
+                  }
+                }
+              ]
+            },
+            "name": "branch",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:22:43",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "7525339864785788978",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "branch",
+                  "isDefault": true
+                },
+                {
+                  "data": "reg_upgrade0702.x_in_input_false",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "branch"
+                },
+                {
+                  "data": "reg_upgrade0702.x_in_input_true",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "branch"
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "8137756605479727869",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/virtualroot1",
+              "runtime": {
+                "command": "VIRTUAL",
+                "commandTypeId": 99,
+                "cu": "0"
+              },
+              "id": "5642630843889508218"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "group_524257424564736",
+              "resourceGroupId": "50414322"
+            },
+            "name": "virtualroot1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:22:02",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8137756605479727869",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "virtualroot1",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "8769231017176741459",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/foreach1",
+              "runtime": {
+                "command": "CONTROLLER_TRAVERSE",
+                "commandTypeId": 1106,
+                "cu": "0.25"
+              },
+              "id": "7340600956607365008",
+              "parameters": [
+                {
+                  "artifactType": "Variable",
+                  "name": "loopDataArray",
+                  "scope": "NodeContext",
+                  "type": "PassThrough",
+                  "value": "6513832219288700312:outputs",
+                  "referenceVariable": {
+                    "artifactType": "Variable",
+                    "name": "outputs",
+                    "scope": "NodeContext",
+                    "type": "NodeOutput",
+                    "value": "6513832219288700312:outputs",
+                    "node": {
+                      "output": "6513832219288700312"
+                    }
+                  }
+                }
+              ]
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "name": "foreach1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:26:59",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {
+              "variables": [
+                {
+                  "inputName": "loopDataArray",
+                  "artifactType": "Variable",
+                  "name": "pp1",
+                  "scope": "NodeContext",
+                  "type": "PassThrough",
+                  "value": "6513832219288700312:outputs",
+                  "id": "4637860600504521571",
+                  "node": {
+                    "nodeId": "5338330707779726879",
+                    "output": "5338330707779726879",
+                    "refTableName": "canshu1"
+                  }
+                }
+              ]
+            },
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8769231017176741459",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "foreach1",
+                  "isDefault": true
+                }
+              ]
+            },
+            "for-each": {
+              "nodes": [
+                {
+                  "recurrence": "Normal",
+                  "id": "7718934970161365810",
+                  "timeout": 0,
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 0,
+                  "rerunInterval": 120000,
+                  "script": {
+                    "path": "克隆测试1/workflow1/foreach1/traverse_start",
+                    "runtime": {
+                      "engine": "General",
+                      "command": "CONTROLLER_TRAVERSE_START",
+                      "commandTypeId": 1107
+                    },
+                    "id": "7687213467293107816"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "group_524257424564736",
+                    "resourceGroupId": "50414322"
+                  },
+                  "name": "traverse_start",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "reg_upgrade0702",
+                      "projectName": "reg_upgrade0702",
+                      "projectId": "873483"
+                    },
+                    "ownerName": "dw_on_emr_qa3_testcloud_com",
+                    "createTime": "2025-07-08 14:27:00",
+                    "projectId": "873483"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "7718934970161365810",
+                        "artifactType": "NodeOutput",
+                        "refTableName": "traverse_start",
+                        "isDefault": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "recurrence": "Normal",
+                  "id": "8072948259224338063",
+                  "timeout": 0,
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 3,
+                  "rerunInterval": 120000,
+                  "script": {
+                    "language": "shell-script",
+                    "path": "克隆测试1/workflow1/foreach1/shell1",
+                    "runtime": {
+                      "command": "DIDE_SHELL",
+                      "commandTypeId": 6,
+                      "cu": "0.25"
+                    },
+                    "id": "7286160796341539994"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "Serverless_res_group_524257424564736_732170872572480",
+                    "resourceGroupId": "86414319"
+                  },
+                  "name": "shell1",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "reg_upgrade0702",
+                      "projectName": "reg_upgrade0702",
+                      "projectId": "873483"
+                    },
+                    "ownerName": "dw_on_emr_qa3_testcloud_com",
+                    "createTime": "2025-07-08 14:27:35",
+                    "projectId": "873483"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "8072948259224338063",
+                        "artifactType": "NodeOutput",
+                        "sourceType": "System",
+                        "refTableName": "shell1",
+                        "isDefault": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "recurrence": "Normal",
+                  "id": "8214240151366497930",
+                  "timeout": 0,
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 0,
+                  "rerunInterval": 120000,
+                  "script": {
+                    "path": "克隆测试1/workflow1/foreach1/traverse_end",
+                    "runtime": {
+                      "engine": "General",
+                      "command": "CONTROLLER_TRAVERSE_END",
+                      "commandTypeId": 1108
+                    },
+                    "id": "4982999542889521734"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "group_524257424564736",
+                    "resourceGroupId": "50414322"
+                  },
+                  "name": "traverse_end",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "reg_upgrade0702",
+                      "projectName": "reg_upgrade0702",
+                      "projectId": "873483"
+                    },
+                    "ownerName": "dw_on_emr_qa3_testcloud_com",
+                    "createTime": "2025-07-08 14:27:00",
+                    "projectId": "873483"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "8214240151366497930",
+                        "artifactType": "NodeOutput",
+                        "refTableName": "traverse_end",
+                        "isDefault": true
+                      }
+                    ]
+                  }
+                }
+              ],
+              "flow": [
+                {
+                  "nodeId": "8072948259224338063",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "7718934970161365810",
+                      "refTableName": "traverse_start"
+                    }
+                  ]
+                },
+                {
+                  "nodeId": "8214240151366497930",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "8072948259224338063",
+                      "refTableName": "shell1"
+                    }
+                  ]
+                }
+              ],
+              "maxIterations": 128
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "8841665445732735117",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "language": "shell-script",
+              "path": "克隆测试1/workflow1/x_not_in_input_shell1",
+              "runtime": {
+                "command": "DIDE_SHELL",
+                "commandTypeId": 6,
+                "cu": "0.25"
+              },
+              "id": "6938272539514007629"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "name": "x_not_in_input_shell1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:25:15",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8841665445732735117",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "x_not_in_input_shell1",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "9221517664676278215",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/pyhon1",
+              "runtime": {
+                "command": "PYTHON",
+                "commandTypeId": 1322,
+                "cu": "0.5"
+              },
+              "id": "7826914063896442215"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_732170872572480",
+              "resourceGroupId": "86414319"
+            },
+            "name": "pyhon1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:24:49",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "9221517664676278215",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "pyhon1",
+                  "isDefault": true
+                }
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "nodeId": "5338330707779726879",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "6513832219288700312",
+                "sourceType": "Manual",
+                "refTableName": "fuzhi1"
+              }
+            ]
+          },
+          {
+            "nodeId": "6513832219288700312",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "8137756605479727869",
+                "sourceType": "Manual",
+                "refTableName": "virtualroot1"
+              }
+            ]
+          },
+          {
+            "nodeId": "6967419104287817143",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "5338330707779726879",
+                "sourceType": "Manual",
+                "refTableName": "canshu1"
+              }
+            ]
+          },
+          {
+            "nodeId": "7514068863288175700",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "9221517664676278215",
+                "sourceType": "Manual",
+                "refTableName": "pyhon1"
+              },
+              {
+                "type": "Normal",
+                "output": "8841665445732735117",
+                "sourceType": "Manual",
+                "refTableName": "x_not_in_input_shell1"
+              }
+            ]
+          },
+          {
+            "nodeId": "7525339864785788978",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "5338330707779726879",
+                "sourceType": "Manual",
+                "refTableName": "canshu1"
+              }
+            ]
+          },
+          {
+            "nodeId": "8769231017176741459",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "5338330707779726879",
+                "sourceType": "Manual",
+                "refTableName": "canshu1"
+              }
+            ]
+          },
+          {
+            "nodeId": "8841665445732735117",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "reg_upgrade0702.x_in_input_false",
+                "sourceType": "Manual",
+                "refTableName": "branch"
+              }
+            ]
+          },
+          {
+            "nodeId": "9221517664676278215",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "reg_upgrade0702.x_in_input_true",
+                "sourceType": "Manual",
+                "refTableName": "branch"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

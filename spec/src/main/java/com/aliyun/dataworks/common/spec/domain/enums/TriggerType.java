@@ -22,12 +22,10 @@ import com.aliyun.dataworks.common.spec.domain.interfaces.LabelEnum;
  * @date 2023/7/4
  */
 public enum TriggerType implements LabelEnum {
-
     /**
      * Periodic scheduling trigger
      */
     SCHEDULER("Scheduler"),
-
     /**
      * Manual trigger
      */
@@ -39,7 +37,11 @@ public enum TriggerType implements LabelEnum {
     /**
      * No trigger
      */
-    NONE("None");
+    NONE("None"),
+    /**
+     * Custom trigger
+     */
+    CUSTOM("Custom");
 
     private final String label;
 

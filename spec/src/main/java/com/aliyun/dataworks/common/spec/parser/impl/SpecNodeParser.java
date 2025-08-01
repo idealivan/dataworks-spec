@@ -65,6 +65,7 @@ public class SpecNodeParser implements Parser<SpecNode> {
         ListUtils.emptyIfNull(specNode.getOutputs()).stream()
             .filter(out -> out instanceof SpecVariable)
             .map(out -> (SpecVariable)out)
+            .filter(out -> out.getNode() == null)
             .forEach(out -> {
                 SpecDepend node = new SpecDepend();
                 node.setNodeId(specNode);

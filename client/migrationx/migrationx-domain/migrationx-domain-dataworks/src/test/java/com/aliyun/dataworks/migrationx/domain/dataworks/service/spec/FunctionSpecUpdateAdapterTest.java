@@ -55,6 +55,7 @@ public class FunctionSpecUpdateAdapterTest {
             + "\t\t\t\t\t\"path\":\"test/path/test_file_name.jar\",\n"
             + "\t\t\t\t\t\"runtime\":{\n"
             + "\t\t\t\t\t\t\"command\":\"ODPS_FUNCTION\",\n"
+            + "\t\t\t\t\t\t\"commandTypeId\":17,\n"
             + "\t\t\t\t\t\t\"engine\":\"MaxCompute\"\n"
             + "\t\t\t\t\t}\n"
             + "\t\t\t\t},\n"

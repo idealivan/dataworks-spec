@@ -195,6 +195,7 @@ public class NodeSpecAdapter extends SpecAdapter<DwNodeEntity, SpecNode> {
             art.setRefTableName(dep.getRefTableName());
             art.setSourceType(dep.getSourceType());
             specDepend.setOutput(art);
+            specDepend.setSourceType(dep.getSourceType());
             return specDepend;
         }).collect(Collectors.toList()));
 

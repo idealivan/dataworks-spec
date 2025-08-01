@@ -31,6 +31,12 @@ public enum SpecKind implements LabelEnum {
      * Manual workflow
      */
     MANUAL_WORKFLOW("ManualWorkflow"),
+
+    /**
+     * TriggerWorkflow
+     */
+    TRIGGER_WORKFLOW("TriggerWorkflow"),
+
     /**
      * Single Manual Node
      */
@@ -87,7 +93,11 @@ public enum SpecKind implements LabelEnum {
     /**
      * Workflow，新Workflow
      */
-    WORKFLOW("Workflow");
+    WORKFLOW("Workflow"),
+    /**
+     * 数据集成任务
+     */
+    DATA_INTEGRATION_JOB("DataIntegrationJob");
 
     private final String label;
 

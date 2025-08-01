@@ -75,7 +75,7 @@ public class SpecUtil {
         if (writer == null) {
             throw new SpecException(SpecErrorCode.PARSER_LOAD_ERROR, "no available registered writer found for type: " + specification.getClass());
         }
-        return JSON.toJSONString(writer.write(specification, context), Feature.PrettyFormat, Feature.WriteEnumsUsingName);
+        return JSON.toJSONString(writer.write(specification, context), Feature.PrettyFormat, Feature.WriteEnumsUsingName, Feature.LargeObject);
     }
 
     @SuppressWarnings("unchecked")

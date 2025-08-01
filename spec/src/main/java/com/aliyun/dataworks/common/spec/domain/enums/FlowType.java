@@ -33,6 +33,10 @@ public enum FlowType implements LabelEnum {
      * ManualWorkflow
      */
     MANUAL_WORKFLOW("ManualWorkflow"),
+    /**
+     * TriggerWorkflow
+     */
+    TRIGGER_WORKFLOW("TriggerWorkflow"),
     ;
 
     private final String label;

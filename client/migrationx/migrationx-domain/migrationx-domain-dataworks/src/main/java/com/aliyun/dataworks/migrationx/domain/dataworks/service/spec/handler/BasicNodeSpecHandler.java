@@ -340,7 +340,7 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         List<Input> inputVariables = ListUtils.emptyIfNull(inputCtxList).stream().map(inCtx -> {
             SpecVariable specVariable = new SpecVariable();
             specVariable.setScope(VariableScopeType.NODE_CONTEXT);
-            specVariable.setType(convertParamTypeToVariableType(inCtx.getParamType()));
+            specVariable.setType(convertParamTypeToVariableType(inCtx));
             specVariable.setName(inCtx.getParamName());
             specVariable.setDescription(inCtx.getDescription());
             String[] kv = StringUtils.split(inCtx.getParamValue(), ":");
@@ -380,7 +380,7 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         List<Output> outputVariables = ListUtils.emptyIfNull(outputCtxList).stream().map(outCtx -> {
             SpecVariable specVariable = new SpecVariable();
             specVariable.setScope(VariableScopeType.NODE_CONTEXT);
-            specVariable.setType(convertParamTypeToVariableType(outCtx.getParamType()));
+            specVariable.setType(convertParamTypeToVariableType(outCtx));
             specVariable.setName(outCtx.getParamName());
             specVariable.setValue(outCtx.getParamValue());
             specVariable.setNode(node);
@@ -389,6 +389,13 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         }).collect(Collectors.toList());
         specNode.setOutputs(outputVariables);
         specNode.getOutputs().addAll(getNodeOutputs(dmNodeBO, context));
+
+        // complete variables.node.output
+        List<SpecNodeOutput> nodeOutputs = ListUtils.emptyIfNull(specNode.getOutputs()).stream()
+            .filter(o -> o instanceof SpecNodeOutput).map(o -> (SpecNodeOutput)o).collect(Collectors.toList());
+        node.setOutput(nodeOutputs.stream()
+            .filter(o -> BooleanUtils.isTrue(o.getIsDefault())).findFirst()
+            .orElse(ListUtils.emptyIfNull(nodeOutputs).stream().findFirst().orElse(null)));
 
         // 进行排序，这样每次的spec里的input/output顺序是稳定的
         sortNodeInputOutput(specNode.getInputs());
@@ -413,7 +420,12 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         }));
     }
 
-    private static VariableType convertParamTypeToVariableType(Integer paramType) {
+    private VariableType convertParamTypeToVariableType(NodeContext param) {
+        if (param == null) {
+            return VariableType.CONSTANT;
+        }
+
+        Integer paramType = param.getParamType();
         if (paramType == null) {
             return VariableType.CONSTANT;
         }
@@ -421,6 +433,9 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         if (1 == paramType) {
             return VariableType.CONSTANT;
         } else if (2 == paramType) {
+            if (IoParseType.MANUAL.getCode().equals(param.getParseType())) {
+                return VariableType.SYSTEM;
+            }
             return VariableType.NODE_OUTPUT;
         } else if (3 == paramType) {
             return VariableType.PASS_THROUGH;

@@ -289,12 +289,25 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
     @Override
     public Integer getNodeType() {
         if (delegate.getObject() instanceof SpecWorkflow) {
-            return Optional.ofNullable(((SpecWorkflow)delegate.getObject()).getStrategy()).map(SpecScheduleStrategy::getRecurrenceType)
+            // not scheduler type trigger workflow, means TriggerWorkflow
+            if (((SpecWorkflow)delegate.getObject()).getTrigger() != null
+                && TriggerType.CUSTOM.equals(((SpecWorkflow)delegate.getObject()).getTrigger().getType())) {
+                return NODE_TYPE_MANUAL;
+            }
+
+            return Optional.ofNullable(((SpecWorkflow)delegate.getObject()).getStrategy())
+                .map(SpecScheduleStrategy::getRecurrenceType)
                 .map(DataWorksNodeAdapter::convertRecurrenceType)
                 .orElse(null);
         }
 
         SpecNode specNode = (SpecNode)delegate.getObject();
+        // not scheduler type trigger node, means node in TriggerWorkflow
+        if (((SpecNode)delegate.getObject()).getTrigger() != null
+            && TriggerType.CUSTOM.equals(((SpecNode)delegate.getObject()).getTrigger().getType())) {
+            return NODE_TYPE_MANUAL;
+        }
+
         if (Optional.ofNullable(specNode.getTrigger()).map(SpecTrigger::getType).map(TriggerType.MANUAL::equals).orElse(false)) {
             return NODE_TYPE_MANUAL;
         }
@@ -358,5 +371,15 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
     @Override
     public Context getContext() {
         return this.context;
+    }
+
+    @Override
+    public String getQuota() {
+        return Optional.ofNullable(delegate.getScript())
+            .map(SpecScript::getRuntime)
+            .map(SpecScriptRuntime::getMaxComputeConf)
+            .map(conf -> conf.get("quota"))
+            .map(String::valueOf)
+            .orElse(null);
     }
 }

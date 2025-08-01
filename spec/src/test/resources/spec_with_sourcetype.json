@@ -1,0 +1,473 @@
+{
+  "version": "1.1.0",
+  "kind": "ManualWorkflow",
+  "spec": {
+    "name": "workflow1",
+    "id": "5986045913996004866",
+    "type": "ManualWorkflow",
+    "owner": "1107550004253538",
+    "nodes": [
+      {
+        "id": "6015062126715695745",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "datasource": {
+          "name": "test_00011",
+          "type": "odps"
+        },
+        "script": {
+          "language": "shell-script",
+          "path": "test1/workflow1/assign1",
+          "runtime": {
+            "command": "CONTROLLER_ASSIGNMENT",
+            "commandTypeId": 1100,
+            "cu": "0.25"
+          },
+          "content": "echo '123445'",
+          "id": "8814763819676900703"
+        },
+        "trigger": {
+          "type": "Manual",
+          "timezone": "Asia/Shanghai"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "resourceGroupId": "1000008200005"
+        },
+        "name": "assign1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "5986045913996004866"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-05-28 17:51:46",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "yongxunQA_emr_chengdu1",
+            "projectName": "咏寻QA_emr成都回归项目",
+            "projectId": "3159"
+          },
+          "projectId": "3159"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "6015062126715695745",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "assign1",
+              "isDefault": true
+            },
+            {
+              "data": "yongxunQA_emr_chengdu1.assign1",
+              "artifactType": "NodeOutput",
+              "refTableName": "assign1",
+              "isDefault": false
+            }
+          ],
+          "variables": [
+            {
+              "artifactType": "Variable",
+              "name": "outputs",
+              "scope": "NodeContext",
+              "type": "NodeOutput",
+              "value": "${outputs}",
+              "id": "7152190145669120918",
+              "node": {
+                "nodeId": "6015062126715695745",
+                "output": "6015062126715695745"
+              },
+              "referenceVariable": {
+                "artifactType": "Variable",
+                "name": "outputs",
+                "scope": "NodeContext",
+                "type": "NodeOutput",
+                "value": "${outputs}",
+                "node": {
+                  "nodeId": "6015062126715695745",
+                  "output": "6015062126715695745",
+                  "refTableName": "assign1"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "6123419979096480467",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "python3",
+          "path": "test1/workflow1/python1",
+          "runtime": {
+            "command": "PYTHON",
+            "commandTypeId": 1322,
+            "cu": "0.5"
+          },
+          "content": "print(\"dddd\", \"${input1}\")",
+          "id": "7059571435851351161"
+        },
+        "trigger": {
+          "type": "Manual",
+          "timezone": "Asia/Shanghai"
+        },
+        "name": "python1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "5986045913996004866"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-05-22 20:21:24",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "yongxunQA_emr_chengdu1",
+            "projectName": "咏寻QA_emr成都回归项目",
+            "projectId": "3159"
+          },
+          "projectId": "3159"
+        },
+        "inputs": {
+          "variables": [
+            {
+              "inputName": "input1",
+              "artifactType": "Variable",
+              "name": "outputs",
+              "scope": "NodeContext",
+              "type": "NodeOutput",
+              "value": "${outputs}",
+              "id": "7152190145669120918",
+              "node": {
+                "nodeId": "6015062126715695745",
+                "output": "6015062126715695745",
+                "refTableName": "assign1"
+              }
+            }
+          ]
+        },
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "6123419979096480467",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "python1",
+              "isDefault": true
+            },
+            {
+              "data": "yongxunQA_emr_chengdu1.python1",
+              "artifactType": "NodeOutput",
+              "refTableName": "python1",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "7343470073706653895",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "path": "test1/workflow1/virtual_root1",
+          "runtime": {
+            "command": "VIRTUAL",
+            "commandTypeId": 99,
+            "cu": "0"
+          },
+          "content": "虚拟节点VIRTUAL",
+          "id": "6480020109302364332"
+        },
+        "trigger": {
+          "type": "Manual",
+          "timezone": "Asia/Shanghai"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "resourceGroupId": "1000008200005"
+        },
+        "name": "virtual_root1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "5986045913996004866"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-05-22 20:21:07",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "yongxunQA_emr_chengdu1",
+            "projectName": "咏寻QA_emr成都回归项目",
+            "projectId": "3159"
+          },
+          "projectId": "3159"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "7343470073706653895",
+              "artifactType": "NodeOutput",
+              "refTableName": "virtual_root1",
+              "isDefault": true
+            },
+            {
+              "data": "yongxunQA_emr_chengdu1.virtual_root1",
+              "artifactType": "NodeOutput",
+              "refTableName": "virtual_root1",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "8406086768883855262",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "path": "test1/workflow1/paidlc1",
+          "runtime": {
+            "command": "PAI_DLC",
+            "commandTypeId": 1119,
+            "cu": "0.25"
+          },
+          "content": "echo dlc, '${input2}'",
+          "id": "5149969427993799653"
+        },
+        "trigger": {
+          "type": "Manual",
+          "timezone": "Asia/Shanghai"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "resourceGroupId": "1000008200005"
+        },
+        "name": "paidlc1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "5986045913996004866"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-05-22 20:21:15",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "yongxunQA_emr_chengdu1",
+            "projectName": "咏寻QA_emr成都回归项目",
+            "projectId": "3159"
+          },
+          "projectId": "3159"
+        },
+        "inputs": {
+          "variables": [
+            {
+              "inputName": "input2",
+              "artifactType": "Variable",
+              "name": "outputs",
+              "scope": "NodeContext",
+              "type": "NodeOutput",
+              "value": "${outputs}",
+              "id": "7152190145669120918",
+              "node": {
+                "nodeId": "6015062126715695745",
+                "output": "6015062126715695745",
+                "refTableName": "assign1"
+              }
+            }
+          ]
+        },
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8406086768883855262",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "paidlc1",
+              "isDefault": true
+            },
+            {
+              "data": "yongxunQA_emr_chengdu1.paidlc1",
+              "artifactType": "NodeOutput",
+              "sourceType": "Manual",
+              "refTableName": "paidlc1",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "8540823129056658410",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "shell-script",
+          "path": "test1/workflow1/shell1",
+          "runtime": {
+            "command": "DIDE_SHELL",
+            "commandTypeId": 6,
+            "cu": "0.25"
+          },
+          "content": "#!/bin/bash\n#********************************************************************#\n##author:dw_on_emr_qa3@test.aliyunid.com\n##create time:2025-05-22 20:21:35\n#********************************************************************#\n\necho shell, '${input3}', $1",
+          "id": "8857317007398745841"
+        },
+        "trigger": {
+          "type": "Manual",
+          "timezone": "Asia/Shanghai"
+        },
+        "runtimeResource": {
+          "resourceGroup": "S_res_group_524257424564736_1744285042639",
+          "resourceGroupId": "1000025200015"
+        },
+        "name": "shell1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "5986045913996004866"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-05-22 20:21:35",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "yongxunQA_emr_chengdu1",
+            "projectName": "咏寻QA_emr成都回归项目",
+            "projectId": "3159"
+          },
+          "projectId": "3159"
+        },
+        "inputs": {
+          "variables": [
+            {
+              "inputName": "input3",
+              "artifactType": "Variable",
+              "name": "outputs",
+              "scope": "NodeContext",
+              "type": "NodeOutput",
+              "value": "${outputs}",
+              "id": "7152190145669120918",
+              "node": {
+                "nodeId": "6015062126715695745",
+                "output": "6015062126715695745",
+                "refTableName": "assign1"
+              }
+            }
+          ]
+        },
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8540823129056658410",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "shell1",
+              "isDefault": true
+            },
+            {
+              "data": "yongxunQA_emr_chengdu1.shell1",
+              "artifactType": "NodeOutput",
+              "refTableName": "shell1",
+              "isDefault": false
+            }
+          ]
+        }
+      }
+    ],
+    "flow": [
+      {
+        "nodeId": "6015062126715695745",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "7343470073706653895",
+            "sourceType": "Manual",
+            "refTableName": "virtual_root1"
+          }
+        ]
+      },
+      {
+        "nodeId": "6123419979096480467",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "6015062126715695745",
+            "sourceType": "CodeParse",
+            "refTableName": "assign1"
+          },
+          {
+            "type": "Normal",
+            "output": "6015062126715695745",
+            "sourceType": "System",
+            "refTableName": "assign1"
+          }
+        ]
+      },
+      {
+        "nodeId": "8406086768883855262",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "6015062126715695745",
+            "refTableName": "assign1"
+          },
+          {
+            "type": "Normal",
+            "output": "6015062126715695745",
+            "refTableName": "assign1"
+          }
+        ]
+      },
+      {
+        "nodeId": "8540823129056658410",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "6015062126715695745",
+            "refTableName": "assign1"
+          },
+          {
+            "type": "Normal",
+            "output": "6015062126715695745",
+            "refTableName": "assign1"
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "artifactType": "Variable",
+        "name": "flowpar1",
+        "scope": "Workflow",
+        "type": "System",
+        "value": "flowpar1"
+      },
+      {
+        "artifactType": "Variable",
+        "name": "flowpar2",
+        "scope": "Workflow",
+        "type": "System",
+        "value": "flowpar2"
+      }
+    ]
+  }
+}

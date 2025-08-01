@@ -133,9 +133,11 @@ public class ResourceSpecUpdateAdapter {
         Optional.ofNullable(dwNode.getType())
             .map(CodeProgramType::getNodeTypeByName)
             .ifPresent(codeProgramType -> {
-                runtime.setCommand(codeProgramType.getName());
+                runtime.setCommand(codeProgramType.name());
                 runtime.setEngine(codeProgramType.getCalcEngineType().getLabel());
             });
+        Optional.ofNullable(dwNode.getTypeId())
+            .ifPresent(runtime::setCommandTypeId);
 
         Optional.ofNullable(dwNode.getCu())
             .ifPresent(runtime::setCu);

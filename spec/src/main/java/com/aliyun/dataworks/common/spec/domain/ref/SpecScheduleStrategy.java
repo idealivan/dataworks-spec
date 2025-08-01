@@ -19,6 +19,7 @@ import com.aliyun.dataworks.common.spec.domain.enums.FailureStrategy;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRerunModeType;
+import com.aliyun.dataworks.common.spec.domain.enums.PriorityWeightStrategy;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -32,6 +33,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class SpecScheduleStrategy {
     private Integer priority;
+
+    private PriorityWeightStrategy priorityWeightStrategy;
+
+    /**
+     * 最大内部节点运行实例的并发总数限制
+     */
+    private Integer maxInternalConcurrency;
 
     private Integer timeout;
 

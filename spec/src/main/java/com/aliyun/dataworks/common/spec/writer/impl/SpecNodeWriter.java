@@ -60,6 +60,7 @@ public class SpecNodeWriter extends DefaultJsonObjectWriter<SpecNode> {
     @Override
     public JSONObject write(SpecNode specObj, SpecWriterContext context) {
         JSONObject json = writeJsonObject(specObj, true);
+        json.put("datasets", writeByWriter(specObj.getDatasets()));
 
         JSONObject inputs = writeIo(specObj.getInputs());
         json.put("inputs", inputs);

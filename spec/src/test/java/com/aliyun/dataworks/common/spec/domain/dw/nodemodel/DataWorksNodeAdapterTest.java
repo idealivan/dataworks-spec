@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -34,12 +35,14 @@ import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
+import com.aliyun.dataworks.common.spec.domain.enums.TriggerType;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecDepend;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScheduleStrategy;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponentParameter;
@@ -1066,6 +1069,7 @@ public class DataWorksNodeAdapterTest {
         sparkConf.put("spark.executor.cores", 4);
         runtime.setSparkConf(sparkConf);
         runtime.setCommand(CodeProgramType.ADB_SPARK.name());
+        runtime.setMaxComputeConf(Map.of("quota", "123"));
         script.setRuntime(runtime);
         JSONObject sparkSubmitCode = new JSONObject();
         sparkSubmitCode.put("command", "spark-submit --master yarn");
@@ -1083,6 +1087,7 @@ public class DataWorksNodeAdapterTest {
         Assert.assertEquals("4", advanceSettings.getString("spark.executor.cores"));
         Assert.assertEquals(4, (int)advanceSettings.getInteger("spark.executor.cores"));
         Assert.assertEquals("spark-submit --master yarn", dataWorksNodeAdapter.getCode());
+        Assert.assertEquals("123", dataWorksNodeAdapter.getQuota());
     }
 
     @Test
@@ -1101,5 +1106,38 @@ public class DataWorksNodeAdapterTest {
         node.getScript().setParameters(null);
         DataWorksNodeAdapter adapter = new DataWorksNodeAdapter(specObj, node);
         Assert.assertEquals("", adapter.getParaValue());
+    }
+
+    @Test
+    public void testNodeType() throws IOException {
+        Specification<DataWorksWorkflowSpec> specObj = new Specification<>();
+        DataWorksWorkflowSpec dwSpec = new DataWorksWorkflowSpec();
+        SpecWorkflow triggerWorkflow = new SpecWorkflow();
+        SpecTrigger trigger = new SpecTrigger();
+        trigger.setType(TriggerType.CUSTOM);
+        triggerWorkflow.setTrigger(trigger);
+        triggerWorkflow.setStrategy(new SpecScheduleStrategy());
+        triggerWorkflow.getStrategy().setRecurrenceType(NodeRecurrenceType.NORMAL);
+        SpecNode node = new SpecNode();
+        node.setTrigger(trigger);
+        triggerWorkflow.setNodes(List.of(node));
+        dwSpec.setWorkflows(List.of(triggerWorkflow));
+        specObj.setSpec(dwSpec);
+
+        DataWorksNodeAdapter workflowAdapter = new DataWorksNodeAdapter(specObj, triggerWorkflow);
+        Assert.assertEquals(1, (int)workflowAdapter.getNodeType());
+
+        DataWorksNodeAdapter nodeAdapter = new DataWorksNodeAdapter(specObj, node);
+        Assert.assertEquals(1, (int)nodeAdapter.getNodeType());
+
+        trigger.setType(TriggerType.SCHEDULER);
+        Assert.assertEquals(0, (int)workflowAdapter.getNodeType());
+
+        trigger.setType(TriggerType.MANUAL);
+        Assert.assertEquals(1, (int)nodeAdapter.getNodeType());
+
+        trigger.setType(TriggerType.SCHEDULER);
+        node.setRecurrence(NodeRecurrenceType.PAUSE);
+        Assert.assertEquals(2, (int)nodeAdapter.getNodeType());
     }
 }

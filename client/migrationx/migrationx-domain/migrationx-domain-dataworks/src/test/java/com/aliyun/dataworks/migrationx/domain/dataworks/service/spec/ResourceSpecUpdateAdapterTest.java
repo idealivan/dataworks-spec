@@ -52,6 +52,7 @@ public class ResourceSpecUpdateAdapterTest {
             + "\t\t\t\t\t\"path\":\"test/path/test_file_name.jar\",\n"
             + "\t\t\t\t\t\"runtime\":{\n"
             + "\t\t\t\t\t\t\"command\":\"ODPS_SQL\",\n"
+            + "\t\t\t\t\t\t\"commandTypeId\":10,\n"
             + "\t\t\t\t\t\t\"engine\":\"MaxCompute\"\n"
             + "\t\t\t\t\t}\n"
             + "\t\t\t\t},\n"

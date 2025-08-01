@@ -141,7 +141,7 @@ public class SpecDevUtil {
 
     @SuppressWarnings("unchecked")
     public static void setEnumField(Map<String, Object> ctxMap, Object object) {
-        Field[] declaredFields = object.getClass().getDeclaredFields();
+        List<Field> declaredFields = getPropertyFields(object);
         for (Field field : declaredFields) {
             Class<?> type = field.getType();
             if (type.isEnum() && LabelEnum.class.isAssignableFrom(type)) {

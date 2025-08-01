@@ -15,6 +15,10 @@
 
 package com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.UUID;
+
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.serialize.CodeControlCharEscapeConverter;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.serialize.CodeControlCharUnEscapeConverter;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.DmObjectType;
@@ -27,10 +31,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.google.common.base.Joiner;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author 聿剑
@@ -102,8 +102,11 @@ public class DqcRule extends DmObject {
     @Override
     public String getUniqueKey() {
         String str = Joiner.on("@").join(
-            getCalcEngineType(), StringUtils.defaultIfBlank(getCalcEngineInstance(), ""),
-            getRuleTable(), getPartition(), getRuleName());
+            StringUtils.defaultIfBlank(getCalcEngineType(), ""),
+            StringUtils.defaultIfBlank(getCalcEngineInstance(), ""),
+            StringUtils.defaultIfBlank(getRuleTable(), ""),
+            StringUtils.defaultIfBlank(getPartition(), ""),
+            StringUtils.defaultIfBlank(getRuleName(), ""));
         return UUID.nameUUIDFromBytes(str.getBytes(StandardCharsets.UTF_8)).toString();
     }
 

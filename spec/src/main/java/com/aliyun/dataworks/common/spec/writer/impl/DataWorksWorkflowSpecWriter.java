@@ -46,6 +46,10 @@ public class DataWorksWorkflowSpecWriter extends DefaultJsonObjectWriter<DataWor
     @Override
     public JSONObject write(DataWorksWorkflowSpec specObj, SpecWriterContext context) {
         JSONObject jsonObject = writeJsonObject(specObj, true);
+        if (specObj.getStrategy() != null) {
+            jsonObject.put("strategy", writeByWriter(specObj.getStrategy()));
+        }
+
         if (CollectionUtils.isNotEmpty(specObj.getNodes())) {
             jsonObject.put("nodes", writeByWriter(specObj.getNodes()));
         }
@@ -89,8 +93,13 @@ public class DataWorksWorkflowSpecWriter extends DefaultJsonObjectWriter<DataWor
         if (CollectionUtils.isNotEmpty(specObj.getComponents())) {
             jsonObject.put("components", writerListByWriter(new ArrayList<>(specObj.getComponents())));
         }
+
         if (CollectionUtils.isNotEmpty(specObj.getTables())) {
             jsonObject.put("tables", writerListByWriter(new ArrayList<>(specObj.getTables())));
+        }
+
+        if (CollectionUtils.isNotEmpty(specObj.getDataIntegrationJobs())) {
+            jsonObject.put("dataIntegrationJobs", writerListByWriter(new ArrayList<>(specObj.getDataIntegrationJobs())));
         }
         return jsonObject;
     }

@@ -91,7 +91,7 @@
         "outputs": {
           "outputs": [
             {
-              "artifactType": "Output",
+              "artifactType": "NodeOutput",
               "data": "53046d47cb5842ec960921e4cdc28a73",
               "refTableName": "调度参数设置1"
             }

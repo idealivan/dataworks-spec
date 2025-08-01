@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,6 +41,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
+import com.aliyun.dataworks.common.spec.domain.ref.runtime.container.SpecContainer;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeContext;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.NodeType;
@@ -48,6 +50,7 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseTyp
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.RerunMode;
 import lombok.Data;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -107,7 +110,7 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
         return scriptRuntime.map(SpecScriptRuntime::getCommand)
             .orElseGet(() -> scriptRuntime.map(SpecScriptRuntime::getCommandTypeId)
                 .map(CodeProgramType::getNodeTypeByCode)
-                .map(CodeProgramType::getName)
+                .map(CodeProgramType::name)
                 .orElse(null));
     }
 
@@ -515,7 +518,15 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
         return Optional.ofNullable(node)
             .map(SpecNode::getScript)
             .map(SpecScript::getRuntime)
-            .map(SpecScriptRuntime::getSparkConf)
+            .map(runtime -> {
+                if (MapUtils.isEmpty(runtime.getEmrJobConfig()) && MapUtils.isEmpty(runtime.getSparkConf())) {
+                    return null;
+                }
+                HashMap<Object, Object> advancedSettings = new HashMap<>();
+                advancedSettings.putAll(MapUtils.emptyIfNull(runtime.getEmrJobConfig()));
+                advancedSettings.putAll(MapUtils.emptyIfNull(runtime.getSparkConf()));
+                return advancedSettings;
+            })
             .map(JSONObject::toJSONString)
             .orElse(null);
     }
@@ -549,6 +560,18 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
             .orElse(null);
     }
 
+    /**
+     * 超时时间 单位小时
+     *
+     * @return 超时时间
+     */
+    @Override
+    public Integer getAlisaTaskKillTimeout() {
+        return Optional.ofNullable(node)
+            .map(SpecNode::getTimeout)
+            .orElse(null);
+    }
+
     @Override
     public Long getParentId() {
         return DwNodeEntity.super.getParentId();
@@ -560,6 +583,16 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
             .map(SpecNode::getScript)
             .map(SpecScript::getRuntime)
             .map(SpecScriptRuntime::getCu)
+            .orElse(null);
+    }
+
+    @Override
+    public String getImageId() {
+        return Optional.ofNullable(node)
+            .map(SpecNode::getScript)
+            .map(SpecScript::getRuntime)
+            .map(SpecScriptRuntime::getContainer)
+            .map(SpecContainer::getImageId)
             .orElse(null);
     }
 

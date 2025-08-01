@@ -39,4 +39,8 @@ public class SpecTrigger extends SpecRefEntity {
      * Scheduler custom calendarId
      */
     private Long calendarId;
+    /**
+     * Scheduler custom trigger identifier
+     */
+    private String identifier;
 }

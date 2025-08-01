@@ -11,14 +11,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import com.alibaba.fastjson2.JSON;
-
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.CodeModel;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.CodeModelFactory;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.ComponentSqlCode;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.ComponentSqlCode.ComponentInfo;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.SqlComponentCode;
-import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
@@ -85,7 +82,7 @@ public class FileDetailEntityAdapter implements DwNodeEntity {
         return Optional.ofNullable(file)
             .map(File::getFileType)
             .map(CodeProgramType::getNodeTypeByCode)
-            .map(CodeProgramType::getName)
+            .map(CodeProgramType::name)
             .orElse(null);
     }
 
@@ -421,7 +418,9 @@ public class FileDetailEntityAdapter implements DwNodeEntity {
 
     @Override
     public String getImageId() {
-        return DwNodeEntity.super.getImageId();
+        return Optional.ofNullable(fileNodeCfg)
+            .map(FileNodeCfg::getImageId)
+            .orElse(null);
     }
 
     @Override
@@ -439,16 +438,14 @@ public class FileDetailEntityAdapter implements DwNodeEntity {
     @Override
     public Boolean getIgnoreBranchConditionSkip() {
         return Optional.ofNullable(fileNodeCfg)
-            .map(FileNodeCfg::getExtConfig)
-            .map(config -> {
-                try {
-                    return JSON.parseObject(config);
-                } catch (Exception e) {
-                    return null;
-                }
-            })
-            .filter(config -> config.containsKey(DataWorksNodeAdapter.IGNORE_BRANCH_CONDITION_SKIP))
-            .map(config -> config.getBoolean(DataWorksNodeAdapter.IGNORE_BRANCH_CONDITION_SKIP))
+            .map(FileNodeCfg::getIgnoreBranchConditionSkip)
+            .orElse(null);
+    }
+
+    @Override
+    public Integer getAlisaTaskKillTimeout() {
+        return Optional.ofNullable(fileNodeCfg)
+            .map(FileNodeCfg::getAlisaTaskKillTimeout)
             .orElse(null);
     }
 

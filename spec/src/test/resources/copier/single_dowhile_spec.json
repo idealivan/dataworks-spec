@@ -1,0 +1,594 @@
+{
+  "kind": "CycleWorkflow",
+  "version": "1.2.0",
+  "spec": {
+    "nodes": [
+      {
+        "recurrence": "Normal",
+        "id": "4901511081993413756",
+        "timeout": 0,
+        "instanceMode": "T+1",
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 120000,
+        "script": {
+          "path": "聿剑/复制能力/dowhile1",
+          "runtime": {
+            "command": "CONTROLLER_CYCLE",
+            "commandTypeId": 1103,
+            "cu": "0.25"
+          },
+          "id": "7959755662763182658"
+        },
+        "trigger": {
+          "type": "Scheduler",
+          "cron": "00 13 00 * * ?",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "GMT+8",
+          "delaySeconds": 0
+        },
+        "runtimeResource": {
+          "resourceGroup": "S_res_group_524257424564736_1701742527418",
+          "resourceGroupId": "65814325"
+        },
+        "name": "dowhile1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "ownerName": "dw_on_emr_qa3_testcloud_com",
+          "createTime": "2025-06-12 10:39:08",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "lwt_test_newIde",
+            "projectName": "李文涛测试新版ide",
+            "projectId": "528891"
+          },
+          "projectId": "528891"
+        },
+        "inputs": {
+          "nodeOutputs": [
+            {
+              "data": "lwt_test_newide_root",
+              "artifactType": "NodeOutput"
+            }
+          ]
+        },
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "4901511081993413756",
+              "artifactType": "NodeOutput",
+              "refTableName": "dowhile1",
+              "isDefault": true
+            },
+            {
+              "data": "lwt_test_newIde.dowhile1",
+              "artifactType": "NodeOutput",
+              "refTableName": "dowhile1",
+              "isDefault": false
+            }
+          ]
+        },
+        "do-while": {
+          "nodes": [
+            {
+              "recurrence": "Normal",
+              "id": "5913326099511878648",
+              "timeout": 0,
+              "instanceMode": "T+1",
+              "rerunMode": "Allowed",
+              "rerunTimes": 3,
+              "rerunInterval": 120000,
+              "datasource": {
+                "name": "lwt_test_newIde_pro",
+                "type": "odps"
+              },
+              "script": {
+                "language": "odps-sql",
+                "path": "聿剑/复制能力/dowhile1/mcaq1",
+                "runtime": {
+                  "command": "ODPS_SQL",
+                  "commandTypeId": 10,
+                  "cu": "0.25"
+                },
+                "id": "6309783423096716491"
+              },
+              "runtimeResource": {
+                "resourceGroup": "S_res_group_524257424564736_1701742527418",
+                "resourceGroupId": "65814325"
+              },
+              "name": "mcaq1",
+              "owner": "1107550004253538",
+              "metadata": {
+                "owner": "1107550004253538",
+                "ownerName": "dw_on_emr_qa3_testcloud_com",
+                "createTime": "2025-06-12 10:39:19",
+                "tenantId": "524257424564736",
+                "project": {
+                  "projectIdentifier": "lwt_test_newIde",
+                  "projectName": "李文涛测试新版ide",
+                  "projectId": "528891"
+                },
+                "projectId": "528891"
+              },
+              "inputs": {},
+              "outputs": {
+                "nodeOutputs": [
+                  {
+                    "data": "5913326099511878648",
+                    "artifactType": "NodeOutput",
+                    "refTableName": "mcaq1",
+                    "isDefault": true
+                  }
+                ]
+              }
+            },
+            {
+              "recurrence": "Normal",
+              "id": "6210861831494975446",
+              "timeout": 0,
+              "instanceMode": "T+1",
+              "rerunMode": "Allowed",
+              "rerunTimes": 3,
+              "rerunInterval": 120000,
+              "script": {
+                "language": "sql",
+                "path": "聿剑/复制能力/dowhile1/dddd",
+                "runtime": {
+                  "command": "Selectdb",
+                  "commandTypeId": 10010,
+                  "cu": "0.25"
+                },
+                "id": "5154142423987372106"
+              },
+              "runtimeResource": {
+                "resourceGroup": "S_res_group_524257424564736_1701742527418",
+                "resourceGroupId": "65814325"
+              },
+              "name": "dddd",
+              "owner": "1107550004253538",
+              "metadata": {
+                "owner": "1107550004253538",
+                "ownerName": "dw_on_emr_qa3_testcloud_com",
+                "createTime": "2025-06-12 18:01:13",
+                "tenantId": "524257424564736",
+                "project": {
+                  "projectIdentifier": "lwt_test_newIde",
+                  "projectName": "李文涛测试新版ide",
+                  "projectId": "528891"
+                },
+                "projectId": "528891"
+              },
+              "inputs": {},
+              "outputs": {
+                "nodeOutputs": [
+                  {
+                    "data": "6210861831494975446",
+                    "artifactType": "NodeOutput",
+                    "refTableName": "dddd",
+                    "isDefault": true
+                  }
+                ]
+              }
+            },
+            {
+              "recurrence": "Normal",
+              "id": "7015085679680063506",
+              "timeout": 0,
+              "instanceMode": "T+1",
+              "rerunMode": "Allowed",
+              "rerunTimes": 3,
+              "rerunInterval": 120000,
+              "datasource": {
+                "name": "lwt_test_newIde_pro",
+                "type": "odps"
+              },
+              "script": {
+                "language": "odps-sql",
+                "path": "聿剑/复制能力/dowhile1/not_blank_mcsql",
+                "runtime": {
+                  "command": "ODPS_SQL",
+                  "commandTypeId": 10,
+                  "cu": "0.25"
+                },
+                "id": "7322961204325668551"
+              },
+              "runtimeResource": {
+                "resourceGroup": "S_res_group_524257424564736_1701742527418",
+                "resourceGroupId": "65814325"
+              },
+              "name": "not_blank_mcsql",
+              "owner": "1107550004253538",
+              "metadata": {
+                "owner": "1107550004253538",
+                "ownerName": "dw_on_emr_qa3_testcloud_com",
+                "createTime": "2025-06-12 10:41:37",
+                "tenantId": "524257424564736",
+                "project": {
+                  "projectIdentifier": "lwt_test_newIde",
+                  "projectName": "李文涛测试新版ide",
+                  "projectId": "528891"
+                },
+                "projectId": "528891"
+              },
+              "inputs": {},
+              "outputs": {
+                "nodeOutputs": [
+                  {
+                    "data": "7015085679680063506",
+                    "artifactType": "NodeOutput",
+                    "refTableName": "not_blank_mcsql",
+                    "isDefault": true
+                  }
+                ]
+              }
+            },
+            {
+              "recurrence": "Normal",
+              "id": "7164112281316903265",
+              "timeout": 0,
+              "instanceMode": "T+1",
+              "rerunMode": "Allowed",
+              "rerunTimes": 0,
+              "rerunInterval": 120000,
+              "script": {
+                "path": "聿剑/复制能力/dowhile1/cycle_start",
+                "runtime": {
+                  "engine": "General",
+                  "command": "CONTROLLER_CYCLE_START",
+                  "commandTypeId": 1104
+                },
+                "id": "6602248311479806621"
+              },
+              "runtimeResource": {
+                "resourceGroup": "S_res_group_524257424564736_1701742527418",
+                "resourceGroupId": "65814325"
+              },
+              "name": "cycle_start",
+              "owner": "1107550004253538",
+              "metadata": {
+                "owner": "1107550004253538",
+                "ownerName": "dw_on_emr_qa3_testcloud_com",
+                "createTime": "2025-06-12 10:39:08",
+                "tenantId": "524257424564736",
+                "project": {
+                  "projectIdentifier": "lwt_test_newIde",
+                  "projectName": "李文涛测试新版ide",
+                  "projectId": "528891"
+                },
+                "projectId": "528891"
+              },
+              "inputs": {},
+              "outputs": {
+                "nodeOutputs": [
+                  {
+                    "data": "7164112281316903265",
+                    "artifactType": "NodeOutput",
+                    "refTableName": "cycle_start",
+                    "isDefault": true
+                  }
+                ]
+              }
+            },
+            {
+              "recurrence": "Normal",
+              "id": "7423415671572125648",
+              "timeout": 0,
+              "instanceMode": "T+1",
+              "rerunMode": "Allowed",
+              "rerunTimes": 3,
+              "rerunInterval": 120000,
+              "datasource": {
+                "name": "lwt_test_newIde_pro",
+                "type": "odps"
+              },
+              "script": {
+                "language": "shell-script",
+                "path": "聿剑/复制能力/dowhile1/fuzhi1",
+                "runtime": {
+                  "command": "CONTROLLER_ASSIGNMENT",
+                  "commandTypeId": 1100,
+                  "cu": "0.25"
+                },
+                "id": "7010442453916978255"
+              },
+              "runtimeResource": {
+                "resourceGroup": "S_res_group_524257424564736_1701742527418",
+                "resourceGroupId": "65814325"
+              },
+              "name": "fuzhi1",
+              "owner": "1107550004253538",
+              "metadata": {
+                "owner": "1107550004253538",
+                "ownerName": "dw_on_emr_qa3_testcloud_com",
+                "createTime": "2025-06-12 10:39:38",
+                "tenantId": "524257424564736",
+                "project": {
+                  "projectIdentifier": "lwt_test_newIde",
+                  "projectName": "李文涛测试新版ide",
+                  "projectId": "528891"
+                },
+                "projectId": "528891"
+              },
+              "inputs": {},
+              "outputs": {
+                "nodeOutputs": [
+                  {
+                    "data": "7423415671572125648",
+                    "artifactType": "NodeOutput",
+                    "sourceType": "System",
+                    "refTableName": "fuzhi1",
+                    "isDefault": true
+                  }
+                ],
+                "variables": [
+                  {
+                    "artifactType": "Variable",
+                    "name": "outputs",
+                    "scope": "NodeContext",
+                    "type": "NodeOutput",
+                    "value": "${outputs}",
+                    "id": "8178888521138298016",
+                    "node": {
+                      "nodeId": "7423415671572125648",
+                      "output": "7423415671572125648"
+                    },
+                    "referenceVariable": {
+                      "artifactType": "Variable",
+                      "name": "outputs",
+                      "scope": "NodeContext",
+                      "type": "NodeOutput",
+                      "value": "${outputs}",
+                      "node": {
+                        "nodeId": "7423415671572125648",
+                        "output": "7423415671572125648",
+                        "refTableName": "fuzhi1"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "recurrence": "Normal",
+              "id": "9203492917897132075",
+              "timeout": 0,
+              "instanceMode": "T+1",
+              "rerunMode": "Allowed",
+              "rerunTimes": 3,
+              "rerunInterval": 120000,
+              "script": {
+                "path": "聿剑/复制能力/dowhile1/fenzhi",
+                "runtime": {
+                  "command": "CONTROLLER_BRANCH",
+                  "commandTypeId": 1101,
+                  "cu": "0.25"
+                },
+                "id": "6164813873674559177"
+              },
+              "runtimeResource": {
+                "resourceGroup": "S_res_group_524257424564736_1701742527418",
+                "resourceGroupId": "65814325"
+              },
+              "branch": {
+                "branches": [
+                  {
+                    "when": "'${input}' == ''",
+                    "output": {
+                      "data": "lwt_test_newIde.fenzhi_blank_0",
+                      "artifactType": "NodeOutput"
+                    }
+                  },
+                  {
+                    "when": "'${input}' != ''",
+                    "output": {
+                      "data": "lwt_test_newIde.fenzhi_not_blank_1",
+                      "artifactType": "NodeOutput"
+                    }
+                  }
+                ]
+              },
+              "name": "fenzhi",
+              "owner": "1107550004253538",
+              "metadata": {
+                "owner": "1107550004253538",
+                "ownerName": "dw_on_emr_qa3_testcloud_com",
+                "createTime": "2025-06-12 10:39:48",
+                "tenantId": "524257424564736",
+                "project": {
+                  "projectIdentifier": "lwt_test_newIde",
+                  "projectName": "李文涛测试新版ide",
+                  "projectId": "528891"
+                },
+                "projectId": "528891"
+              },
+              "inputs": {
+                "variables": [
+                  {
+                    "inputName": "input1",
+                    "artifactType": "Variable",
+                    "name": "outputs",
+                    "scope": "NodeContext",
+                    "type": "NodeOutput",
+                    "value": "${outputs}",
+                    "id": "8178888521138298016",
+                    "node": {
+                      "nodeId": "7423415671572125648",
+                      "output": "7423415671572125648",
+                      "refTableName": "fuzhi1"
+                    }
+                  }
+                ]
+              },
+              "outputs": {
+                "nodeOutputs": [
+                  {
+                    "data": "9203492917897132075",
+                    "artifactType": "NodeOutput",
+                    "sourceType": "System",
+                    "refTableName": "fenzhi",
+                    "isDefault": true
+                  },
+                  {
+                    "data": "lwt_test_newIde.fenzhi_blank_0",
+                    "artifactType": "NodeOutput",
+                    "refTableName": "fenzhi"
+                  },
+                  {
+                    "data": "lwt_test_newIde.fenzhi_not_blank_1",
+                    "artifactType": "NodeOutput",
+                    "refTableName": "fenzhi"
+                  }
+                ]
+              }
+            }
+          ],
+          "flow": [
+            {
+              "nodeId": "4801135253648555454",
+              "depends": [
+                {
+                  "type": "Normal",
+                  "output": "6210861831494975446",
+                  "refTableName": "dddd"
+                },
+                {
+                  "type": "Normal",
+                  "output": "7015085679680063506",
+                  "refTableName": "not_blank_mcsql"
+                },
+                {
+                  "type": "Normal",
+                  "output": "5913326099511878648",
+                  "refTableName": "mcaq1"
+                }
+              ]
+            },
+            {
+              "nodeId": "5913326099511878648",
+              "depends": [
+                {
+                  "type": "Normal",
+                  "output": "lwt_test_newIde.fenzhi_blank_0",
+                  "sourceType": "Manual",
+                  "refTableName": "fenzhi"
+                }
+              ]
+            },
+            {
+              "nodeId": "6210861831494975446",
+              "depends": [
+                {
+                  "type": "Normal",
+                  "output": "7164112281316903265",
+                  "refTableName": "cycle_start"
+                },
+                {
+                  "type": "Normal",
+                  "output": "7423415671572125648",
+                  "sourceType": "Manual",
+                  "refTableName": "fuzhi1"
+                }
+              ]
+            },
+            {
+              "nodeId": "7015085679680063506",
+              "depends": [
+                {
+                  "type": "Normal",
+                  "output": "lwt_test_newIde.fenzhi_not_blank_1",
+                  "sourceType": "Manual",
+                  "refTableName": "fenzhi"
+                }
+              ]
+            },
+            {
+              "nodeId": "7423415671572125648",
+              "depends": [
+                {
+                  "type": "Normal",
+                  "output": "7164112281316903265",
+                  "refTableName": "cycle_start"
+                }
+              ]
+            },
+            {
+              "nodeId": "9203492917897132075",
+              "depends": [
+                {
+                  "type": "Normal",
+                  "output": "7423415671572125648",
+                  "sourceType": "Manual",
+                  "refTableName": "fuzhi1"
+                }
+              ]
+            }
+          ],
+          "while": {
+            "recurrence": "Normal",
+            "id": "4801135253648555454",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 120000,
+            "script": {
+              "language": "shell-script",
+              "path": "聿剑/复制能力/dowhile1/cycle_end",
+              "runtime": {
+                "engine": "General",
+                "command": "CONTROLLER_CYCLE_END",
+                "commandTypeId": 1105,
+                "cu": "0.25"
+              },
+              "id": "6024535794059015758"
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1701742527418",
+              "resourceGroupId": "65814325"
+            },
+            "name": "cycle_end",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-06-12 10:39:08",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "lwt_test_newIde",
+                "projectName": "李文涛测试新版ide",
+                "projectId": "528891"
+              },
+              "projectId": "528891"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "4801135253648555454",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "cycle_end",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          "maxIterations": 128
+        }
+      }
+    ],
+    "flow": [
+      {
+        "nodeId": "4901511081993413756",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "lwt_test_newide_root"
+          }
+        ]
+      }
+    ]
+  }
+}
