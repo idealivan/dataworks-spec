@@ -36,4 +36,8 @@ public class SpecDoWhile extends SpecNoRefEntity {
      * 最大迭代次数
      */
     private Integer maxIterations;
+    /**
+     * 并行度
+     */
+    private Integer parallelism;
 }

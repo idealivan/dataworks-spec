@@ -48,6 +48,7 @@ import com.aliyun.dataworks.common.spec.utils.ReflectUtils;
 import com.aliyun.dataworks.common.spec.utils.VariableUtils;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.NodeType;
+import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.DependentType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.IoParseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseType;
@@ -325,6 +326,13 @@ public class NodeSpecUpdateAdapter {
                 Optional.ofNullable(dwNode.getEndEffectDate()).map(DateUtils::convertDateToString).ifPresent(trigger::setEndTime);
                 Optional.ofNullable(dwNode.getCronExpress()).map(String::trim).ifPresent(trigger::setCron);
                 Optional.ofNullable(dwNode.getCalendarId()).ifPresent(trigger::setCalendarId);
+                Optional.ofNullable(dwNode.getCycleType()).ifPresent(cycleType -> {
+                    if (CycleType.DAY.getCode() == cycleType) {
+                        trigger.setCycleType(com.aliyun.dataworks.common.spec.domain.enums.CycleType.DAILY);
+                    } else {
+                        trigger.setCycleType(com.aliyun.dataworks.common.spec.domain.enums.CycleType.NOT_DAILY);
+                    }
+                });
                 trigger.setType(TriggerType.SCHEDULER);
                 trigger.setTimezone(ZoneId.systemDefault().getId());
                 break;

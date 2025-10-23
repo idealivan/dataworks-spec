@@ -26,6 +26,7 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.Fi
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.FileNodeCfg;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.FileNodeInputOutput;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.FileNodeInputOutputContext;
+import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.NodeType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.RerunMode;
 import lombok.Data;
@@ -181,6 +182,9 @@ public class FileDetailEntityAdapter implements DwNodeEntity {
 
     @Override
     public @NotNull NodeUseType getNodeUseType() {
+        if (Optional.ofNullable(getNodeType()).filter(nodeType -> nodeType == NodeType.MANUAL.getCode()).isPresent()) {
+            return NodeUseType.MANUAL_WORKFLOW;
+        }
         return Optional.ofNullable(file)
             .map(File::getUseType)
             .map(code -> {

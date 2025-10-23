@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecContainer json schema",
+  "type": "object",
+  "properties": {
+    "args": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "command": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "image": {
+      "type": "string"
+    },
+    "imageId": {
+      "type": "string"
+    },
+    "env": {
+      "type": "array",
+      "items": {
+        "$ref": "classpath:spec/schema/SpecContainerEnvVar.schema.json"
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "image"
+      ]
+    },
+    {
+      "required": [
+        "imageId"
+      ]
+    }
+  ]
+}

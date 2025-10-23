@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecAssertion json schema",
+  "type": "object",
+  "properties": {
+    "field": {
+      "type": "string"
+    },
+    "in": {
+      "type": "array",
+      "items": {
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "field",
+    "in"
+  ]
+}

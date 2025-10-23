@@ -28,6 +28,8 @@ import com.aliyun.dataworks.common.spec.domain.Specification;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.CodeModel;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.CodeModelFactory;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.ComponentSqlCode;
+import com.aliyun.dataworks.common.spec.domain.dw.codemodel.ControllerJoinCode;
+import com.aliyun.dataworks.common.spec.domain.dw.codemodel.ControllerJoinCode.Branch;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.DefaultJsonFormCode;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrAllocationSpec;
 import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrCode;
@@ -57,6 +59,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author 聿剑
@@ -162,6 +166,178 @@ public class DataWorksNodeCodeAdapterTest {
 
         DataWorksNodeCodeAdapter adapter = new DataWorksNodeCodeAdapter(joinNode);
         System.out.println(adapter.getCode());
+        CodeModel<ControllerJoinCode> cm = CodeModelFactory.getCodeModel(CodeProgramType.CONTROLLER_JOIN.name(), adapter.getCode());
+        ControllerJoinCode model = cm.getCodeModel();
+        Branch bb1 = model.getBranchList().get(0);
+        assertEquals(1, (int)bb1.getLogic());
+        Branch bb2 = model.getBranchList().get(1);
+        assertEquals(1, (int)bb2.getLogic());
+        Branch bb3 = model.getBranchList().get(2);
+        assertEquals(0, (int)bb3.getLogic());
+        Branch bb4 = model.getBranchList().get(3);
+        assertEquals(0, (int)bb4.getLogic());
+    }
+
+    @Test
+    public void testJoin2() {
+        String specStr = "{\n"
+            + "\t\"version\":\"1.1.0\",\n"
+            + "\t\"kind\":\"CycleWorkflow\",\n"
+            + "\t\"spec\":{\n"
+            + "\t\t\"nodes\":[\n"
+            + "\t\t\t{\n"
+            + "\t\t\t\t\"recurrence\":\"Normal\",\n"
+            + "\t\t\t\t\"id\":\"505197379\",\n"
+            + "\t\t\t\t\"instanceMode\":\"T+1\",\n"
+            + "\t\t\t\t\"rerunMode\":\"Allowed\",\n"
+            + "\t\t\t\t\"rerunTimes\":0,\n"
+            + "\t\t\t\t\"rerunInterval\":0,\n"
+            + "\t\t\t\t\"autoParse\":true,\n"
+            + "\t\t\t\t\"script\":{\n"
+            + "\t\t\t\t\t\"path\":\"业务流程/Workflow/通用/归并节点\",\n"
+            + "\t\t\t\t\t\"runtime\":{\n"
+            + "\t\t\t\t\t\t\"command\":\"CONTROLLER_JOIN\",\n"
+            + "\t\t\t\t\t\t\"commandTypeId\":1102,\n"
+            + "\t\t\t\t\t\t\"cu\":\"0.25\"\n"
+            + "\t\t\t\t\t}\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"trigger\":{\n"
+            + "\t\t\t\t\t\"type\":\"Scheduler\",\n"
+            + "\t\t\t\t\t\"cron\":\"00 23 00 * * ?\",\n"
+            + "\t\t\t\t\t\"cycleType\":\"Daily\",\n"
+            + "\t\t\t\t\t\"startTime\":\"1970-01-01 00:00:00\",\n"
+            + "\t\t\t\t\t\"endTime\":\"9999-01-01 00:00:00\"\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"runtimeResource\":{\n"
+            + "\t\t\t\t\t\"resourceGroup\":\"S_res_group_524257424564736_1755141780040\"\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"join\":{\n"
+            + "\t\t\t\t\t\"branches\":[\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"name\":\"b_1\",\n"
+            + "\t\t\t\t\t\t\t\"output\":{\n"
+            + "\t\t\t\t\t\t\t\t\"data\":\"ctx_param_01.xx_in_shell\",\n"
+            + "\t\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\"\n"
+            + "\t\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t\t\"assertion\":{\n"
+            + "\t\t\t\t\t\t\t\t\"field\":\"status\",\n"
+            + "\t\t\t\t\t\t\t\t\"in\":[\n"
+            + "\t\t\t\t\t\t\t\t\t\"1\"\n"
+            + "\t\t\t\t\t\t\t\t]\n"
+            + "\t\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"name\":\"b_2\",\n"
+            + "\t\t\t\t\t\t\t\"output\":{\n"
+            + "\t\t\t\t\t\t\t\t\"data\":\"ctx_param_01.xx_not_shell\",\n"
+            + "\t\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\"\n"
+            + "\t\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t\t\"assertion\":{\n"
+            + "\t\t\t\t\t\t\t\t\"field\":\"status\",\n"
+            + "\t\t\t\t\t\t\t\t\"in\":[\n"
+            + "\t\t\t\t\t\t\t\t\t\"1\"\n"
+            + "\t\t\t\t\t\t\t\t]\n"
+            + "\t\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t],\n"
+            + "\t\t\t\t\t\"logic\":{\n"
+            + "\t\t\t\t\t\t\"expression\":\"b_1 or b_2\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\"resultStatus\":\"1\"\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"name\":\"归并节点\",\n"
+            + "\t\t\t\t\"owner\":\"1107550004253538\",\n"
+            + "\t\t\t\t\"inputs\":{\n"
+            + "\t\t\t\t\t\"nodeOutputs\":[\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\":\"ctx_param_01.505197372_out\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"sourceType\":\"Manual\",\n"
+            + "\t\t\t\t\t\t\t\"refTableName\":\"ctx_param_01.505197372_out\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\":false\n"
+            + "\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\":\"ctx_param_01.505197374_out\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"sourceType\":\"Manual\",\n"
+            + "\t\t\t\t\t\t\t\"refTableName\":\"ctx_param_01.505197374_out\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\":false\n"
+            + "\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\":\"ctx_param_01.xx_in_shell\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"sourceType\":\"System\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\":true\n"
+            + "\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\":\"ctx_param_01.xx_not_shell\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"sourceType\":\"System\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\":true\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t]\n"
+            + "\t\t\t\t},\n"
+            + "\t\t\t\t\"outputs\":{\n"
+            + "\t\t\t\t\t\"nodeOutputs\":[\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\":\"ctx_param_01.505197379_out\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"sourceType\":\"System\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\":true\n"
+            + "\t\t\t\t\t\t},\n"
+            + "\t\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\t\"data\":\"ctx_param_01.归并节点\",\n"
+            + "\t\t\t\t\t\t\t\"artifactType\":\"NodeOutput\",\n"
+            + "\t\t\t\t\t\t\t\"sourceType\":\"Manual\",\n"
+            + "\t\t\t\t\t\t\t\"isDefault\":false\n"
+            + "\t\t\t\t\t\t}\n"
+            + "\t\t\t\t\t]\n"
+            + "\t\t\t\t}\n"
+            + "\t\t\t}\n"
+            + "\t\t],\n"
+            + "\t\t\"flow\":[\n"
+            + "\t\t\t{\n"
+            + "\t\t\t\t\"nodeId\":\"505197379\",\n"
+            + "\t\t\t\t\"depends\":[\n"
+            + "\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\"type\":\"Normal\",\n"
+            + "\t\t\t\t\t\t\"output\":\"ctx_param_01.xx_not_shell\",\n"
+            + "\t\t\t\t\t\t\"sourceType\":\"System\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\"type\":\"Normal\",\n"
+            + "\t\t\t\t\t\t\"output\":\"ctx_param_01.xx_in_shell\",\n"
+            + "\t\t\t\t\t\t\"sourceType\":\"System\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\"type\":\"Normal\",\n"
+            + "\t\t\t\t\t\t\"output\":\"ctx_param_01.505197374_out\",\n"
+            + "\t\t\t\t\t\t\"sourceType\":\"Manual\",\n"
+            + "\t\t\t\t\t\t\"refTableName\":\"ctx_param_01.505197374_out\"\n"
+            + "\t\t\t\t\t},\n"
+            + "\t\t\t\t\t{\n"
+            + "\t\t\t\t\t\t\"type\":\"Normal\",\n"
+            + "\t\t\t\t\t\t\"output\":\"ctx_param_01.505197372_out\",\n"
+            + "\t\t\t\t\t\t\"sourceType\":\"Manual\",\n"
+            + "\t\t\t\t\t\t\"refTableName\":\"ctx_param_01.505197372_out\"\n"
+            + "\t\t\t\t\t}\n"
+            + "\t\t\t\t]\n"
+            + "\t\t\t}\n"
+            + "\t\t]\n"
+            + "\t},\n"
+            + "\t\"metadata\":{\n"
+            + "\t\t\"owner\":\"1107550004253538\"\n"
+            + "\t}\n"
+            + "}";
+        Specification<DataWorksWorkflowSpec> spec = SpecUtil.parseToDomain(specStr);
+        SpecNode join = spec.getSpec().getNodes().get(0);
+        DataWorksNodeCodeAdapter codeAdapter = new DataWorksNodeCodeAdapter(join);
+        String code = codeAdapter.getCode();
+        log.info("code: {}", code);
+        CodeModel<ControllerJoinCode> codeModel = CodeModelFactory.getCodeModel(CodeProgramType.CONTROLLER_JOIN.name(), code);
+        ControllerJoinCode cc = codeModel.getCodeModel();
+        assertEquals(1, (int)cc.getBranchList().get(0).getLogic());
+        assertEquals(0, (int)cc.getBranchList().get(1).getLogic());
     }
 
     @Test
@@ -448,7 +624,7 @@ public class DataWorksNodeCodeAdapterTest {
 
         CodeModel<ComponentSqlCode> cm = CodeModelFactory.getCodeModel(CodeProgramType.COMPONENT_SQL.getName(), code);
         Assert.assertNotNull(cm);
-        Assert.assertEquals("select va1", cm.getSourceCode());
+        assertEquals("select va1", cm.getSourceCode());
         Assert.assertNotNull(cm.getCodeModel().getConfig());
     }
 
@@ -589,7 +765,7 @@ public class DataWorksNodeCodeAdapterTest {
         DataWorksNodeCodeAdapter codeAdapter = new DataWorksNodeCodeAdapter(node);
         String code = codeAdapter.getCode();
         log.info("code: {}", code);
-        Assert.assertEquals("select 1", code);
+        assertEquals("select 1", code);
 
         DefaultJsonFormCode jsonFormCode = new DefaultJsonFormCode();
         jsonFormCode.setSourceCode(code);
@@ -641,24 +817,24 @@ public class DataWorksNodeCodeAdapterTest {
         OdpsSparkCode sparkCode = parsed.getCodeModel();
         Assert.assertNotNull(sparkCode);
         Assert.assertNotNull(sparkCode.getResourceReferences());
-        Assert.assertEquals(3, CollectionUtils.size(sparkCode.getResourceReferences()));
-        Assert.assertEquals("xxxx.jar", sparkCode.getSparkJson().getMainJar());
-        Assert.assertEquals("org.apache.spark.examples.JavaSparkPi", sparkCode.getSparkJson().getMainClass());
-        Assert.assertEquals("2.x", sparkCode.getSparkJson().getVersion());
-        Assert.assertEquals("java", sparkCode.getSparkJson().getLanguage());
-        Assert.assertEquals("test_res_01", sparkCode.getSparkJson().getArgs());
-        Assert.assertEquals(2, CollectionUtils.size(sparkCode.getSparkJson().getConfigs()));
-        Assert.assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getAssistJars()));
-        Assert.assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getAssistFiles()));
-        Assert.assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getAssistArchives()));
-        Assert.assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getArchivesName()));
-        Assert.assertEquals("test.zip", sparkCode.getSparkJson().getArchivesName().get(0));
-        Assert.assertEquals("test.zip", sparkCode.getSparkJson().getAssistArchives().get(0));
-        Assert.assertEquals("test.zip", sparkCode.getSparkJson().getAssistFiles().get(0));
-        Assert.assertEquals("test_res_01", sparkCode.getSparkJson().getAssistJars().get(0));
-        Assert.assertEquals("test_res_01", sparkCode.getSparkJson().getArgs());
-        Assert.assertEquals("spark.hadoop.odps.task.major.version=cupid_v2", sparkCode.getSparkJson().getConfigs().get(0));
-        Assert.assertEquals("xxxxx=yyyy", sparkCode.getSparkJson().getConfigs().get(1));
+        assertEquals(3, CollectionUtils.size(sparkCode.getResourceReferences()));
+        assertEquals("xxxx.jar", sparkCode.getSparkJson().getMainJar());
+        assertEquals("org.apache.spark.examples.JavaSparkPi", sparkCode.getSparkJson().getMainClass());
+        assertEquals("2.x", sparkCode.getSparkJson().getVersion());
+        assertEquals("java", sparkCode.getSparkJson().getLanguage());
+        assertEquals("test_res_01", sparkCode.getSparkJson().getArgs());
+        assertEquals(2, CollectionUtils.size(sparkCode.getSparkJson().getConfigs()));
+        assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getAssistJars()));
+        assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getAssistFiles()));
+        assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getAssistArchives()));
+        assertEquals(1, CollectionUtils.size(sparkCode.getSparkJson().getArchivesName()));
+        assertEquals("test.zip", sparkCode.getSparkJson().getArchivesName().get(0));
+        assertEquals("test.zip", sparkCode.getSparkJson().getAssistArchives().get(0));
+        assertEquals("test.zip", sparkCode.getSparkJson().getAssistFiles().get(0));
+        assertEquals("test_res_01", sparkCode.getSparkJson().getAssistJars().get(0));
+        assertEquals("test_res_01", sparkCode.getSparkJson().getArgs());
+        assertEquals("spark.hadoop.odps.task.major.version=cupid_v2", sparkCode.getSparkJson().getConfigs().get(0));
+        assertEquals("xxxxx=yyyy", sparkCode.getSparkJson().getConfigs().get(1));
     }
 
     @Test

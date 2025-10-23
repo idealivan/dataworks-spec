@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 
@@ -54,6 +55,11 @@ public class SpecNode extends SpecRefEntity implements Container, InputOutputWir
     private Integer priority;
 
     private Integer timeout;
+
+    /**
+     * 超时时间的单位信息，以前没有这个字段，默认 timeout 为小时单位
+     */
+    private TimeUnit timeoutUnit;
 
     private NodeInstanceModeType instanceMode;
 

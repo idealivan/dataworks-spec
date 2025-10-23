@@ -15,6 +15,8 @@
 
 package com.aliyun.dataworks.common.spec.domain.ref;
 
+import java.util.concurrent.TimeUnit;
+
 import com.aliyun.dataworks.common.spec.domain.enums.FailureStrategy;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
@@ -42,6 +44,8 @@ public class SpecScheduleStrategy {
     private Integer maxInternalConcurrency;
 
     private Integer timeout;
+
+    private TimeUnit timeoutUnit;
 
     private NodeInstanceModeType instanceMode;
 

@@ -1,0 +1,147 @@
+{
+  "version": "1.1.0",
+  "kind": "CycleWorkflow",
+  "spec": {
+    "name": "工作流042203",
+    "id": "7934541333710669409",
+    "type": "CycleWorkflow",
+    "owner": "1107550004253538",
+    "workflows": [
+      {
+        "script": {
+          "path": "ztgtest/工作流042203",
+          "runtime": {
+            "command": "WORKFLOW"
+          },
+          "id": "7834374135312088649"
+        },
+        "id": "7934541333710669409",
+        "trigger": {
+          "type": "Scheduler",
+          "cron": "00 12 00 * * ?",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "Asia/Shanghai",
+          "delaySeconds": 0
+        },
+        "strategy": {
+          "timeout": 0,
+          "instanceMode": "T+1",
+          "rerunMode": "Allowed",
+          "rerunTimes": 3,
+          "rerunInterval": 180000,
+          "failureStrategy": "Break",
+          "recurrenceType": "Normal"
+        },
+        "name": "工作流042203",
+        "owner": "1107550004253538",
+        "citable": false,
+        "metadata": {
+          "owner": "1107550004253538",
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "7934541333710669409",
+              "artifactType": "NodeOutput",
+              "refTableName": "工作流042203",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.工作流042203",
+              "artifactType": "NodeOutput",
+              "refTableName": "工作流042203",
+              "isDefault": false
+            }
+          ]
+        },
+        "nodes": [
+          {
+            "recurrence": "Normal",
+            "id": "8900819932290547264",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "datasource": {
+              "name": "document_test_dev",
+              "type": "odps"
+            },
+            "script": {
+              "language": "odps-sql",
+              "path": "ztgtest/工作流042203/odps02",
+              "runtime": {
+                "command": "ODPS_SQL",
+                "commandTypeId": 10,
+                "cu": "0.25"
+              },
+              "id": "4649059272237052980"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 13 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "Asia/Shanghai",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_690025074182272",
+              "resourceGroupId": "8110001"
+            },
+            "name": "odps02",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+              "createTime": "2025-04-24 10:07:51",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "langstudio_hz_guqi_001",
+                "projectName": "langstudio_hz_guqi_001",
+                "projectId": "250515"
+              },
+              "projectId": "250515"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8900819932290547264",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "odps02",
+                  "isDefault": true
+                }
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "nodeId": "8900819932290547264",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "7598838183218421046",
+                "refTableName": "paiflow"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "uuid": "8900819932290547264"
+  }
+}

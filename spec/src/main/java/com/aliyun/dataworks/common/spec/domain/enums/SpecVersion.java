@@ -36,7 +36,13 @@ public enum SpecVersion implements LabelEnum {
     /**
      * v1.2.0
      */
-    V_1_2_0("1", "2", "0");
+    V_1_2_0("1", "2", "0"),
+    /**
+     * v2.0.0
+     */
+    V_2_0_0("2", "0", "0"),
+    ;
+
     private final String major;
     private final String minor;
     private final String patch;

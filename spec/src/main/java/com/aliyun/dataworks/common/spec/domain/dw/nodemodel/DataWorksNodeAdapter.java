@@ -66,8 +66,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapterContextAware {
     public static final String TIMEOUT = "alisaTaskKillTimeout";
+    public static final String TIMEOUT_UNIT = "killTimeoutUnit";
     public static final String IGNORE_BRANCH_CONDITION_SKIP = "ignoreBranchConditionSkip";
     public static final String LOOP_COUNT = "loopCount";
+    public static final String PARALLELISM = "parallelism";
     public static final String STREAM_LAUNCH_MODE = "streamLaunchMode";
     public static final Integer NODE_TYPE_NORMAL = 0;
     public static final Integer NODE_TYPE_MANUAL = 1;
@@ -261,14 +263,23 @@ public class DataWorksNodeAdapter implements DataWorksNode, DataWorksNodeAdapter
         Optional.ofNullable(specNode.getTimeout()).filter(timeout -> timeout > 0).ifPresent(timeout ->
             extConfig.put(TIMEOUT, specNode.getTimeout()));
 
+        Optional.ofNullable(specNode.getTimeoutUnit()).ifPresent(timeoutUnit ->
+            extConfig.put(TIMEOUT_UNIT, timeoutUnit));
+
         Optional.ofNullable(specNode.getIgnoreBranchConditionSkip()).ifPresent(ignoreBranchConditionSkip ->
             extConfig.put(IGNORE_BRANCH_CONDITION_SKIP, BooleanUtils.isTrue(ignoreBranchConditionSkip)));
 
         Optional.ofNullable(specNode.getDoWhile()).map(SpecDoWhile::getMaxIterations).ifPresent(maxIterations ->
             extConfig.put(LOOP_COUNT, maxIterations));
 
+        Optional.ofNullable(specNode.getDoWhile()).map(SpecDoWhile::getParallelism).ifPresent(parallelism ->
+            extConfig.put(PARALLELISM, parallelism));
+
         Optional.ofNullable(specNode.getForeach()).map(SpecForEach::getMaxIterations).ifPresent(maxIterations ->
             extConfig.put(LOOP_COUNT, maxIterations));
+
+        Optional.ofNullable(specNode.getForeach()).map(SpecForEach::getParallelism).ifPresent(parallelism ->
+            extConfig.put(PARALLELISM, parallelism));
 
         Optional.ofNullable(specNode.getTrigger()).map(SpecTrigger::getDelaySeconds).ifPresent(delaySeconds ->
             extConfig.put(DELAY_SECONDS, delaySeconds));

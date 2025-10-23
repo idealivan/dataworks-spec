@@ -77,12 +77,15 @@ public class EmrCode extends AbstractBaseCode {
             case EMR_HIVE:
                 return EmrJobType.HIVE_SQL;
             case EMR_SPARK_SQL:
+            case SERVERLESS_SPARK_SQL:
                 return EmrJobType.SPARK_SQL;
             case EMR_SPARK_SHELL:
                 return EmrJobType.SPARK_SHELL;
             case EMR_SPARK_STREAMING:
+            case SERVERLESS_SPARK_STREAMING:
                 return EmrJobType.SPARK_STREAMING;
             case EMR_SPARK:
+            case SERVERLESS_SPARK_BATCH:
                 return EmrJobType.SPARK;
             case EMR_IMPALA:
                 return EmrJobType.IMPALA_SQL;
@@ -97,6 +100,7 @@ public class EmrCode extends AbstractBaseCode {
             case EMR_SHELL:
                 return EmrJobType.SHELL;
             case EMR_KYUUBI:
+            case SERVERLESS_KYUUBI:
                 return EmrJobType.KYUUBI;
         }
         return null;
