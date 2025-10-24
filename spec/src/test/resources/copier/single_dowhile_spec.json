@@ -575,7 +575,8 @@
               ]
             }
           },
-          "maxIterations": 128
+          "maxIterations": 128,
+          "parallelism": 3
         }
       }
     ],

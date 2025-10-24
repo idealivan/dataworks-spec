@@ -1,0 +1,82 @@
+{
+  "version": "1.1.0",
+  "kind": "CycleWorkflow",
+  "spec": {
+    "nodes": [
+      {
+        "recurrence": "Normal",
+        "id": "6280440187348453162",
+        "timeout": 0,
+        "timeoutUnit": "HOURS",
+        "instanceMode": "T+1",
+        "rerunMode": "Allowed",
+        "rerunTimes": 3,
+        "rerunInterval": 120000,
+        "datasource": {
+          "name": "document_test_dev",
+          "type": "odps"
+        },
+        "script": {
+          "language": "odps-sql",
+          "path": "聿剑/dowhile1/dowhileinnsersql1",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "6809883857499537250"
+        },
+        "runtimeResource": {
+          "resourceGroup": "Serverless_res_group_524257424564736_682622779138178",
+          "resourceGroupId": "7510001"
+        },
+        "name": "dowhileinnsersql1",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Node",
+            "uuid": "8926980710116685462"
+          },
+          "ownerName": "dw_on_emr_qa3_testcloud_com",
+          "createTime": "2025-09-07 16:15:43",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "6280440187348453162",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "dowhileinnsersql1",
+              "isDefault": true
+            }
+          ]
+        }
+      }
+    ],
+    "flow": [
+      {
+        "nodeId": "6280440187348453162",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "4661565324722130459",
+            "refTableName": "cycle_start"
+          }
+        ]
+      }
+    ],
+    "maxIterations": 128
+  },
+  "metadata": {
+    "uuid": "6280440187348453162"
+  }
+}

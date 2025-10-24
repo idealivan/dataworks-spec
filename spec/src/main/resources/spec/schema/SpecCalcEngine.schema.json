@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecCalcEngine json schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "General",
+        "MaxCompute",
+        "EMR",
+        "Blink",
+        "Hologres",
+        "MaxGraph",
+        "AnalyticDB for PostgreSQL",
+        "AnalyticDB for MySQL",
+        "CDH",
+        "ClickHouse",
+        "Flink",
+        "Database",
+        "Data Integration",
+        "Algorithm",
+        "StarRocks",
+        "Hive",
+        "ADB Spark",
+        "CUSTOM"
+      ]
+    },
+    "datasource": {
+      "$ref": "classpath:spec/schema/SpecDatasource.schema.json"
+    },
+    "endpoint": {
+      "type": "string"
+    },
+    "database": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "object",
+      "properties": {
+        "versionNumber": {
+          "type": "string"
+        },
+        "versionInfo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "versionNumber"
+      ]
+    }
+  },
+  "required": [
+    "type"
+  ]
+}

@@ -96,6 +96,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -1786,8 +1787,8 @@ public class SpecUtilTest {
         assertTrue(CollectionUtils.isNotEmpty(parsed.getSpec().getWorkflows()));
         SpecWorkflow s = parsed.getSpec().getWorkflows().get(0);
         assertNotNull(s);
-        assertNotNull(s.getNodes());
-        assertNotNull(s.getDependencies());
+        assertNull(s.getNodes());
+        assertNull(s.getDependencies());
     }
 
     @Test

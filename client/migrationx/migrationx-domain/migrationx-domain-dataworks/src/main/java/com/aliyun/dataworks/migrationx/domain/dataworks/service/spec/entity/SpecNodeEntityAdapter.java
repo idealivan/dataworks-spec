@@ -21,6 +21,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.aliyun.dataworks.common.spec.domain.SpecRefEntity;
 import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
+import com.aliyun.dataworks.common.spec.domain.enums.CycleType;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
@@ -217,6 +218,13 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
 
     @Override
     public Integer getNodeType() {
+        boolean isManual = Optional.ofNullable(node).map(SpecNode::getTrigger)
+            .map(SpecTrigger::getType)
+            .map(TriggerType.MANUAL::equals)
+            .orElse(false);
+        if (isManual) {
+            return NodeType.MANUAL.getCode();
+        }
         return Optional.ofNullable(node).map(SpecNode::getRecurrence)
             .map(NodeRecurrenceType::name)
             .map(NodeType::valueOf)
@@ -234,12 +242,8 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
 
     @Override
     public NodeUseType getNodeUseType() {
-        Boolean isSchedule = Optional.ofNullable(node).map(SpecNode::getTrigger)
-            .map(SpecTrigger::getType)
-            .map(TriggerType.SCHEDULER::equals)
-            .orElse(false);
-        if (!isSchedule) {
-            return NodeUseType.MANUAL;
+        if (Optional.ofNullable(getNodeType()).filter(nodeType -> nodeType == NodeType.MANUAL.getCode()).isPresent()) {
+            return NodeUseType.MANUAL_WORKFLOW;
         }
         return Optional.of(node)
             .map(SpecNode::getRecurrence)
@@ -450,7 +454,13 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
 
     @Override
     public Integer getCycleType() {
-        return null;
+        return Optional.ofNullable(node)
+            .map(SpecNode::getTrigger)
+            .map(SpecTrigger::getCycleType)
+            .map(cycleType -> CycleType.DAILY.equals(cycleType) ?
+                com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType.DAY.getCode()
+                : com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType.NOT_DAY.getCode())
+            .orElse(null);
     }
 
     @Override

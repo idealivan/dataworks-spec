@@ -25,6 +25,7 @@ import com.alibaba.fastjson2.JSONObject;
 
 import com.aliyun.dataworks.common.spec.annotation.SpecWriter;
 import com.aliyun.dataworks.common.spec.domain.DataWorksWorkflowSpec;
+import com.aliyun.dataworks.common.spec.domain.enums.SpecVersion;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecArtifact;
 import com.aliyun.dataworks.common.spec.utils.MapKeyMatchUtils;
 import com.aliyun.dataworks.common.spec.writer.SpecWriterContext;
@@ -39,6 +40,11 @@ import org.apache.commons.collections4.ListUtils;
  */
 @SpecWriter
 public class DataWorksWorkflowSpecWriter extends DefaultJsonObjectWriter<DataWorksWorkflowSpec> {
+    @Override
+    public boolean support(SpecVersion version) {
+        return version == null || Integer.parseInt(version.getMajor()) <= 1;
+    }
+
     public DataWorksWorkflowSpecWriter(SpecWriterContext context) {
         super(context);
     }

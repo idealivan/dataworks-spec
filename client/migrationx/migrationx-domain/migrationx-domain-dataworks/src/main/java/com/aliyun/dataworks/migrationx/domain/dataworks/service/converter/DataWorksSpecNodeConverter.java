@@ -349,6 +349,7 @@ public class DataWorksSpecNodeConverter {
                     nd.setRerunInterval(strategy.getRerunInterval());
                     nd.setIgnoreBranchConditionSkip(strategy.getIgnoreBranchConditionSkip());
                     nd.setTimeout(strategy.getTimeout());
+                    nd.setTimeoutUnit(strategy.getTimeoutUnit());
                     nd.setPriority(strategy.getPriority());
                 });
                 return nd;

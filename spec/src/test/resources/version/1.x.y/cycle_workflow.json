@@ -1,0 +1,784 @@
+{
+  "version": "1.1.0",
+  "kind": "CycleWorkflow",
+  "spec": {
+    "name": "工作流042203",
+    "id": "7934541333710669409",
+    "type": "CycleWorkflow",
+    "owner": "1107550004253538",
+    "workflows": [
+      {
+        "script": {
+          "path": "ztgtest/工作流042203",
+          "runtime": {
+            "command": "WORKFLOW"
+          },
+          "id": "7834374135312088649"
+        },
+        "id": "7934541333710669409",
+        "trigger": {
+          "type": "Scheduler",
+          "cron": "00 12 00 * * ?",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "Asia/Shanghai",
+          "delaySeconds": 0
+        },
+        "strategy": {
+          "timeout": 0,
+          "timeoutUnit": "HOURS",
+          "instanceMode": "T+1",
+          "rerunMode": "Allowed",
+          "rerunTimes": 3,
+          "rerunInterval": 180000,
+          "failureStrategy": "Break",
+          "recurrenceType": "Normal"
+        },
+        "name": "工作流042203",
+        "owner": "1107550004253538",
+        "citable": false,
+        "metadata": {
+          "owner": "1107550004253538",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "projectId": "250515",
+          "schedulerNodeId": 1025471033
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "7934541333710669409",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "工作流042203",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.工作流042203",
+              "artifactType": "NodeOutput",
+              "refTableName": "工作流042203",
+              "isDefault": false
+            }
+          ]
+        },
+        "nodes": [
+          {
+            "recurrence": "Normal",
+            "id": "7598838183218421046",
+            "timeout": 0,
+            "timeoutUnit": "HOURS",
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "script": {
+              "path": "ztgtest/工作流042203/paiflow",
+              "runtime": {
+                "command": "PAI_FLOW",
+                "commandTypeId": 1250,
+                "cu": "0.25"
+              },
+              "id": "8630769802688961765"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 28 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "Asia/Shanghai",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_690025074182272",
+              "resourceGroupId": "8110001"
+            },
+            "name": "paiflow",
+            "owner": "1107550004253538",
+            "paiflow": {
+              "nodes": [
+                {
+                  "recurrence": "Normal",
+                  "id": "5664647817981872780",
+                  "timeout": 0,
+                  "timeoutUnit": "HOURS",
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 0,
+                  "rerunInterval": 180000,
+                  "script": {
+                    "path": "ztgtest/工作流042203/paiflow/oss读取",
+                    "runtime": {
+                      "command": "PAI_FLOW_TF_READ_FILE_DATA",
+                      "commandTypeId": 1255,
+                      "paiflowConf": {
+                        "parameters": [
+                          {
+                            "name": "arn",
+                            "value": true
+                          },
+                          {
+                            "name": "ossBucket",
+                            "value": "oss://ai4d-57rim54me3iczlo1s1.oss-cn-hangzhou-internal.aliyuncs.com/ztgtest01/"
+                          },
+                          {
+                            "name": "isModel",
+                            "value": false
+                          },
+                          {
+                            "name": "execution",
+                            "value": {}
+                          }
+                        ]
+                      },
+                      "cu": "0.25"
+                    },
+                    "id": "8589500952708594354"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "Serverless_res_group_524257424564736_708318845872800",
+                    "resourceGroupId": "9310001"
+                  },
+                  "name": "oss读取",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "paiflow": {
+                      "identifier": "tfReadFileData",
+                      "annotations": {},
+                      "uuid": "fhn479wx0n2pmx0wxb",
+                      "version": "v1",
+                      "provider": "pai",
+                      "labels": {}
+                    },
+                    "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+                    "createTime": "2025-04-24 10:09:42",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "langstudio_hz_guqi_001",
+                      "projectName": "langstudio_hz_guqi_001",
+                      "projectId": "250515"
+                    },
+                    "projectId": "250515"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "5664647817981872780",
+                        "artifactType": "NodeOutput",
+                        "refTableName": "oss读取",
+                        "isDefault": true
+                      }
+                    ],
+                    "variables": [
+                      {
+                        "artifactType": "Variable",
+                        "name": "output_1",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "id": "6427785686224030017",
+                        "node": {
+                          "nodeId": "5664647817981872780",
+                          "output": "5664647817981872780"
+                        },
+                        "referenceVariable": {
+                          "artifactType": "Variable",
+                          "name": "output_1",
+                          "scope": "NodeContext",
+                          "type": "PaiOutput",
+                          "value": "",
+                          "node": {
+                            "nodeId": "5664647817981872780",
+                            "output": "5664647817981872780",
+                            "refTableName": "oss读取"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "recurrence": "Normal",
+                  "id": "6290553884875335962",
+                  "timeout": 0,
+                  "timeoutUnit": "HOURS",
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 0,
+                  "rerunInterval": 180000,
+                  "script": {
+                    "path": "ztgtest/工作流042203/paiflow/知识库同步",
+                    "runtime": {
+                      "command": "PAI_FLOW_RAG_SYNC_INDEX",
+                      "commandTypeId": 1257,
+                      "paiflowConf": {
+                        "parameters": [
+                          {
+                            "name": "role_arn",
+                            "value": true
+                          },
+                          {
+                            "name": "embedding_batch_size",
+                            "value": 8
+                          },
+                          {
+                            "name": "create_new_version",
+                            "value": true
+                          },
+                          {
+                            "name": "training_service_config",
+                            "value": {
+                              "ecs_spec": "ecs.c6.large",
+                              "ecs_count": 1,
+                              "resourceId": "public-cluster",
+                              "userVpc": {
+                                "securityGroupId": "sg-bp12bvw84r9aubravzwm",
+                                "defaultRoute": "eth0",
+                                "switchId": "vsw-bp1ygzk1u3qp5d4p4o6rr",
+                                "vpcId": "vpc-bp1s5c5wq2k1mn7ijshik"
+                              },
+                              "maxRunningTimeInSeconds": 14400
+                            }
+                          },
+                          {
+                            "name": "execution",
+                            "value": {}
+                          },
+                          {
+                            "name": "target_index",
+                            "value": "d-xwdujn4yxxq17x71mg"
+                          }
+                        ]
+                      },
+                      "cu": "0.25"
+                    },
+                    "id": "4855876471646733618",
+                    "parameters": [
+                      {
+                        "artifactType": "Variable",
+                        "name": "input_data",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "referenceVariable": {
+                          "artifactType": "Variable",
+                          "name": "output_data",
+                          "scope": "NodeContext",
+                          "type": "PaiOutput",
+                          "value": "",
+                          "node": {
+                            "nodeId": "6520915501362995553",
+                            "output": "6520915501362995553",
+                            "refTableName": "rag"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "Serverless_res_group_524257424564736_708318845872800",
+                    "resourceGroupId": "9310001"
+                  },
+                  "name": "知识库同步",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "paiflow": {
+                      "identifier": "rag_sync_index",
+                      "annotations": {},
+                      "uuid": "pkj6hwqeowf5atk6bh",
+                      "version": "v1",
+                      "provider": "pai",
+                      "labels": {}
+                    },
+                    "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+                    "createTime": "2025-04-24 10:25:44",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "langstudio_hz_guqi_001",
+                      "projectName": "langstudio_hz_guqi_001",
+                      "projectId": "250515"
+                    },
+                    "projectId": "250515"
+                  },
+                  "inputs": {
+                    "variables": [
+                      {
+                        "inputName": "input_data",
+                        "artifactType": "Variable",
+                        "name": "output_data",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "id": "6387397211090998079",
+                        "node": {
+                          "nodeId": "6520915501362995553",
+                          "output": "6520915501362995553",
+                          "refTableName": "rag"
+                        }
+                      }
+                    ]
+                  },
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "6290553884875335962",
+                        "artifactType": "NodeOutput",
+                        "refTableName": "知识库同步",
+                        "isDefault": true
+                      }
+                    ],
+                    "variables": [
+                      {
+                        "artifactType": "Variable",
+                        "name": "output_data",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "id": "7021460679810698517",
+                        "node": {
+                          "nodeId": "6290553884875335962",
+                          "output": "6290553884875335962"
+                        },
+                        "referenceVariable": {
+                          "artifactType": "Variable",
+                          "name": "output_data",
+                          "scope": "NodeContext",
+                          "type": "PaiOutput",
+                          "value": "",
+                          "node": {
+                            "nodeId": "6290553884875335962",
+                            "output": "6290553884875335962",
+                            "refTableName": "知识库同步"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "recurrence": "Normal",
+                  "id": "6520915501362995553",
+                  "timeout": 0,
+                  "timeoutUnit": "HOURS",
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 0,
+                  "rerunInterval": 180000,
+                  "script": {
+                    "path": "ztgtest/工作流042203/paiflow/rag",
+                    "runtime": {
+                      "command": "PAI_FLOW_RAG_TEXT_PARSE_CHUNK",
+                      "commandTypeId": 1251,
+                      "paiflowConf": {
+                        "parameters": [
+                          {
+                            "name": "role_arn",
+                            "value": true
+                          },
+                          {
+                            "name": "chunk_size",
+                            "value": 1024
+                          },
+                          {
+                            "name": "chunk_overlap",
+                            "value": 20
+                          },
+                          {
+                            "name": "node_parser_type",
+                            "value": "Token"
+                          },
+                          {
+                            "name": "training_service_config",
+                            "value": {
+                              "ecs_spec": "ecs.c6.large",
+                              "ecs_count": 1,
+                              "resourceId": "public-cluster",
+                              "userVpc": {
+                                "securityGroupId": "sg-bp12bvw84r9aubravzwm",
+                                "defaultRoute": "eth0",
+                                "switchId": "vsw-bp1ygzk1u3qp5d4p4o6rr",
+                                "vpcId": "vpc-bp1s5c5wq2k1mn7ijshik"
+                              },
+                              "maxRunningTimeInSeconds": 14400
+                            }
+                          },
+                          {
+                            "name": "output_data_path",
+                            "value": "oss://ai4d-57rim54me3iczlo1s1.oss-cn-hangzhou-internal.aliyuncs.com/ztg输出目录/"
+                          },
+                          {
+                            "name": "concat_row",
+                            "value": false
+                          },
+                          {
+                            "name": "recursive",
+                            "value": true
+                          },
+                          {
+                            "name": "create_new_version",
+                            "value": false
+                          },
+                          {
+                            "name": "target_index_with_version",
+                            "value": {
+                              "datasetId": "d-xwdujn4yxxq17x71mg",
+                              "versionId": "v3"
+                            }
+                          },
+                          {
+                            "name": "execution",
+                            "value": {}
+                          }
+                        ]
+                      },
+                      "cu": "0.25"
+                    },
+                    "id": "6562498901938298035",
+                    "parameters": [
+                      {
+                        "artifactType": "Variable",
+                        "name": "input_data",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "referenceVariable": {
+                          "artifactType": "Variable",
+                          "name": "output_1",
+                          "scope": "NodeContext",
+                          "type": "PaiOutput",
+                          "value": "",
+                          "node": {
+                            "nodeId": "5664647817981872780",
+                            "output": "5664647817981872780"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "Serverless_res_group_524257424564736_708318845872800",
+                    "resourceGroupId": "9310001"
+                  },
+                  "name": "rag",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "paiflow": {
+                      "identifier": "rag_parse_chunk",
+                      "annotations": {},
+                      "uuid": "xv63n1144s3lxcfwgk",
+                      "version": "v1",
+                      "provider": "pai",
+                      "labels": {}
+                    },
+                    "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+                    "createTime": "2025-04-24 10:09:43",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "langstudio_hz_guqi_001",
+                      "projectName": "langstudio_hz_guqi_001",
+                      "projectId": "250515"
+                    },
+                    "projectId": "250515"
+                  },
+                  "inputs": {
+                    "variables": [
+                      {
+                        "inputName": "input_data",
+                        "artifactType": "Variable",
+                        "name": "output_1",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "id": "6427785686224030017",
+                        "node": {
+                          "nodeId": "5664647817981872780",
+                          "output": "5664647817981872780",
+                          "refTableName": "oss读取"
+                        }
+                      }
+                    ]
+                  },
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "6520915501362995553",
+                        "artifactType": "NodeOutput",
+                        "sourceType": "System",
+                        "refTableName": "rag",
+                        "isDefault": true
+                      }
+                    ],
+                    "variables": [
+                      {
+                        "artifactType": "Variable",
+                        "name": "output_data",
+                        "scope": "NodeContext",
+                        "type": "PaiOutput",
+                        "value": "",
+                        "id": "6387397211090998079",
+                        "node": {
+                          "nodeId": "6520915501362995553",
+                          "output": "6520915501362995553"
+                        },
+                        "referenceVariable": {
+                          "artifactType": "Variable",
+                          "name": "output_data",
+                          "scope": "NodeContext",
+                          "type": "PaiOutput",
+                          "value": "",
+                          "node": {
+                            "nodeId": "6520915501362995553",
+                            "output": "6520915501362995553",
+                            "refTableName": "rag"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "flow": [
+                {
+                  "nodeId": "6290553884875335962",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "6520915501362995553",
+                      "refTableName": "rag"
+                    }
+                  ]
+                },
+                {
+                  "nodeId": "6520915501362995553",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "5664647817981872780",
+                      "refTableName": "oss读取"
+                    }
+                  ]
+                }
+              ]
+            },
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7934541333710669409"
+              },
+              "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+              "createTime": "2025-04-24 10:07:50",
+              "schedulerNodeId": 1025471036,
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "langstudio_hz_guqi_001",
+                "projectName": "langstudio_hz_guqi_001",
+                "projectId": "250515"
+              },
+              "projectId": "250515"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "7598838183218421046",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "paiflow",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "8285641058112396902",
+            "timeout": 0,
+            "timeoutUnit": "HOURS",
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "datasource": {
+              "name": "document_test_dev",
+              "type": "odps"
+            },
+            "script": {
+              "language": "odps-sql",
+              "path": "ztgtest/工作流042203/odps",
+              "runtime": {
+                "command": "ODPS_SQL",
+                "commandTypeId": 10,
+                "cu": "0.25"
+              },
+              "id": "4825453779241984630"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 05 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "Asia/Shanghai",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_690025074182272",
+              "resourceGroupId": "8110001"
+            },
+            "name": "odps",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7934541333710669409"
+              },
+              "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+              "createTime": "2025-04-22 16:21:36",
+              "schedulerNodeId": 1025471035,
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "langstudio_hz_guqi_001",
+                "projectName": "langstudio_hz_guqi_001",
+                "projectId": "250515"
+              },
+              "projectId": "250515"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8285641058112396902",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "odps",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "8900819932290547264",
+            "timeout": 0,
+            "timeoutUnit": "HOURS",
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "datasource": {
+              "name": "document_test_dev",
+              "type": "odps"
+            },
+            "script": {
+              "language": "odps-sql",
+              "path": "ztgtest/工作流042203/odps02",
+              "runtime": {
+                "command": "ODPS_SQL",
+                "commandTypeId": 10,
+                "cu": "0.25"
+              },
+              "id": "4649059272237052980"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 13 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "Asia/Shanghai",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_690025074182272",
+              "resourceGroupId": "8110001"
+            },
+            "name": "odps02",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7934541333710669409"
+              },
+              "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+              "createTime": "2025-04-24 10:07:51",
+              "schedulerNodeId": 1025471034,
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "langstudio_hz_guqi_001",
+                "projectName": "langstudio_hz_guqi_001",
+                "projectId": "250515"
+              },
+              "projectId": "250515"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8900819932290547264",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "odps02",
+                  "isDefault": true
+                }
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "nodeId": "7598838183218421046",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "8285641058112396902",
+                "refTableName": "odps"
+              }
+            ]
+          },
+          {
+            "nodeId": "8900819932290547264",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "7598838183218421046",
+                "refTableName": "paiflow"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "flow": [
+      {
+        "nodeId": "7934541333710669409",
+        "depends": [
+          {
+            "output": "project_root"
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "tenantId": "524257424564736",
+    "innerVersion": {
+      "8900819932290547264": 3,
+      "8285641058112396902": 2,
+      "6520915501362995553": 2,
+      "7598838183218421046": 4,
+      "5664647817981872780": 1,
+      "6290553884875335962": 1
+    },
+    "projectId": "250515",
+    "uuid": "7934541333710669409"
+  }
+}

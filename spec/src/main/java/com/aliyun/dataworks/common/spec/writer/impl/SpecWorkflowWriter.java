@@ -59,9 +59,12 @@ public class SpecWorkflowWriter extends DefaultJsonObjectWriter<SpecWorkflow> {
         json.put("script", writeByWriter(specObj.getScript()));
         json.put("trigger", writeByWriter(specObj.getTrigger()));
         json.put("strategy", writeByWriter(specObj.getStrategy()));
-        json.put("nodes", Optional.ofNullable(specObj.getNodes()).map(nodes -> writerListByWriter(new ArrayList<>(nodes))).orElse(new JSONArray()));
-        json.put("dependencies", Optional.ofNullable(specObj.getDependencies()).map(dependencies -> writerListByWriter(new ArrayList<>(dependencies)))
-            .orElse(new JSONArray()));
+        if (specObj.getNodes() != null) {
+            json.put("nodes", writerListByWriter(new ArrayList<>(specObj.getNodes())));
+        }
+        if (specObj.getDependencies() != null) {
+            json.put("dependencies", writerListByWriter(new ArrayList<>(specObj.getDependencies())));
+        }
         return json;
     }
 

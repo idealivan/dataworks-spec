@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecJoinBranch json schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "nodeId": {
+      "type": "string"
+    },
+    "output": {
+      "$ref": "classpath:spec/schema/SpecNodeOutput.schema.json"
+    },
+    "assertion": {
+      "$ref": "classpath:spec/schema/SpecAssertion.schema.json"
+    }
+  },
+  "required": [
+    "assertion"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "output"
+      ]
+    },
+    {
+      "required": [
+        "nodeId"
+      ]
+    }
+  ]
+}

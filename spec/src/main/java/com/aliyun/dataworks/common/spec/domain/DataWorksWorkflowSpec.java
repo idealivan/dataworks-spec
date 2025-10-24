@@ -17,6 +17,7 @@ package com.aliyun.dataworks.common.spec.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.aliyun.dataworks.common.spec.domain.enums.SpecKind;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
@@ -82,8 +83,29 @@ public class DataWorksWorkflowSpec extends SpecRefEntity implements Spec {
     private List<SpecWorkflow> workflows;
     private List<SpecComponent> components;
     private List<SpecFlowDepend> flow;
+    private List<SpecFlowDepend> dependencies;
     private List<SpecTable> tables;
     private List<SpecDataIntegrationJob> dataIntegrationJobs;
+
+    public DataWorksWorkflowSpec setFlow(List<SpecFlowDepend> flow) {
+        this.flow = flow;
+        this.dependencies = flow;
+        return this;
+    }
+
+    public DataWorksWorkflowSpec setDependencies(List<SpecFlowDepend> dependencies) {
+        this.dependencies = dependencies;
+        this.flow = dependencies;
+        return this;
+    }
+
+    public List<SpecFlowDepend> getFlow() {
+        return Optional.ofNullable(flow).or(() -> Optional.ofNullable(dependencies)).orElse(null);
+    }
+
+    public List<SpecFlowDepend> getDependencies() {
+        return Optional.ofNullable(dependencies).or(() -> Optional.ofNullable(flow)).orElse(null);
+    }
 
     @Override
     public List<SpecKind> getKinds() {

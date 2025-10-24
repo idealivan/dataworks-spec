@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson2.JSON;
@@ -154,6 +155,7 @@ public class DataWorksNodeAdapterTest {
         Assert.assertNotNull(dowhile.getDoWhile().getSpecWhile());
         Assert.assertNotNull(dowhile.getDoWhile().getNodes());
         Assert.assertEquals(4, (int)dowhile.getDoWhile().getMaxIterations());
+        Assert.assertEquals(3, (int)dowhile.getDoWhile().getParallelism());
         DataWorksNodeAdapter dataWorksNodeAdapter = new DataWorksNodeAdapter(specObj, dowhile.getDoWhile().getSpecWhile());
         System.out.println(dataWorksNodeAdapter.getCode());
         System.out.println(dataWorksNodeAdapter.getInputs());
@@ -163,6 +165,7 @@ public class DataWorksNodeAdapterTest {
         Map<String, Object> extConfig = dowhileAdapter.getExtConfig();
         Assert.assertNotNull(extConfig);
         Assert.assertEquals(4, (int)extConfig.get(DataWorksNodeAdapter.LOOP_COUNT));
+        Assert.assertEquals(3, (int)extConfig.get(DataWorksNodeAdapter.PARALLELISM));
     }
 
     @Test
@@ -286,6 +289,8 @@ public class DataWorksNodeAdapterTest {
         Assert.assertNotNull(adapter.getExtConfig());
         Assert.assertTrue(adapter.getExtConfig().containsKey(DataWorksNodeAdapter.IGNORE_BRANCH_CONDITION_SKIP));
         Assert.assertFalse(adapter.getExtConfig().containsKey(DataWorksNodeAdapter.TIMEOUT));
+        Assert.assertTrue(adapter.getExtConfig().containsKey(DataWorksNodeAdapter.TIMEOUT_UNIT));
+        Assert.assertEquals(TimeUnit.SECONDS, adapter.getExtConfig().get(DataWorksNodeAdapter.TIMEOUT_UNIT));
 
         Assert.assertEquals(0, (int)adapter.getNodeType());
     }

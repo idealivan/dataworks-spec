@@ -1,0 +1,544 @@
+{
+  "version": "1.1.0",
+  "kind": "ManualWorkflow",
+  "spec": {
+    "name": "teest",
+    "id": "6853333959175030943",
+    "type": "ManualWorkflow",
+    "owner": "1107550004253538",
+    "nodes": [
+      {
+        "id": "6204757833136829927",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "datasource": {
+          "name": "casdcsdcadscsdwe123",
+          "type": "odps"
+        },
+        "script": {
+          "language": "odps-sql",
+          "path": "teest/005",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "7003080418784122898"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "5618870707542659121"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "005",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "6853333959175030943"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-19 15:36:36",
+          "tenantId": "524257424564736",
+          "project": {
+            "mode": "SIMPLE",
+            "projectId": "250515",
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectOwnerId": "1107550004253538",
+            "properties": {
+              "enableChangeNodeOwner": true,
+              "enableScheduler": true,
+              "operator": "1107550004253538"
+            },
+            "schedulerMaxRetryTimes": 3,
+            "schedulerRetryInterval": 120000,
+            "securityInfo": "{\"isAllowDownload\":1}",
+            "simple": true,
+            "tenantId": "524257424564736"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "6204757833136829927",
+              "artifactType": "NodeOutput",
+              "refTableName": "005",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.005",
+              "artifactType": "NodeOutput",
+              "refTableName": "005",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "7558575535269801325",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "odps-sql",
+          "path": "teest/001",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "7029229790354177352"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "7354375841603173963"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "001",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "6853333959175030943"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-18 18:49:32",
+          "tenantId": "524257424564736",
+          "project": {
+            "mode": "SIMPLE",
+            "projectId": "250515",
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectOwnerId": "1107550004253538",
+            "properties": {
+              "enableChangeNodeOwner": true,
+              "enableScheduler": true,
+              "operator": "1107550004253538"
+            },
+            "schedulerMaxRetryTimes": 3,
+            "schedulerRetryInterval": 120000,
+            "securityInfo": "{\"isAllowDownload\":1}",
+            "simple": true,
+            "tenantId": "524257424564736"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "7558575535269801325",
+              "artifactType": "NodeOutput",
+              "refTableName": "001",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.001",
+              "artifactType": "NodeOutput",
+              "refTableName": "001",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "8061101359704647839",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "odps-sql",
+          "path": "teest/003",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "8915551861415702976"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "8153127269771750477"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "003",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "6853333959175030943"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-18 18:49:59",
+          "tenantId": "524257424564736",
+          "project": {
+            "mode": "SIMPLE",
+            "projectId": "250515",
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectOwnerId": "1107550004253538",
+            "properties": {
+              "enableChangeNodeOwner": true,
+              "enableScheduler": true,
+              "operator": "1107550004253538"
+            },
+            "schedulerMaxRetryTimes": 3,
+            "schedulerRetryInterval": 120000,
+            "securityInfo": "{\"isAllowDownload\":1}",
+            "simple": true,
+            "tenantId": "524257424564736"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8061101359704647839",
+              "artifactType": "NodeOutput",
+              "refTableName": "003",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.003",
+              "artifactType": "NodeOutput",
+              "refTableName": "003",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "8182750717847929826",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "datasource": {
+          "name": "casdcsdcadscsdwe123",
+          "type": "odps"
+        },
+        "script": {
+          "language": "odps-sql",
+          "path": "teest/007",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "6838111897135253368"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "7355849852943011915"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "007",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "6853333959175030943"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-19 15:39:15",
+          "tenantId": "524257424564736",
+          "project": {
+            "mode": "SIMPLE",
+            "projectId": "250515",
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectOwnerId": "1107550004253538",
+            "properties": {
+              "enableChangeNodeOwner": true,
+              "enableScheduler": true,
+              "operator": "1107550004253538"
+            },
+            "schedulerMaxRetryTimes": 3,
+            "schedulerRetryInterval": 120000,
+            "securityInfo": "{\"isAllowDownload\":1}",
+            "simple": true,
+            "tenantId": "524257424564736"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8182750717847929826",
+              "artifactType": "NodeOutput",
+              "refTableName": "007",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.007",
+              "artifactType": "NodeOutput",
+              "refTableName": "007",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "8334015328777195696",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "odps-sql",
+          "path": "teest/004",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "8934494357289226703"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "6350498118492207380"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "004",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "6853333959175030943"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-18 19:45:24",
+          "tenantId": "524257424564736",
+          "project": {
+            "mode": "SIMPLE",
+            "projectId": "250515",
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectOwnerId": "1107550004253538",
+            "properties": {
+              "enableChangeNodeOwner": true,
+              "enableScheduler": true,
+              "operator": "1107550004253538"
+            },
+            "schedulerMaxRetryTimes": 3,
+            "schedulerRetryInterval": 120000,
+            "securityInfo": "{\"isAllowDownload\":1}",
+            "simple": true,
+            "tenantId": "524257424564736"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8334015328777195696",
+              "artifactType": "NodeOutput",
+              "refTableName": "004",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.004",
+              "artifactType": "NodeOutput",
+              "refTableName": "004",
+              "isDefault": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "8457942929642707174",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "odps-sql",
+          "path": "teest/0022",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "8267029182427007903"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "6406146361289070842"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "0022",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "container": {
+            "type": "Flow",
+            "uuid": "6853333959175030943"
+          },
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-18 18:52:49",
+          "tenantId": "524257424564736",
+          "project": {
+            "mode": "SIMPLE",
+            "projectId": "250515",
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectOwnerId": "1107550004253538",
+            "properties": {
+              "enableChangeNodeOwner": true,
+              "enableScheduler": true,
+              "operator": "1107550004253538"
+            },
+            "schedulerMaxRetryTimes": 3,
+            "schedulerRetryInterval": 120000,
+            "securityInfo": "{\"isAllowDownload\":1}",
+            "simple": true,
+            "tenantId": "524257424564736"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8457942929642707174",
+              "artifactType": "NodeOutput",
+              "refTableName": "0022",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.0022",
+              "artifactType": "NodeOutput",
+              "refTableName": "0022",
+              "isDefault": false
+            }
+          ]
+        }
+      }
+    ],
+    "flow": [
+      {
+        "nodeId": "6204757833136829927",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "8457942929642707174",
+            "refTableName": "0022"
+          },
+          {
+            "type": "Normal",
+            "output": "8457942929642707174",
+            "refTableName": "0022"
+          }
+        ]
+      },
+      {
+        "nodeId": "8061101359704647839",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "7558575535269801325",
+            "refTableName": "001"
+          }
+        ]
+      },
+      {
+        "nodeId": "8182750717847929826",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "8061101359704647839",
+            "refTableName": "003"
+          }
+        ]
+      },
+      {
+        "nodeId": "8334015328777195696",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "7558575535269801325",
+            "refTableName": "001"
+          },
+          {
+            "type": "Normal",
+            "output": "7558575535269801325",
+            "refTableName": "001"
+          },
+          {
+            "type": "Normal",
+            "output": "7558575535269801325",
+            "refTableName": "001"
+          }
+        ]
+      },
+      {
+        "nodeId": "8457942929642707174",
+        "depends": [
+          {
+            "type": "Normal",
+            "output": "7558575535269801325",
+            "refTableName": "001"
+          },
+          {
+            "type": "Normal",
+            "output": "7558575535269801325",
+            "refTableName": "001"
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "artifactType": "Variable",
+        "name": "varName",
+        "scope": "Workflow",
+        "type": "System",
+        "value": "varValue"
+      }
+    ]
+  },
+  "metadata": {
+    "tenantId": "524257424564736",
+    "projectId": "250515",
+    "uuid": "6853333959175030943"
+  }
+}

@@ -26,8 +26,9 @@ public class SpecPaiflowWriter extends DefaultJsonObjectWriter<SpecPaiflow> {
         constructedSpec.setNodes(specObj.getNodes());
         constructedSpec.setFlow(specObj.getFlow());
 
-        DataWorksWorkflowSpecWriter writer = (DataWorksWorkflowSpecWriter)WriterFactory.getWriter(DataWorksWorkflowSpec.class, context);
-        JSONObject json = writer.write(constructedSpec, context);
-        return json;
+        @SuppressWarnings("unchecked")
+        DefaultJsonObjectWriter<DataWorksWorkflowSpec> writer =
+            (DefaultJsonObjectWriter<DataWorksWorkflowSpec>)WriterFactory.getWriter(DataWorksWorkflowSpec.class, context);
+        return writer.write(constructedSpec, context);
     }
 }

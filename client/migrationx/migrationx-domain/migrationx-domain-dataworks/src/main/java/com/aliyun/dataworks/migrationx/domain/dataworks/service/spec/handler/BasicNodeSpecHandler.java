@@ -65,6 +65,7 @@ import com.aliyun.dataworks.common.spec.utils.VariableUtils;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeContext;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.nodemarket.AppConfigPack;
+import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.IoParseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.service.spec.NodeSpecAdapter;
@@ -364,13 +365,6 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
             return (Input)specVariable;
         }).collect(Collectors.toList());
 
-        Optional.ofNullable(specNode.getScript()).ifPresent(scr -> {
-            List<SpecVariable> parameters = new ArrayList<>(Optional.ofNullable(scr.getParameters()).orElse(new ArrayList<>()));
-            if (ListUtils.emptyIfNull(parameters).stream().noneMatch(p -> VariableType.NO_KV_PAIR_EXPRESSION.equals(p.getType()))) {
-                parameters.addAll(ListUtils.emptyIfNull(inputVariables).stream().map(v -> (SpecVariable)v).collect(Collectors.toList()));
-            }
-            scr.setParameters(parameters);
-        });
         specNode.setInputs(ListUtils.emptyIfNull(inputVariables).stream()
             .map(v -> (SpecVariable)v).map(SpecVariable::getReferenceVariable)
             .filter(Objects::nonNull).collect(Collectors.toList()));
@@ -455,6 +449,17 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
             case SCHEDULED: {
                 specTrigger.setType(TriggerType.SCHEDULER);
                 specTrigger.setCron(dmNodeBO.getCronExpress());
+                specTrigger.setCycleType(Optional.ofNullable(dmNodeBO.getCycleType())
+                    .map(CycleType::getCycleTypeByCode)
+                    .map(cycleType -> {
+                        switch (cycleType) {
+                            case DAY:
+                                return com.aliyun.dataworks.common.spec.domain.enums.CycleType.DAILY;
+                            case NOT_DAY:
+                                return com.aliyun.dataworks.common.spec.domain.enums.CycleType.NOT_DAILY;
+                        }
+                        return null;
+                    }).orElse(null));
                 specTrigger.setStartTime(DateUtils.convertDateToString(dmNodeBO.getStartEffectDate()));
                 specTrigger.setEndTime(DateUtils.convertDateToString(dmNodeBO.getEndEffectDate()));
                 specTrigger.setCalendarId(dmNodeBO.getCalendarId());
