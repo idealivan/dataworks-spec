@@ -1,0 +1,79 @@
+{
+  "version": "1.1.0",
+  "kind": "ManualNode",
+  "spec": {
+    "nodes": [
+      {
+        "id": "7429562982826024491",
+        "timeout": 0,
+        "rerunMode": "Allowed",
+        "rerunTimes": 0,
+        "rerunInterval": 180000,
+        "datasource": {
+          "name": "casdcsdcadscsdwe123",
+          "type": "odps"
+        },
+        "script": {
+          "language": "odps-sql",
+          "path": "手动odps01",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "7413918642445613587"
+        },
+        "trigger": {
+          "type": "Manual",
+          "id": "8205555130736223447",
+          "timezone": "Asia/Shanghai"
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "id": "4810120716840641989",
+          "resourceGroupId": "310003"
+        },
+        "name": "手动odps01",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-03-10 16:14:36",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "variables": [
+            {
+              "name": "outputs",
+              "artifactType": "Variable",
+              "scope": "NodeContext",
+              "type": "NodeOutput",
+              "value": "${outputs}",
+              "id": "7077253408982863734",
+              "node": {
+                "nodeId": "7429562982826024491"
+              },
+              "referenceVariable": {
+                "name": "outputs",
+                "artifactType": "Variable",
+                "scope": "NodeContext",
+                "type": "NodeOutput",
+                "value": "${outputs}"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "uuid": "7429562982826024491"
+  }
+}

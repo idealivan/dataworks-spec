@@ -17,6 +17,7 @@ package com.aliyun.dataworks.migrationx.domain.dataworks.service.spec;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -25,12 +26,15 @@ import com.aliyun.dataworks.common.spec.adapter.SpecHandlerContext;
 import com.aliyun.dataworks.common.spec.domain.DataWorksWorkflowSpec;
 import com.aliyun.dataworks.common.spec.domain.Specification;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
+import com.aliyun.dataworks.common.spec.domain.enums.SourceType;
 import com.aliyun.dataworks.common.spec.domain.enums.SpecKind;
+import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.DwNode;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.DwNodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
+import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.IoParseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.service.spec.entity.DwNodeEntityAdapter;
 import com.aliyun.dataworks.migrationx.domain.dataworks.service.spec.handler.BasicNodeSpecHandler;
@@ -38,6 +42,9 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.service.spec.handler.For
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author 聿剑
@@ -53,7 +60,7 @@ public class NodeSpecAdapterTest {
         dwNode.setType(CodeProgramType.CONTROLLER_TRAVERSE.getName());
         @NotNull
         BasicNodeSpecHandler handler = (BasicNodeSpecHandler)adapter.getHandler(new DwNodeEntityAdapter(dwNode), null);
-        Assert.assertNotNull(handler);
+        assertNotNull(handler);
         Assert.assertEquals(ForeachNodeSpecHandler.class, handler.getClass());
     }
 
@@ -65,7 +72,7 @@ public class NodeSpecAdapterTest {
         dwNode.setType(CodeProgramType.ODPS_SQL.getName());
         @NotNull
         BasicNodeSpecHandler handler = (BasicNodeSpecHandler)adapter.getHandler(new DwNodeEntityAdapter(dwNode), null);
-        Assert.assertNotNull(handler);
+        assertNotNull(handler);
         Assert.assertEquals(BasicNodeSpecHandler.class, handler.getClass());
     }
 
@@ -96,13 +103,13 @@ public class NodeSpecAdapterTest {
         log.info("spec: {}", spec);
 
         Specification<DataWorksWorkflowSpec> sp = SpecUtil.parseToDomain(spec);
-        Assert.assertNotNull(sp);
-        Assert.assertNotNull(sp.getSpec());
-        Assert.assertNotNull(sp.getSpec().getNodes());
+        assertNotNull(sp);
+        assertNotNull(sp.getSpec());
+        assertNotNull(sp.getSpec().getNodes());
         Assert.assertEquals(1, sp.getSpec().getNodes().size());
         SpecNode foreach = sp.getSpec().getNodes().get(0);
-        Assert.assertNotNull(foreach.getForeach());
-        Assert.assertNotNull(foreach.getForeach().getNodes());
+        assertNotNull(foreach.getForeach());
+        assertNotNull(foreach.getForeach().getNodes());
         Assert.assertEquals(3, foreach.getForeach().getNodes().size());
     }
 
@@ -128,13 +135,13 @@ public class NodeSpecAdapterTest {
         log.info("spec: {}", spec);
 
         Specification<DataWorksWorkflowSpec> sp = SpecUtil.parseToDomain(spec);
-        Assert.assertNotNull(sp);
-        Assert.assertNotNull(sp.getSpec());
-        Assert.assertNotNull(sp.getSpec().getNodes());
+        assertNotNull(sp);
+        assertNotNull(sp.getSpec());
+        assertNotNull(sp.getSpec().getNodes());
         Assert.assertEquals(1, sp.getSpec().getNodes().size());
         SpecNode foreach = sp.getSpec().getNodes().get(0);
-        Assert.assertNotNull(foreach.getForeach());
-        Assert.assertNotNull(foreach.getForeach().getNodes());
+        assertNotNull(foreach.getForeach());
+        assertNotNull(foreach.getForeach().getNodes());
         Assert.assertEquals(1, foreach.getForeach().getNodes().size());
         Assert.assertEquals(1, foreach.getForeach().getFlow().size());
     }
@@ -157,13 +164,13 @@ public class NodeSpecAdapterTest {
         String spec = adapter.getNodeSpec(new DwNodeEntityAdapter(dwNode), context);
         log.info("spec: {}", spec);
         Specification<DataWorksWorkflowSpec> sp = SpecUtil.parseToDomain(spec);
-        Assert.assertNotNull(sp);
-        Assert.assertNotNull(sp.getSpec());
-        Assert.assertNotNull(sp.getSpec().getComponents());
+        assertNotNull(sp);
+        assertNotNull(sp.getSpec());
+        assertNotNull(sp.getSpec().getComponents());
         Assert.assertEquals(1, sp.getSpec().getComponents().size());
         SpecComponent com = sp.getSpec().getComponents().get(0);
-        Assert.assertNotNull(com.getName());
-        Assert.assertNotNull(com.getId());
+        assertNotNull(com.getName());
+        assertNotNull(com.getId());
         Assert.assertEquals(3, com.getInputs().size());
     }
 
@@ -182,8 +189,33 @@ public class NodeSpecAdapterTest {
         String spec = adapter.getNodeSpec(new DwNodeEntityAdapter(dwNode), context);
         log.info("spec: {}", spec);
         Specification<DataWorksWorkflowSpec> sp = SpecUtil.parseToDomain(spec);
-        Assert.assertNotNull(sp);
-        Assert.assertNotNull(sp.getSpec());
+        assertNotNull(sp);
+        assertNotNull(sp.getSpec());
         Assert.assertEquals(SpecKind.MANUAL_NODE.getLabel(), sp.getKind());
+    }
+
+    @Test
+    public void testFlowDependSourceType() {
+        NodeSpecAdapter adapter = new NodeSpecAdapter();
+
+        DwNode dwNode = new DwNode();
+        NodeIo input1 = new DwNodeIo();
+        input1.setParseType(IoParseType.AUTO.getCode());
+        input1.setData("autotest.table1");
+        input1.setRefTableName("autotest.table1");
+        dwNode.setInputs(Collections.singletonList(input1));
+        dwNode.setType(CodeProgramType.ODPS_SQL.getName());
+
+        @NotNull
+        BasicNodeSpecHandler handler = (BasicNodeSpecHandler)adapter.getHandler(new DwNodeEntityAdapter(dwNode), null);
+        assertNotNull(handler);
+        Assert.assertEquals(BasicNodeSpecHandler.class, handler.getClass());
+        List<SpecFlowDepend> flow = adapter.toFlow(handler, new DwNodeEntityAdapter(dwNode), new SpecHandlerContext());
+        assertNotNull(flow);
+        assertEquals(1, flow.size());
+        assertNotNull(flow.get(0).getDepends());
+        assertEquals(1, flow.get(0).getDepends().size());
+        assertEquals("autotest.table1", flow.get(0).getDepends().get(0).getOutput().getData());
+        assertEquals(SourceType.CODE_PARSE, flow.get(0).getDepends().get(0).getSourceType());
     }
 }

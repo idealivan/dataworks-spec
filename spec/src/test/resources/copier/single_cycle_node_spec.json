@@ -1,0 +1,102 @@
+{
+  "kind": "CycleWorkflow",
+  "version": "1.2.0",
+  "nodes": [
+    {
+      "recurrence": "Normal",
+      "id": "4808377916897614337",
+      "timeout": 0,
+      "instanceMode": "T+1",
+      "rerunMode": "Allowed",
+      "rerunTimes": 3,
+      "rerunInterval": 120000,
+      "datasource": {
+        "name": "test_00011",
+        "type": "odps"
+      },
+      "script": {
+        "language": "odps-sql",
+        "path": "聿剑/md",
+        "runtime": {
+          "command": "ODPS_SQL",
+          "commandTypeId": 10,
+          "cu": "0.25"
+        },
+        "id": "6328183998101712324"
+      },
+      "trigger": {
+        "type": "Scheduler",
+        "cron": "00 04 00 * * ?",
+        "startTime": "1970-01-01 00:00:00",
+        "endTime": "9999-01-01 00:00:00",
+        "timezone": "Asia/Shanghai",
+        "delaySeconds": 0
+      },
+      "runtimeResource": {
+        "resourceGroup": "group_524257424564736",
+        "resourceGroupId": "1000008200005"
+      },
+      "name": "md",
+      "owner": "1107550004253538",
+      "description": "clone from node: md, uuid: 4831329057489214012",
+      "metadata": {
+        "owner": "1107550004253538",
+        "ownerName": "dw_on_emr_qa3_testcloud_com",
+        "createTime": "2025-06-13 15:49:32",
+        "tenantId": "524257424564736",
+        "project": {
+          "projectIdentifier": "yongxunQA_emr_chengdu1",
+          "projectName": "咏寻QA_emr成都回归项目",
+          "projectId": "3159"
+        },
+        "projectId": "3159"
+      },
+      "inputs": {
+        "variables": [
+          {
+            "inputName": "input1",
+            "artifactType": "Variable",
+            "name": "outputs",
+            "scope": "NodeContext",
+            "type": "NodeOutput",
+            "value": "${outputs}",
+            "id": "6949757295280191737",
+            "node": {
+              "nodeId": "5814753652441096348",
+              "output": "5814753652441096348",
+              "refTableName": "assign1"
+            }
+          }
+        ]
+      },
+      "outputs": {
+        "nodeOutputs": [
+          {
+            "data": "4808377916897614337",
+            "artifactType": "NodeOutput",
+            "refTableName": "md",
+            "isDefault": true
+          },
+          {
+            "data": "yongxunQA_emr_chengdu1.md",
+            "artifactType": "NodeOutput",
+            "refTableName": "md",
+            "isDefault": false
+          }
+        ]
+      }
+    }
+  ],
+  "flow": [
+    {
+      "nodeId": "4808377916897614337",
+      "depends": [
+        {
+          "type": "Normal",
+          "output": "5814753652441096348",
+          "refTableName": "assign1"
+        }
+      ]
+    }
+  ]
+}

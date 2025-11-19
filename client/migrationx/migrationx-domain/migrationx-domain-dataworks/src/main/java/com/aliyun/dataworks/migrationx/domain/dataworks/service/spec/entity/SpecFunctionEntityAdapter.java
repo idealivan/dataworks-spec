@@ -77,7 +77,7 @@ public class SpecFunctionEntityAdapter implements DwNodeEntity {
         return scriptRuntime.map(SpecScriptRuntime::getCommand)
             .orElseGet(() -> scriptRuntime.map(SpecScriptRuntime::getCommandTypeId)
                 .map(CodeProgramType::getNodeTypeByCode)
-                .map(CodeProgramType::getName)
+                .map(CodeProgramType::name)
                 .orElse(null));
     }
 

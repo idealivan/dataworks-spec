@@ -1,0 +1,131 @@
+{
+  "version": "1.1.0",
+  "kind": "CycleWorkflow",
+  "spec": {
+    "nodes": [
+      {
+        "recurrence": "Skip",
+        "id": "8018052533299402339",
+        "timeout": 1,
+        "instanceMode": "T+1",
+        "rerunMode": "Allowed",
+        "rerunTimes": 2,
+        "rerunInterval": 180000,
+        "script": {
+          "language": "odps-sql",
+          "path": "3232",
+          "runtime": {
+            "command": "ODPS_SQL",
+            "commandTypeId": 10,
+            "cu": "0.25"
+          },
+          "id": "7738322762670046022",
+          "parameters": [
+            {
+              "artifactType": "Variable",
+              "name": "a",
+              "scope": "NodeParameter",
+              "type": "System",
+              "value": "$[yyyymmdd-1]"
+            }
+          ]
+        },
+        "trigger": {
+          "type": "Scheduler",
+          "cron": "00 00 00 L * ?",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "Asia/Shanghai",
+          "delaySeconds": 0
+        },
+        "runtimeResource": {
+          "resourceGroup": "group_524257424564736",
+          "resourceGroupId": "310003"
+        },
+        "name": "3232",
+        "owner": "1107550004253538",
+        "metadata": {
+          "owner": "1107550004253538",
+          "ownerName": "dw_on_emr_qa3@test.aliyunid.com",
+          "createTime": "2025-02-17 18:35:09",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {
+          "nodeOutputs": [
+            {
+              "data": "langstudio_hz_guqi_001_root",
+              "artifactType": "NodeOutput"
+            }
+          ]
+        },
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "8018052533299402339",
+              "artifactType": "NodeOutput",
+              "refTableName": "3232",
+              "isDefault": true
+            },
+            {
+              "data": "langstudio_hz_guqi_001.3232",
+              "artifactType": "NodeOutput",
+              "refTableName": "3232",
+              "isDefault": false
+            }
+          ],
+          "variables": [
+            {
+              "artifactType": "Variable",
+              "name": "outputs",
+              "scope": "NodeContext",
+              "type": "NodeOutput",
+              "value": "${outputs}",
+              "id": "7106456556622580101",
+              "node": {
+                "nodeId": "8018052533299402339",
+                "output": "8018052533299402339"
+              },
+              "referenceVariable": {
+                "artifactType": "Variable",
+                "name": "outputs",
+                "scope": "NodeContext",
+                "type": "NodeOutput",
+                "value": "${outputs}",
+                "node": {
+                  "nodeId": "8018052533299402339",
+                  "output": "8018052533299402339",
+                  "refTableName": "3232"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "flow": [
+      {
+        "nodeId": "8018052533299402339",
+        "depends": [
+          {
+            "type": "CrossCycleDependsOnSelf",
+            "output": "8018052533299402339",
+            "refTableName": "3232"
+          },
+          {
+            "type": "Normal",
+            "output": "langstudio_hz_guqi_001_root"
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "uuid": "8018052533299402339"
+  }
+}

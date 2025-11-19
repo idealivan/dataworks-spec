@@ -17,10 +17,12 @@ package com.aliyun.dataworks.common.spec.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.aliyun.dataworks.common.spec.domain.enums.SpecKind;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecArtifact;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecDataIntegrationJob;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecDatasource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecDqcRule;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecFile;
@@ -28,7 +30,9 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecFileResource;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecFunction;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecRuntimeResource;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecScheduleStrategy;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecTable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
@@ -41,6 +45,7 @@ import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.COMPONENT;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.CYCLE_WORKFLOW;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.DATASOURCE;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.DATA_CATALOG;
+import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.DATA_INTEGRATION_JOB;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.DATA_QUALITY;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.FUNCTION;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.MANUAL_NODE;
@@ -48,7 +53,9 @@ import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.MANUAL_WORK
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.NODE;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.PAIFLOW;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.RESOURCE;
+import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.TABLE;
 import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.TEMPORARY_WORKFLOW;
+import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.TRIGGER_WORKFLOW;
 
 /**
  * @author yiwei.qyw
@@ -59,6 +66,7 @@ import static com.aliyun.dataworks.common.spec.domain.enums.SpecKind.TEMPORARY_W
 public class DataWorksWorkflowSpec extends SpecRefEntity implements Spec {
     private String name;
     private String type;
+    private SpecScheduleStrategy strategy;
     private String owner;
     private String description;
     private List<SpecVariable> variables;
@@ -75,12 +83,36 @@ public class DataWorksWorkflowSpec extends SpecRefEntity implements Spec {
     private List<SpecWorkflow> workflows;
     private List<SpecComponent> components;
     private List<SpecFlowDepend> flow;
+    private List<SpecFlowDepend> dependencies;
+    private List<SpecTable> tables;
+    private List<SpecDataIntegrationJob> dataIntegrationJobs;
+
+    public DataWorksWorkflowSpec setFlow(List<SpecFlowDepend> flow) {
+        this.flow = flow;
+        this.dependencies = flow;
+        return this;
+    }
+
+    public DataWorksWorkflowSpec setDependencies(List<SpecFlowDepend> dependencies) {
+        this.dependencies = dependencies;
+        this.flow = dependencies;
+        return this;
+    }
+
+    public List<SpecFlowDepend> getFlow() {
+        return Optional.ofNullable(flow).or(() -> Optional.ofNullable(dependencies)).orElse(null);
+    }
+
+    public List<SpecFlowDepend> getDependencies() {
+        return Optional.ofNullable(dependencies).or(() -> Optional.ofNullable(flow)).orElse(null);
+    }
 
     @Override
     public List<SpecKind> getKinds() {
         return Arrays.asList(
             CYCLE_WORKFLOW,
             MANUAL_WORKFLOW,
+            TRIGGER_WORKFLOW,
             MANUAL_NODE,
             TEMPORARY_WORKFLOW,
             PAIFLOW,
@@ -91,6 +123,8 @@ public class DataWorksWorkflowSpec extends SpecRefEntity implements Spec {
             COMPONENT,
             NODE,
             RESOURCE,
-            FUNCTION);
+            FUNCTION,
+            TABLE,
+            DATA_INTEGRATION_JOB);
     }
 }

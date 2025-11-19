@@ -1,0 +1,14 @@
+{
+  "kind": "ManualWorkflow",
+  "version": "1.2.0",
+  "spec": {
+    "id": "manual_workflow_uuid_1",
+    "name": "manual_workflow_1",
+    "type": "ManualWorkflow",
+    "strategy": {
+      "priority": 3,
+      "priorityWeightStrategy": "Upstream",
+      "maxInternalConcurrency": 100
+    }
+  }
+}

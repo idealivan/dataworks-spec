@@ -141,7 +141,7 @@ public class SpecDevUtil {
 
     @SuppressWarnings("unchecked")
     public static void setEnumField(Map<String, Object> ctxMap, Object object) {
-        Field[] declaredFields = object.getClass().getDeclaredFields();
+        List<Field> declaredFields = getPropertyFields(object);
         for (Field field : declaredFields) {
             Class<?> type = field.getType();
             if (type.isEnum() && LabelEnum.class.isAssignableFrom(type)) {
@@ -157,8 +157,22 @@ public class SpecDevUtil {
                     throw new SpecException(SpecErrorCode.ENUM_NOT_EXIST,
                         "Enum not found.\n" + "Enum: " + type.getSimpleName() + "\nValue:" + value);
                 }
+            } else if (type.isEnum()) {
+                String value = (String)ctxMap.get(field.getName());
+                Enum enumType = getEnumIgnoreCase(type, value);
+                Optional.ofNullable(enumType).ifPresent(e -> setValue(object, field, e));
             }
         }
+    }
+
+    private static Enum getEnumIgnoreCase(Class<?> clz, String value) {
+        for (Object enumConstant : clz.getEnumConstants()) {
+            if (enumConstant.toString().equalsIgnoreCase(value)) {
+                return (Enum)enumConstant;
+            }
+        }
+        log.warn("Enum not found by ignore case. Enum: {}, Value: {}", clz.getSimpleName(), value);
+        return null;
     }
 
     /**

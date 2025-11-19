@@ -1,0 +1,226 @@
+{
+  "version": "1.1.0",
+  "kind": "CycleWorkflow",
+  "spec": {
+    "workflows": [
+      {
+        "script": {
+          "path": "聿剑/event_trigger1",
+          "runtime": {
+            "command": "WORKFLOW"
+          },
+          "id": "8700231813314521409",
+          "parameters": [
+            {
+              "artifactType": "Variable",
+              "name": "aaa",
+              "scope": "Workflow",
+              "type": "System",
+              "value": "$[yyyymmdd]"
+            }
+          ]
+        },
+        "id": "6609968264457438084",
+        "trigger": {
+          "type": "Custom",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "Asia/Shanghai",
+          "identifier": "kafka0903"
+        },
+        "strategy": {
+          "priority": 1,
+          "priorityWeightStrategy": "Disabled",
+          "maxInternalConcurrency": 0,
+          "timeout": 0,
+          "timeoutUnit": "HOURS",
+          "rerunMode": "Allowed",
+          "rerunTimes": 3,
+          "rerunInterval": 180000,
+          "failureStrategy": "Break",
+          "recurrenceType": "NoneAuto"
+        },
+        "name": "event_trigger1",
+        "owner": "1107550004253538",
+        "citable": true,
+        "metadata": {
+          "owner": "1107550004253538",
+          "ownerName": "dw_on_emr_qa3_testcloud_com",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "6609968264457438084",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "event_trigger1",
+              "isDefault": true
+            }
+          ]
+        },
+        "nodes": [
+          {
+            "recurrence": "Normal",
+            "id": "8420325230539704586",
+            "timeout": 0,
+            "timeoutUnit": "HOURS",
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "聿剑/event_trigger1/inner_foreach1",
+              "runtime": {
+                "command": "CONTROLLER_TRAVERSE",
+                "commandTypeId": 1106,
+                "cu": "0.25"
+              },
+              "id": "6585168156935516365",
+              "parameters": [
+                {
+                  "artifactType": "Variable",
+                  "name": "loopDataArray",
+                  "scope": "NodeParameter",
+                  "type": "System",
+                  "value": "[]"
+                },
+                {
+                  "artifactType": "Variable",
+                  "name": "aaa",
+                  "scope": "Workflow",
+                  "type": "System",
+                  "value": "$[yyyymmdd]"
+                }
+              ]
+            },
+            "trigger": {
+              "type": "Custom",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "Asia/Shanghai",
+              "delaySeconds": 0,
+              "identifier": "kafka0903"
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_682622779138178",
+              "resourceGroupId": "7510001"
+            },
+            "name": "inner_foreach1",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-09-07 16:20:07",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "langstudio_hz_guqi_001",
+                "projectName": "langstudio_hz_guqi_001",
+                "projectId": "250515"
+              },
+              "projectId": "250515"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "8420325230539704586",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "inner_foreach1",
+                  "isDefault": true
+                }
+              ]
+            },
+            "for-each": {
+              "nodes": [
+                {
+                  "recurrence": "Normal",
+                  "id": "7935317510767777854",
+                  "timeout": 0,
+                  "timeoutUnit": "HOURS",
+                  "instanceMode": "T+1",
+                  "rerunMode": "Allowed",
+                  "rerunTimes": 3,
+                  "rerunInterval": 120000,
+                  "datasource": {
+                    "name": "document_test_dev",
+                    "type": "odps"
+                  },
+                  "script": {
+                    "language": "odps-sql",
+                    "path": "聿剑/event_trigger1/inner_foreach1/inner_foreach_inner_sql1",
+                    "runtime": {
+                      "command": "ODPS_SQL",
+                      "commandTypeId": 10,
+                      "cu": "0.25"
+                    },
+                    "id": "5964416926615062587"
+                  },
+                  "runtimeResource": {
+                    "resourceGroup": "Serverless_res_group_524257424564736_682622779138178",
+                    "resourceGroupId": "7510001"
+                  },
+                  "name": "inner_foreach_inner_sql1",
+                  "owner": "1107550004253538",
+                  "metadata": {
+                    "owner": "1107550004253538",
+                    "container": {
+                      "type": "Node",
+                      "uuid": "8420325230539704586"
+                    },
+                    "ownerName": "dw_on_emr_qa3_testcloud_com",
+                    "createTime": "2025-09-07 16:20:26",
+                    "tenantId": "524257424564736",
+                    "project": {
+                      "projectIdentifier": "langstudio_hz_guqi_001",
+                      "projectName": "langstudio_hz_guqi_001",
+                      "projectId": "250515"
+                    },
+                    "projectId": "250515"
+                  },
+                  "inputs": {},
+                  "outputs": {
+                    "nodeOutputs": [
+                      {
+                        "data": "7935317510767777854",
+                        "artifactType": "NodeOutput",
+                        "sourceType": "System",
+                        "refTableName": "inner_foreach_inner_sql1",
+                        "isDefault": true
+                      }
+                    ]
+                  }
+                }
+              ],
+              "flow": [
+                {
+                  "nodeId": "7935317510767777854",
+                  "depends": [
+                    {
+                      "type": "Normal",
+                      "output": "8305302544780622154",
+                      "refTableName": "traverse_start"
+                    }
+                  ]
+                }
+              ],
+              "maxIterations": 128
+            }
+          }
+        ],
+        "dependencies": []
+      }
+    ]
+  },
+  "metadata": {
+    "uuid": "7935317510767777854"
+  }
+}

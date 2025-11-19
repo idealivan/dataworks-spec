@@ -43,6 +43,7 @@ import com.aliyun.dataworks.common.spec.domain.enums.ArtifactType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRerunModeType;
+import com.aliyun.dataworks.common.spec.domain.enums.SourceType;
 import com.aliyun.dataworks.common.spec.domain.enums.TriggerType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableScopeType;
 import com.aliyun.dataworks.common.spec.domain.enums.VariableType;
@@ -64,6 +65,7 @@ import com.aliyun.dataworks.common.spec.utils.VariableUtils;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeContext;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.nodemarket.AppConfigPack;
+import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.IoParseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.service.spec.NodeSpecAdapter;
@@ -339,7 +341,7 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         List<Input> inputVariables = ListUtils.emptyIfNull(inputCtxList).stream().map(inCtx -> {
             SpecVariable specVariable = new SpecVariable();
             specVariable.setScope(VariableScopeType.NODE_CONTEXT);
-            specVariable.setType(convertParamTypeToVariableType(inCtx.getParamType()));
+            specVariable.setType(convertParamTypeToVariableType(inCtx));
             specVariable.setName(inCtx.getParamName());
             specVariable.setDescription(inCtx.getDescription());
             String[] kv = StringUtils.split(inCtx.getParamValue(), ":");
@@ -352,6 +354,7 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
                 refNode.setOutput(o);
                 ref.setNode(refNode);
                 ref.setName(kv[1]);
+                ref.setInputName(inCtx.getParamName());
                 ref.setType(VariableType.NODE_OUTPUT);
                 ref.setScope(VariableScopeType.NODE_CONTEXT);
                 specVariable.setReferenceVariable(ref);
@@ -362,11 +365,6 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
             return (Input)specVariable;
         }).collect(Collectors.toList());
 
-        Optional.ofNullable(specNode.getScript()).ifPresent(scr -> {
-            List<SpecVariable> parameters = new ArrayList<>(Optional.ofNullable(scr.getParameters()).orElse(new ArrayList<>()));
-            parameters.addAll(ListUtils.emptyIfNull(inputVariables).stream().map(v -> (SpecVariable)v).collect(Collectors.toList()));
-            scr.setParameters(parameters);
-        });
         specNode.setInputs(ListUtils.emptyIfNull(inputVariables).stream()
             .map(v -> (SpecVariable)v).map(SpecVariable::getReferenceVariable)
             .filter(Objects::nonNull).collect(Collectors.toList()));
@@ -376,7 +374,7 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         List<Output> outputVariables = ListUtils.emptyIfNull(outputCtxList).stream().map(outCtx -> {
             SpecVariable specVariable = new SpecVariable();
             specVariable.setScope(VariableScopeType.NODE_CONTEXT);
-            specVariable.setType(convertParamTypeToVariableType(outCtx.getParamType()));
+            specVariable.setType(convertParamTypeToVariableType(outCtx));
             specVariable.setName(outCtx.getParamName());
             specVariable.setValue(outCtx.getParamValue());
             specVariable.setNode(node);
@@ -385,6 +383,13 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         }).collect(Collectors.toList());
         specNode.setOutputs(outputVariables);
         specNode.getOutputs().addAll(getNodeOutputs(dmNodeBO, context));
+
+        // complete variables.node.output
+        List<SpecNodeOutput> nodeOutputs = ListUtils.emptyIfNull(specNode.getOutputs()).stream()
+            .filter(o -> o instanceof SpecNodeOutput).map(o -> (SpecNodeOutput)o).collect(Collectors.toList());
+        node.setOutput(nodeOutputs.stream()
+            .filter(o -> BooleanUtils.isTrue(o.getIsDefault())).findFirst()
+            .orElse(ListUtils.emptyIfNull(nodeOutputs).stream().findFirst().orElse(null)));
 
         // 进行排序，这样每次的spec里的input/output顺序是稳定的
         sortNodeInputOutput(specNode.getInputs());
@@ -409,7 +414,12 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         }));
     }
 
-    private static VariableType convertParamTypeToVariableType(Integer paramType) {
+    private VariableType convertParamTypeToVariableType(NodeContext param) {
+        if (param == null) {
+            return VariableType.CONSTANT;
+        }
+
+        Integer paramType = param.getParamType();
         if (paramType == null) {
             return VariableType.CONSTANT;
         }
@@ -417,6 +427,9 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
         if (1 == paramType) {
             return VariableType.CONSTANT;
         } else if (2 == paramType) {
+            if (IoParseType.MANUAL.getCode().equals(param.getParseType())) {
+                return VariableType.SYSTEM;
+            }
             return VariableType.NODE_OUTPUT;
         } else if (3 == paramType) {
             return VariableType.PASS_THROUGH;
@@ -436,6 +449,17 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
             case SCHEDULED: {
                 specTrigger.setType(TriggerType.SCHEDULER);
                 specTrigger.setCron(dmNodeBO.getCronExpress());
+                specTrigger.setCycleType(Optional.ofNullable(dmNodeBO.getCycleType())
+                    .map(CycleType::getCycleTypeByCode)
+                    .map(cycleType -> {
+                        switch (cycleType) {
+                            case DAY:
+                                return com.aliyun.dataworks.common.spec.domain.enums.CycleType.DAILY;
+                            case NOT_DAY:
+                                return com.aliyun.dataworks.common.spec.domain.enums.CycleType.NOT_DAILY;
+                        }
+                        return null;
+                    }).orElse(null));
                 specTrigger.setStartTime(DateUtils.convertDateToString(dmNodeBO.getStartEffectDate()));
                 specTrigger.setEndTime(DateUtils.convertDateToString(dmNodeBO.getEndEffectDate()));
                 specTrigger.setCalendarId(dmNodeBO.getCalendarId());
@@ -493,6 +517,21 @@ public class BasicNodeSpecHandler extends AbstractEntityHandler<DwNodeEntity, Sp
             a.setArtifactType(ArtifactType.NODE_OUTPUT);
             a.setData(out.getData());
             a.setRefTableName(out.getRefTableName());
+            Optional.ofNullable(out.getParseType()).map(IoParseType::getByCode).ifPresent(parseType -> {
+                switch (parseType) {
+                    case MANUAL:
+                    case MANUAL_SOURCE:
+                        a.setSourceType(SourceType.MANUAL);
+                        break;
+                    case SYSTEM:
+                    case SYSTEM_ASSIGN:
+                        a.setSourceType(SourceType.SYSTEM);
+                        break;
+                    case AUTO:
+                        a.setSourceType(SourceType.CODE_PARSE);
+                    default:
+                }
+            });
             a.setIsDefault(Objects.equals(IoParseType.SYSTEM.getCode(), out.getParseType()));
             return (T)a;
         }).collect(Collectors.toList());

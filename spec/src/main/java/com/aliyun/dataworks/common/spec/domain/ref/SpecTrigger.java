@@ -16,6 +16,7 @@
 package com.aliyun.dataworks.common.spec.domain.ref;
 
 import com.aliyun.dataworks.common.spec.domain.SpecRefEntity;
+import com.aliyun.dataworks.common.spec.domain.enums.CycleType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
 import com.aliyun.dataworks.common.spec.domain.enums.TriggerType;
 import lombok.Data;
@@ -30,6 +31,10 @@ import lombok.EqualsAndHashCode;
 public class SpecTrigger extends SpecRefEntity {
     private TriggerType type;
     private String cron;
+    /**
+     * 周期调度类型，日调度/非日（小时分钟）调度
+     */
+    private CycleType cycleType;
     private NodeRecurrenceType recurrence;
     private String startTime;
     private String endTime;
@@ -39,4 +44,8 @@ public class SpecTrigger extends SpecRefEntity {
      * Scheduler custom calendarId
      */
     private Long calendarId;
+    /**
+     * Scheduler custom trigger identifier
+     */
+    private String identifier;
 }

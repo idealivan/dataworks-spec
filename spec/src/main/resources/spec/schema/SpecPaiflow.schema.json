@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecPaiflow json schema",
+  "type": "object",
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "classpath:spec/schema/SpecNode.schema.json"
+      },
+      "minItems": 1
+    },
+    "flow": {
+      "type": "array",
+      "items": {
+        "$ref": "classpath:spec/schema/SpecFlowDepend.schema.json"
+      }
+    }
+  }
+}

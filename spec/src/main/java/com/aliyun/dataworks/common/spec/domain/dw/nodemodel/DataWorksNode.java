@@ -114,4 +114,13 @@ public interface DataWorksNode {
      * @return String of advance settings json
      */
     String getAdvanceSettings();
+
+    /**
+     * Node quota
+     *
+     * @return String quota
+     */
+    default String getQuota() {
+        return null;
+    }
 }

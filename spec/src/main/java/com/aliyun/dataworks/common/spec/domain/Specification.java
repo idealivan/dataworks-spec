@@ -28,4 +28,25 @@ public class Specification<T extends Spec> extends SpecEntity {
     private String version;
     private String kind;
     private T spec;
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Spec> Specification<T> ofSpec(Specification<Spec> spec) {
+        Specification<T> specification = new Specification<>();
+        specification.setMetadata(spec.getMetadata());
+        specification.setContext(spec.getContext());
+        specification.setVersion(spec.getVersion());
+        specification.setKind(spec.getKind());
+        specification.setSpec((T)spec.getSpec());
+        return specification;
+    }
+
+    public static <T extends Spec> Specification<Spec> of(Specification<T> spec) {
+        Specification<Spec> specification = new Specification<>();
+        specification.setMetadata(spec.getMetadata());
+        specification.setContext(spec.getContext());
+        specification.setVersion(spec.getVersion());
+        specification.setKind(spec.getKind());
+        specification.setSpec(spec.getSpec());
+        return specification;
+    }
 }

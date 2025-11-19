@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.aliyun.dataworks.common.spec.domain.SpecRefEntity;
 import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
+import com.aliyun.dataworks.common.spec.domain.enums.CycleType;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeInstanceModeType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
@@ -40,6 +42,7 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
+import com.aliyun.dataworks.common.spec.domain.ref.runtime.container.SpecContainer;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeContext;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.NodeType;
@@ -48,6 +51,7 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseTyp
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.RerunMode;
 import lombok.Data;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -107,7 +111,7 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
         return scriptRuntime.map(SpecScriptRuntime::getCommand)
             .orElseGet(() -> scriptRuntime.map(SpecScriptRuntime::getCommandTypeId)
                 .map(CodeProgramType::getNodeTypeByCode)
-                .map(CodeProgramType::getName)
+                .map(CodeProgramType::name)
                 .orElse(null));
     }
 
@@ -214,6 +218,13 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
 
     @Override
     public Integer getNodeType() {
+        boolean isManual = Optional.ofNullable(node).map(SpecNode::getTrigger)
+            .map(SpecTrigger::getType)
+            .map(TriggerType.MANUAL::equals)
+            .orElse(false);
+        if (isManual) {
+            return NodeType.MANUAL.getCode();
+        }
         return Optional.ofNullable(node).map(SpecNode::getRecurrence)
             .map(NodeRecurrenceType::name)
             .map(NodeType::valueOf)
@@ -231,12 +242,8 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
 
     @Override
     public NodeUseType getNodeUseType() {
-        Boolean isSchedule = Optional.ofNullable(node).map(SpecNode::getTrigger)
-            .map(SpecTrigger::getType)
-            .map(TriggerType.SCHEDULER::equals)
-            .orElse(false);
-        if (!isSchedule) {
-            return NodeUseType.MANUAL;
+        if (Optional.ofNullable(getNodeType()).filter(nodeType -> nodeType == NodeType.MANUAL.getCode()).isPresent()) {
+            return NodeUseType.MANUAL_WORKFLOW;
         }
         return Optional.of(node)
             .map(SpecNode::getRecurrence)
@@ -447,7 +454,13 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
 
     @Override
     public Integer getCycleType() {
-        return null;
+        return Optional.ofNullable(node)
+            .map(SpecNode::getTrigger)
+            .map(SpecTrigger::getCycleType)
+            .map(cycleType -> CycleType.DAILY.equals(cycleType) ?
+                com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType.DAY.getCode()
+                : com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType.NOT_DAY.getCode())
+            .orElse(null);
     }
 
     @Override
@@ -515,7 +528,15 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
         return Optional.ofNullable(node)
             .map(SpecNode::getScript)
             .map(SpecScript::getRuntime)
-            .map(SpecScriptRuntime::getSparkConf)
+            .map(runtime -> {
+                if (MapUtils.isEmpty(runtime.getEmrJobConfig()) && MapUtils.isEmpty(runtime.getSparkConf())) {
+                    return null;
+                }
+                HashMap<Object, Object> advancedSettings = new HashMap<>();
+                advancedSettings.putAll(MapUtils.emptyIfNull(runtime.getEmrJobConfig()));
+                advancedSettings.putAll(MapUtils.emptyIfNull(runtime.getSparkConf()));
+                return advancedSettings;
+            })
             .map(JSONObject::toJSONString)
             .orElse(null);
     }
@@ -549,6 +570,18 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
             .orElse(null);
     }
 
+    /**
+     * 超时时间 单位小时
+     *
+     * @return 超时时间
+     */
+    @Override
+    public Integer getAlisaTaskKillTimeout() {
+        return Optional.ofNullable(node)
+            .map(SpecNode::getTimeout)
+            .orElse(null);
+    }
+
     @Override
     public Long getParentId() {
         return DwNodeEntity.super.getParentId();
@@ -560,6 +593,16 @@ public class SpecNodeEntityAdapter implements DwNodeEntity {
             .map(SpecNode::getScript)
             .map(SpecScript::getRuntime)
             .map(SpecScriptRuntime::getCu)
+            .orElse(null);
+    }
+
+    @Override
+    public String getImageId() {
+        return Optional.ofNullable(node)
+            .map(SpecNode::getScript)
+            .map(SpecScript::getRuntime)
+            .map(SpecScriptRuntime::getContainer)
+            .map(SpecContainer::getImageId)
             .orElse(null);
     }
 

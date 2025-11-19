@@ -1,0 +1,153 @@
+{
+  "version": "1.1.0",
+  "kind": "TriggerWorkflow",
+  "spec": {
+    "name": "event_trigger1",
+    "id": "6609968264457438084",
+    "type": "TriggerWorkflow",
+    "owner": "1107550004253538",
+    "workflows": [
+      {
+        "script": {
+          "path": "聿剑/event_trigger1",
+          "runtime": {
+            "command": "WORKFLOW"
+          },
+          "id": "8700231813314521409",
+          "parameters": [
+            {
+              "artifactType": "Variable",
+              "name": "aaa",
+              "scope": "Workflow",
+              "type": "System",
+              "value": "$[yyyymmdd]"
+            }
+          ]
+        },
+        "id": "6609968264457438084",
+        "trigger": {
+          "type": "Custom",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "Asia/Shanghai",
+          "identifier": "kafka0903"
+        },
+        "strategy": {
+          "priority": 1,
+          "priorityWeightStrategy": "Disabled",
+          "maxInternalConcurrency": 0,
+          "timeout": 0,
+          "timeoutUnit": "HOURS",
+          "rerunMode": "Allowed",
+          "rerunTimes": 3,
+          "rerunInterval": 180000,
+          "failureStrategy": "Break",
+          "recurrenceType": "NoneAuto"
+        },
+        "name": "event_trigger1",
+        "owner": "1107550004253538",
+        "citable": true,
+        "metadata": {
+          "owner": "1107550004253538",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "langstudio_hz_guqi_001",
+            "projectName": "langstudio_hz_guqi_001",
+            "projectId": "250515"
+          },
+          "ownerName": "dw_on_emr_qa3_testcloud_com",
+          "projectId": "250515"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "6609968264457438084",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "event_trigger1",
+              "isDefault": true
+            }
+          ]
+        },
+        "nodes": [
+          {
+            "recurrence": "Normal",
+            "id": "7464709277962553850",
+            "timeout": 0,
+            "timeoutUnit": "HOURS",
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "datasource": {
+              "name": "document_test_dev",
+              "type": "odps"
+            },
+            "script": {
+              "language": "odps-sql",
+              "path": "聿剑/event_trigger1/xxdd",
+              "runtime": {
+                "command": "ODPS_SQL",
+                "commandTypeId": 10,
+                "cu": "0.25"
+              },
+              "id": "5195363510677189918"
+            },
+            "trigger": {
+              "type": "Custom",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "Asia/Shanghai",
+              "delaySeconds": 0,
+              "identifier": "kafka0903"
+            },
+            "runtimeResource": {
+              "resourceGroup": "Serverless_res_group_524257424564736_682622779138178",
+              "resourceGroupId": "7510001"
+            },
+            "name": "xxdd",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "6609968264457438084"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-09-04 15:26:55",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "langstudio_hz_guqi_001",
+                "projectName": "langstudio_hz_guqi_001",
+                "projectId": "250515"
+              },
+              "projectId": "250515"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "7464709277962553850",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "xxdd",
+                  "isDefault": true
+                }
+              ]
+            }
+          }
+        ],
+        "dependencies": []
+      }
+    ]
+  },
+  "metadata": {
+    "tenantId": "524257424564736",
+    "innerVersion": {
+      "7464709277962553850": 3
+    },
+    "projectId": "250515",
+    "uuid": "6609968264457438084"
+  }
+}

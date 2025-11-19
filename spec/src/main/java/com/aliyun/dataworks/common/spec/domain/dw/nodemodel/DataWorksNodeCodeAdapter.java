@@ -179,13 +179,19 @@ public class DataWorksNodeCodeAdapter implements DataWorksNodeAdapterContextAwar
             ControllerJoinCode.Branch tempBranch = null;
             String tempBranchName = null;
             Map<String, ControllerJoinCode.Branch> branchMap = new HashMap<>();
+            Integer preLogicOp = null;
             for (String token : StringUtils.split(logic, " ")) {
                 if (tempBranch == null) {
                     tempBranchName = token;
                     tempBranch = newJoinBranch(tempBranchName, branchMap);
+                    if (preLogicOp != null) {
+                        tempBranch.setLogic(preLogicOp);
+                        preLogicOp = null;
+                    }
                 } else {
+                    // logic token(and, or)
                     if (tempBranchName != null && JOIN_BRANCH_LOGICS.stream().anyMatch(l -> StringUtils.equalsIgnoreCase(l, token))) {
-                        tempBranch.setLogic(StringUtils.equalsIgnoreCase(LOGIC_AND, token) ? 1 : 0);
+                        preLogicOp = StringUtils.equalsIgnoreCase(LOGIC_AND, token) ? 1 : 0;
                         tempBranch = null;
                         tempBranchName = null;
                     } else {

@@ -43,10 +43,13 @@ public class SpecDoWhileWriter extends DefaultJsonObjectWriter<SpecDoWhile> {
         constructedSpec.setNodes(specObj.getNodes());
         constructedSpec.setFlow(specObj.getFlow());
 
-        DataWorksWorkflowSpecWriter writer = (DataWorksWorkflowSpecWriter)WriterFactory.getWriter(DataWorksWorkflowSpec.class, context);
+        @SuppressWarnings("unchecked")
+        DefaultJsonObjectWriter<DataWorksWorkflowSpec> writer =
+            (DefaultJsonObjectWriter<DataWorksWorkflowSpec>)WriterFactory.getWriter(DataWorksWorkflowSpec.class, context);
         JSONObject json = writer.write(constructedSpec, context);
         json.put(DoWhileParser.WHILE, writeByWriter(specObj.getSpecWhile()));
         json.put("maxIterations", specObj.getMaxIterations());
+        json.put("parallelism", specObj.getParallelism());
         return json;
     }
 }

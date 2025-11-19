@@ -31,4 +31,8 @@ public class SwitchResultVo {
     public Long getNextNode() {
         return nextNode;
     }
+
+    public void setNextNode(Long nextNode) {
+        this.nextNode = nextNode;
+    }
 }

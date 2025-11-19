@@ -127,13 +127,14 @@ public class DataWorksNodeInputOutputAdapter {
             .filter(dep -> DependencyType.NORMAL.equals(dep.getType()))
             .filter(dep -> dep.getOutput() == null || StringUtils.isBlank(dep.getOutput().getData()))
             .filter(dep -> dep.getNodeId() != null)
-            .map(out -> ListUtils.emptyIfNull(allNodes).stream().filter(n -> StringUtils.equals(out.getNodeId().getId(), n.getId()))
+            .map(dep -> ListUtils.emptyIfNull(allNodes).stream().filter(n -> StringUtils.equals(dep.getNodeId().getId(), n.getId()))
                 .findAny().flatMap(depNode -> depNode.getOutputs().stream()
                     .filter(o -> o instanceof SpecNodeOutput).map(o -> (SpecNodeOutput)o).findAny())
                 .map(output -> {
                     SpecNodeOutput io = new SpecNodeOutput();
                     io.setData(output.getData());
                     io.setRefTableName(output.getRefTableName());
+                    io.setSourceType(dep.getSourceType());
                     return io;
                 }).orElse(null))
             .filter(Objects::nonNull).forEach(inputs::add);
@@ -143,14 +144,15 @@ public class DataWorksNodeInputOutputAdapter {
             .orElse(ListUtils.emptyIfNull(null))
             .stream()
             .filter(dep -> DependencyType.NORMAL.equals(dep.getType()))
-            .map(SpecDepend::getOutput)
-            .filter(Objects::nonNull)
-            .map(out -> {
+            .map(dep -> Optional.ofNullable(dep.getOutput()).map(out -> {
                 SpecNodeOutput io = new SpecNodeOutput();
                 io.setData(out.getData());
                 io.setRefTableName(out.getRefTableName());
+                io.setSourceType(dep.getSourceType());
                 return io;
-            }).forEach(inputs::add);
+            }).orElse(null))
+            .filter(Objects::nonNull)
+            .forEach(inputs::add);
         return inputs;
     }
 
@@ -176,15 +178,13 @@ public class DataWorksNodeInputOutputAdapter {
     }
 
     private String getInputContextKey(SpecVariable i) {
-        return Optional.ofNullable(objectDelegate.getScript()).map(SpecScript::getParameters)
-            .map(params -> params.stream()
+        return Optional.ofNullable(objectDelegate.getScript())
+            .map(SpecScript::getParameters).flatMap(params -> params.stream()
                 .filter(param -> param.getReferenceVariable() != null)
                 .filter(param -> matchVariable(i, param.getReferenceVariable()))
-                .map(SpecVariable::getName).findAny()
-                .orElseThrow(() -> new SpecException(SpecErrorCode.PARSE_ERROR,
-                    "inputs variable missing binding in script.parameters: " + i.getName())))
-            .orElseThrow(() -> new SpecException(SpecErrorCode.PARSE_ERROR,
-                "inputs variable missing binding in script.parameters: " + i.getName()));
+                .map(SpecVariable::getName).findAny())
+            .or(() -> Optional.ofNullable(i.getInputName()))
+            .orElseThrow(() -> new SpecException(SpecErrorCode.PARSE_ERROR, "inputs variable missing binding in script.parameters: " + i.getName()));
     }
 
     private static boolean matchVariable(SpecVariable varA, SpecVariable varB) {

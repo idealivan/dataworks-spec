@@ -34,6 +34,7 @@ public class DataWorksWorkflowSpecParser extends SpecParser<DataWorksWorkflowSpe
         DataWorksWorkflowSpec specObj = instantiateSpecObject();
         specParserContext.setIgnoreMissingFields(true);
         SpecDevUtil.setSimpleField(rawContext, specObj);
+        SpecDevUtil.setEnumField(rawContext, specObj);
         parseSpecObjectFields(specObj, rawContext, specParserContext);
         return specObj;
     }

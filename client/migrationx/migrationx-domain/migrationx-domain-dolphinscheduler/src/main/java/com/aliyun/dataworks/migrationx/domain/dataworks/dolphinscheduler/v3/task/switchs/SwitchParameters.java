@@ -70,4 +70,8 @@ public class SwitchParameters extends AbstractParameters {
     public Long getNextNode() {
         return nextNode;
     }
+
+    public void setNextNode(Long nextNode) {
+        this.nextNode = nextNode;
+    }
 }
