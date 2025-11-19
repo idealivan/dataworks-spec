@@ -1,7 +1,10 @@
 package com.aliyun.dataworks.migrationx.domain.dataworks.service.spec;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Date;
+
+import com.alibaba.fastjson2.JSONObject;
 
 import com.aliyun.dataworks.common.spec.domain.DataWorksWorkflowSpec;
 import com.aliyun.dataworks.common.spec.domain.Specification;
@@ -38,6 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Desc:
  *
@@ -63,32 +68,32 @@ public class NodeSpecUpdateAdapterTest {
         DataWorksWorkflowSpec spec = specification.getSpec();
         SpecNode specNode = spec.getNodes().stream().findFirst().orElse(null);
         Assert.assertNotNull(specNode);
-        Assert.assertEquals(String.valueOf(file.getFileId()), specNode.getId());
-        Assert.assertEquals(file.getFileName(), specNode.getName());
-        Assert.assertEquals(file.getFileDesc(), specNode.getDescription());
-        Assert.assertEquals("test/path/test_file_name", specNode.getScript().getPath());
-        Assert.assertEquals(CodeProgramType.ODPS_SQL.name(), specNode.getScript().getRuntime().getCommand());
-        Assert.assertEquals(file.getOwner(), specNode.getOwner());
-        Assert.assertEquals(file.getContent(), specNode.getScript().getContent());
+        assertEquals(String.valueOf(file.getFileId()), specNode.getId());
+        assertEquals(file.getFileName(), specNode.getName());
+        assertEquals(file.getFileDesc(), specNode.getDescription());
+        assertEquals("test/path/test_file_name", specNode.getScript().getPath());
+        assertEquals(CodeProgramType.ODPS_SQL.name(), specNode.getScript().getRuntime().getCommand());
+        assertEquals(file.getOwner(), specNode.getOwner());
+        assertEquals(file.getContent(), specNode.getScript().getContent());
 
-        Assert.assertEquals(fileNodeCfg.getTaskRerunTime(), specNode.getRerunTimes());
-        Assert.assertEquals(fileNodeCfg.getTaskRerunInterval(), specNode.getRerunInterval());
-        Assert.assertEquals(NodeRerunModeType.ALL_ALLOWED, specNode.getRerunMode());
-        Assert.assertEquals(3, specNode.getScript().getParameters().size());
-        Assert.assertEquals("aaa", specNode.getScript().getParameters().get(0).getName());
-        Assert.assertEquals("1", specNode.getScript().getParameters().get(0).getValue());
-        Assert.assertEquals("bbb", specNode.getScript().getParameters().get(1).getName());
-        Assert.assertEquals("2", specNode.getScript().getParameters().get(1).getValue());
-        Assert.assertEquals(fileNodeCfg.getCronExpress(), specNode.getTrigger().getCron());
+        assertEquals(fileNodeCfg.getTaskRerunTime(), specNode.getRerunTimes());
+        assertEquals(fileNodeCfg.getTaskRerunInterval(), specNode.getRerunInterval());
+        assertEquals(NodeRerunModeType.ALL_ALLOWED, specNode.getRerunMode());
+        assertEquals(3, specNode.getScript().getParameters().size());
+        assertEquals("aaa", specNode.getScript().getParameters().get(0).getName());
+        assertEquals("1", specNode.getScript().getParameters().get(0).getValue());
+        assertEquals("bbb", specNode.getScript().getParameters().get(1).getName());
+        assertEquals("2", specNode.getScript().getParameters().get(1).getValue());
+        assertEquals(fileNodeCfg.getCronExpress(), specNode.getTrigger().getCron());
         Assert.assertNotNull(specNode.getTrigger().getStartTime());
         Assert.assertNotNull(specNode.getTrigger().getEndTime());
-        Assert.assertEquals(NodeInstanceModeType.IMMEDIATELY, specNode.getInstanceMode());
-        Assert.assertEquals(false, specNode.getAutoParse());
+        assertEquals(NodeInstanceModeType.IMMEDIATELY, specNode.getInstanceMode());
+        assertEquals(false, specNode.getAutoParse());
         Assert.assertNull(specNode.getIgnoreBranchConditionSkip());
-        Assert.assertEquals("ccc", specNode.getScript().getParameters().get(2).getName());
+        assertEquals("ccc", specNode.getScript().getParameters().get(2).getName());
         Assert.assertNull(specNode.getScript().getParameters().get(2).getValue());
 
-        Assert.assertEquals(2, specNode.getInputs().size());
+        assertEquals(2, specNode.getInputs().size());
     }
 
     @Test
@@ -108,7 +113,7 @@ public class NodeSpecUpdateAdapterTest {
         new NodeSpecUpdateAdapter().updateSpecification(adapter, specification);
         SpecNode specNode = specification.getSpec().getNodes().stream().findFirst().orElse(null);
         Assert.assertNotNull(specNode);
-        Assert.assertEquals(file.getFileDesc(), specNode.getDescription());
+        assertEquals(file.getFileDesc(), specNode.getDescription());
     }
 
     @Test
@@ -122,26 +127,26 @@ public class NodeSpecUpdateAdapterTest {
         adapter.setFile(file);
         adapter.setFileNodeCfg(fileNodeCfg);
 
-        Assert.assertEquals(String.valueOf(file.getFileId()), adapter.getUuid());
-        Assert.assertEquals(file.getFileFolderPath(), adapter.getFolder());
-        Assert.assertEquals(file.getFileName(), adapter.getName());
-        Assert.assertEquals(file.getFileType(), adapter.getTypeId());
-        Assert.assertEquals(file.getOwner(), adapter.getOwner());
-        Assert.assertEquals(file.getContent(), adapter.getCode());
-        Assert.assertEquals(file.getFileDesc(), adapter.getDescription());
+        assertEquals(String.valueOf(file.getFileId()), adapter.getUuid());
+        assertEquals(file.getFileFolderPath(), adapter.getFolder());
+        assertEquals(file.getFileName(), adapter.getName());
+        assertEquals(file.getFileType(), adapter.getTypeId());
+        assertEquals(file.getOwner(), adapter.getOwner());
+        assertEquals(file.getContent(), adapter.getCode());
+        assertEquals(file.getFileDesc(), adapter.getDescription());
 
-        Assert.assertEquals(fileNodeCfg.getTaskRerunTime(), adapter.getTaskRerunTime());
-        Assert.assertEquals(fileNodeCfg.getTaskRerunInterval(), adapter.getTaskRerunInterval());
-        Assert.assertEquals(fileNodeCfg.getStartEffectDate(), adapter.getStartEffectDate());
-        Assert.assertEquals(fileNodeCfg.getEndEffectDate(), adapter.getEndEffectDate());
-        Assert.assertEquals(fileNodeCfg.getCronExpress(), adapter.getCronExpress());
-        Assert.assertEquals(fileNodeCfg.getCycleType(), adapter.getCycleType());
-        Assert.assertEquals(fileNodeCfg.getIsAutoParse(), adapter.getIsAutoParse());
-        Assert.assertEquals(fileNodeCfg.getNodeType(), adapter.getNodeType());
-        Assert.assertEquals(fileNodeCfg.getStartRightNow(), adapter.getStartRightNow());
-        Assert.assertEquals(fileNodeCfg.getParaValue(), adapter.getParameter());
-        Assert.assertEquals(adapter.getInputContexts().size(), 1);
-        Assert.assertEquals(adapter.getNodeType(), (Integer)NodeType.NORMAL.getCode());
+        assertEquals(fileNodeCfg.getTaskRerunTime(), adapter.getTaskRerunTime());
+        assertEquals(fileNodeCfg.getTaskRerunInterval(), adapter.getTaskRerunInterval());
+        assertEquals(fileNodeCfg.getStartEffectDate(), adapter.getStartEffectDate());
+        assertEquals(fileNodeCfg.getEndEffectDate(), adapter.getEndEffectDate());
+        assertEquals(fileNodeCfg.getCronExpress(), adapter.getCronExpress());
+        assertEquals(fileNodeCfg.getCycleType(), adapter.getCycleType());
+        assertEquals(fileNodeCfg.getIsAutoParse(), adapter.getIsAutoParse());
+        assertEquals(fileNodeCfg.getNodeType(), adapter.getNodeType());
+        assertEquals(fileNodeCfg.getStartRightNow(), adapter.getStartRightNow());
+        assertEquals(fileNodeCfg.getParaValue(), adapter.getParameter());
+        assertEquals(adapter.getInputContexts().size(), 1);
+        assertEquals(adapter.getNodeType(), (Integer)NodeType.NORMAL.getCode());
 
         Assert.assertNull(adapter.getBizId());
         Assert.assertNull(adapter.getBizName());
@@ -150,13 +155,13 @@ public class NodeSpecUpdateAdapterTest {
         Assert.assertNull(adapter.getDiResourceGroup());
         Assert.assertNull(adapter.getDiResourceGroupName());
         Assert.assertNull(adapter.getCodeMode());
-        Assert.assertEquals(adapter.getRerunMode(), RerunMode.ALL_ALLOWED);
+        assertEquals(adapter.getRerunMode(), RerunMode.ALL_ALLOWED);
         Assert.assertNull(adapter.getPauseSchedule());
-        Assert.assertEquals(adapter.getNodeUseType(), NodeUseType.SCHEDULED);
+        assertEquals(adapter.getNodeUseType(), NodeUseType.SCHEDULED);
         Assert.assertNull(adapter.getRef());
         Assert.assertNull(adapter.getRoot());
         Assert.assertNull(adapter.getOutputContexts());
-        Assert.assertEquals(adapter.getInnerNodes(), Collections.emptyList());
+        assertEquals(adapter.getInnerNodes(), Collections.emptyList());
         Assert.assertNull(adapter.getDependentType());
         Assert.assertNull(adapter.getLastModifyTime());
         Assert.assertNull(adapter.getLastModifyUser());
@@ -261,45 +266,45 @@ public class NodeSpecUpdateAdapterTest {
         specNodeEntityAdapter.setNode(specNode);
         specNodeEntityAdapter.setSpecDepends(Collections.singletonList(specDepend));
 
-        Assert.assertEquals(specNodeEntityAdapter.getUuid(), specNode.getId());
-        Assert.assertEquals(specNodeEntityAdapter.getName(), specNode.getName());
-        Assert.assertEquals(specNodeEntityAdapter.getDescription(), specNode.getDescription());
-        Assert.assertEquals(specNodeEntityAdapter.getOwner(), specNode.getOwner());
-        Assert.assertEquals(specNodeEntityAdapter.getFolder(), "path");
-        Assert.assertEquals(specNodeEntityAdapter.getCode(), script.getContent());
-        Assert.assertEquals(specNodeEntityAdapter.getType(), runtime.getCommand());
-        Assert.assertEquals(specNodeEntityAdapter.getResourceGroup(), specRuntimeResource.getResourceGroup());
-        Assert.assertEquals(specNodeEntityAdapter.getResourceGroupName(), specRuntimeResource.getResourceGroup());
+        assertEquals(specNodeEntityAdapter.getUuid(), specNode.getId());
+        assertEquals(specNodeEntityAdapter.getName(), specNode.getName());
+        assertEquals(specNodeEntityAdapter.getDescription(), specNode.getDescription());
+        assertEquals(specNodeEntityAdapter.getOwner(), specNode.getOwner());
+        assertEquals(specNodeEntityAdapter.getFolder(), "path");
+        assertEquals(specNodeEntityAdapter.getCode(), script.getContent());
+        assertEquals(specNodeEntityAdapter.getType(), runtime.getCommand());
+        assertEquals(specNodeEntityAdapter.getResourceGroup(), specRuntimeResource.getResourceGroup());
+        assertEquals(specNodeEntityAdapter.getResourceGroupName(), specRuntimeResource.getResourceGroup());
 
-        Assert.assertEquals(specNodeEntityAdapter.getConnection(), specDatasource.getName());
-        Assert.assertEquals(specNodeEntityAdapter.getOutputs().get(0).getData(), specNodeOutput.getData());
-        Assert.assertEquals(specNodeEntityAdapter.getInputs().get(0).getData(), input.getData());
+        assertEquals(specNodeEntityAdapter.getConnection(), specDatasource.getName());
+        assertEquals(specNodeEntityAdapter.getOutputs().get(0).getData(), specNodeOutput.getData());
+        assertEquals(specNodeEntityAdapter.getInputs().get(0).getData(), input.getData());
 
-        Assert.assertEquals(specNodeEntityAdapter.getCronExpress(), "0 0 0 * * ?");
-        Assert.assertEquals(specNodeEntityAdapter.getStartEffectDate(), DateUtils.convertStringToDate("1970-01-01 00:00:00"));
-        Assert.assertEquals(specNodeEntityAdapter.getEndEffectDate(), DateUtils.convertStringToDate("2025-01-01 00:00:00"));
+        assertEquals(specNodeEntityAdapter.getCronExpress(), "0 0 0 * * ?");
+        assertEquals(specNodeEntityAdapter.getStartEffectDate(), DateUtils.convertStringToDate("1970-01-01 00:00:00"));
+        assertEquals(specNodeEntityAdapter.getEndEffectDate(), DateUtils.convertStringToDate("2025-01-01 00:00:00"));
 
         Assert.assertNull(specNodeEntityAdapter.getBizId());
         Assert.assertNull(specNodeEntityAdapter.getBizName());
-        Assert.assertEquals(specNodeEntityAdapter.getTypeId(), (Integer)CodeProgramType.ODPS_SQL.getCode());
+        assertEquals(specNodeEntityAdapter.getTypeId(), (Integer)CodeProgramType.ODPS_SQL.getCode());
         Assert.assertNull(specNodeEntityAdapter.getDiResourceGroup());
         Assert.assertNull(specNodeEntityAdapter.getDiResourceGroupName());
         Assert.assertNull(specNodeEntityAdapter.getCodeMode());
-        Assert.assertEquals(specNodeEntityAdapter.getStartRightNow(), false);
-        Assert.assertEquals(specNodeEntityAdapter.getRerunMode(), RerunMode.UNKNOWN);
+        assertEquals(specNodeEntityAdapter.getStartRightNow(), false);
+        assertEquals(specNodeEntityAdapter.getRerunMode(), RerunMode.UNKNOWN);
         Assert.assertNull(specNodeEntityAdapter.getNodeType());
-        Assert.assertEquals(specNodeEntityAdapter.getPauseSchedule(), false);
-        Assert.assertEquals(specNodeEntityAdapter.getIsAutoParse(), Integer.valueOf(0));
-        Assert.assertEquals(specNodeEntityAdapter.getNodeUseType(), NodeUseType.SCHEDULED);
+        assertEquals(specNodeEntityAdapter.getPauseSchedule(), false);
+        assertEquals(specNodeEntityAdapter.getIsAutoParse(), Integer.valueOf(0));
+        assertEquals(specNodeEntityAdapter.getNodeUseType(), NodeUseType.SCHEDULED);
         Assert.assertNull(specNodeEntityAdapter.getRef());
         Assert.assertNull(specNodeEntityAdapter.getRoot());
         Assert.assertNull(specNodeEntityAdapter.getParameter());
         Assert.assertNull(specNodeEntityAdapter.getInputContexts());
-        Assert.assertEquals(specNodeEntityAdapter.getOutputContexts(), Collections.emptyList());
-        Assert.assertEquals(specNodeEntityAdapter.getInnerNodes(), Collections.emptyList());
+        assertEquals(specNodeEntityAdapter.getOutputContexts(), Collections.emptyList());
+        assertEquals(specNodeEntityAdapter.getInnerNodes(), Collections.emptyList());
         Assert.assertNull(specNodeEntityAdapter.getTaskRerunTime());
         Assert.assertNull(specNodeEntityAdapter.getTaskRerunInterval());
-        Assert.assertEquals(specNodeEntityAdapter.getDependentType(), (Integer)DependentType.NONE.getValue());
+        assertEquals(specNodeEntityAdapter.getDependentType(), (Integer)DependentType.NONE.getValue());
         Assert.assertNull(specNodeEntityAdapter.getCycleType());
         Assert.assertNull(specNodeEntityAdapter.getLastModifyTime());
         Assert.assertNull(specNodeEntityAdapter.getLastModifyUser());
@@ -351,20 +356,20 @@ public class NodeSpecUpdateAdapterTest {
         SpecFileResourceEntityAdapter specFileResourceEntityAdapter = new SpecFileResourceEntityAdapter();
         specFileResourceEntityAdapter.setSpecFileResource(specFileResource);
 
-        Assert.assertEquals(specFileResourceEntityAdapter.getUuid(), specFileResource.getId());
-        Assert.assertEquals(specFileResourceEntityAdapter.getName(), specFileResource.getName());
+        assertEquals(specFileResourceEntityAdapter.getUuid(), specFileResource.getId());
+        assertEquals(specFileResourceEntityAdapter.getName(), specFileResource.getName());
         Assert.assertNull(specFileResourceEntityAdapter.getDescription());
         Assert.assertNull(specFileResourceEntityAdapter.getOwner());
-        Assert.assertEquals(specFileResourceEntityAdapter.getFolder(), "path/to");
-        Assert.assertEquals(specFileResourceEntityAdapter.getCode(), script.getContent());
-        Assert.assertEquals(specFileResourceEntityAdapter.getType(), runtime.getCommand());
-        Assert.assertEquals(specFileResourceEntityAdapter.getResourceGroup(), runtimeResource.getResourceGroup());
-        Assert.assertEquals(specFileResourceEntityAdapter.getResourceGroupName(), runtimeResource.getResourceGroup());
-        Assert.assertEquals(specFileResourceEntityAdapter.getConnection(), datasource.getName());
+        assertEquals(specFileResourceEntityAdapter.getFolder(), "path/to");
+        assertEquals(specFileResourceEntityAdapter.getCode(), script.getContent());
+        assertEquals(specFileResourceEntityAdapter.getType(), runtime.getCommand());
+        assertEquals(specFileResourceEntityAdapter.getResourceGroup(), runtimeResource.getResourceGroup());
+        assertEquals(specFileResourceEntityAdapter.getResourceGroupName(), runtimeResource.getResourceGroup());
+        assertEquals(specFileResourceEntityAdapter.getConnection(), datasource.getName());
 
         Assert.assertNull(specFileResourceEntityAdapter.getBizId());
         Assert.assertNull(specFileResourceEntityAdapter.getBizName());
-        Assert.assertEquals(specFileResourceEntityAdapter.getTypeId(), (Integer)CodeProgramType.ODPS_JAR.getCode());
+        assertEquals(specFileResourceEntityAdapter.getTypeId(), (Integer)CodeProgramType.ODPS_JAR.getCode());
         Assert.assertNull(specFileResourceEntityAdapter.getCronExpress());
         Assert.assertNull(specFileResourceEntityAdapter.getStartEffectDate());
         Assert.assertNull(specFileResourceEntityAdapter.getEndEffectDate());
@@ -375,14 +380,14 @@ public class NodeSpecUpdateAdapterTest {
         Assert.assertNull(specFileResourceEntityAdapter.getRerunMode());
         Assert.assertNull(specFileResourceEntityAdapter.getNodeType());
         Assert.assertNull(specFileResourceEntityAdapter.getPauseSchedule());
-        Assert.assertEquals(specFileResourceEntityAdapter.getIsAutoParse(), Integer.valueOf(0));
+        assertEquals(specFileResourceEntityAdapter.getIsAutoParse(), Integer.valueOf(0));
         Assert.assertNull(specFileResourceEntityAdapter.getNodeUseType());
         Assert.assertNull(specFileResourceEntityAdapter.getRef());
         Assert.assertNull(specFileResourceEntityAdapter.getRoot());
         Assert.assertNull(specFileResourceEntityAdapter.getParameter());
-        Assert.assertEquals(specFileResourceEntityAdapter.getInputContexts(), Collections.emptyList());
-        Assert.assertEquals(specFileResourceEntityAdapter.getOutputContexts(), Collections.emptyList());
-        Assert.assertEquals(specFileResourceEntityAdapter.getInnerNodes(), Collections.emptyList());
+        assertEquals(specFileResourceEntityAdapter.getInputContexts(), Collections.emptyList());
+        assertEquals(specFileResourceEntityAdapter.getOutputContexts(), Collections.emptyList());
+        assertEquals(specFileResourceEntityAdapter.getInnerNodes(), Collections.emptyList());
         Assert.assertNull(specFileResourceEntityAdapter.getTaskRerunTime());
         Assert.assertNull(specFileResourceEntityAdapter.getTaskRerunInterval());
         Assert.assertNull(specFileResourceEntityAdapter.getDependentType());
@@ -440,20 +445,20 @@ public class NodeSpecUpdateAdapterTest {
         specFunctionEntityAdapter.setSpecFunction(specFunction);
 
         // 验证 SpecFunctionEntityAdapter 的属性
-        Assert.assertEquals(specFunctionEntityAdapter.getUuid(), specFunction.getId());
-        Assert.assertEquals(specFunctionEntityAdapter.getName(), specFunction.getName());
+        assertEquals(specFunctionEntityAdapter.getUuid(), specFunction.getId());
+        assertEquals(specFunctionEntityAdapter.getName(), specFunction.getName());
         Assert.assertNull(specFunctionEntityAdapter.getDescription());
         Assert.assertNull(specFunctionEntityAdapter.getOwner());
-        Assert.assertEquals(specFunctionEntityAdapter.getFolder(), "path/to");
-        Assert.assertEquals(specFunctionEntityAdapter.getCode(), script.getContent());
-        Assert.assertEquals(specFunctionEntityAdapter.getType(), runtime.getCommand());
-        Assert.assertEquals(specFunctionEntityAdapter.getResourceGroup(), runtimeResource.getResourceGroup());
-        Assert.assertEquals(specFunctionEntityAdapter.getResourceGroupName(), runtimeResource.getResourceGroup());
-        Assert.assertEquals(specFunctionEntityAdapter.getConnection(), datasource.getName());
+        assertEquals(specFunctionEntityAdapter.getFolder(), "path/to");
+        assertEquals(specFunctionEntityAdapter.getCode(), script.getContent());
+        assertEquals(specFunctionEntityAdapter.getType(), runtime.getCommand());
+        assertEquals(specFunctionEntityAdapter.getResourceGroup(), runtimeResource.getResourceGroup());
+        assertEquals(specFunctionEntityAdapter.getResourceGroupName(), runtimeResource.getResourceGroup());
+        assertEquals(specFunctionEntityAdapter.getConnection(), datasource.getName());
 
         Assert.assertNull(specFunctionEntityAdapter.getBizId());
         Assert.assertNull(specFunctionEntityAdapter.getBizName());
-        Assert.assertEquals(specFunctionEntityAdapter.getTypeId(), (Integer)CodeProgramType.ODPS_FUNCTION.getCode());
+        assertEquals(specFunctionEntityAdapter.getTypeId(), (Integer)CodeProgramType.ODPS_FUNCTION.getCode());
         Assert.assertNull(specFunctionEntityAdapter.getCronExpress());
         Assert.assertNull(specFunctionEntityAdapter.getStartEffectDate());
         Assert.assertNull(specFunctionEntityAdapter.getEndEffectDate());
@@ -464,14 +469,14 @@ public class NodeSpecUpdateAdapterTest {
         Assert.assertNull(specFunctionEntityAdapter.getRerunMode());
         Assert.assertNull(specFunctionEntityAdapter.getNodeType());
         Assert.assertNull(specFunctionEntityAdapter.getPauseSchedule());
-        Assert.assertEquals(specFunctionEntityAdapter.getIsAutoParse(), Integer.valueOf(0));
+        assertEquals(specFunctionEntityAdapter.getIsAutoParse(), Integer.valueOf(0));
         Assert.assertNull(specFunctionEntityAdapter.getNodeUseType());
         Assert.assertNull(specFunctionEntityAdapter.getRef());
         Assert.assertNull(specFunctionEntityAdapter.getRoot());
         Assert.assertNull(specFunctionEntityAdapter.getParameter());
-        Assert.assertEquals(specFunctionEntityAdapter.getInputContexts(), Collections.emptyList());
-        Assert.assertEquals(specFunctionEntityAdapter.getOutputContexts(), Collections.emptyList());
-        Assert.assertEquals(specFunctionEntityAdapter.getInnerNodes(), Collections.emptyList());
+        assertEquals(specFunctionEntityAdapter.getInputContexts(), Collections.emptyList());
+        assertEquals(specFunctionEntityAdapter.getOutputContexts(), Collections.emptyList());
+        assertEquals(specFunctionEntityAdapter.getInnerNodes(), Collections.emptyList());
         Assert.assertNull(specFunctionEntityAdapter.getTaskRerunTime());
         Assert.assertNull(specFunctionEntityAdapter.getTaskRerunInterval());
         Assert.assertNull(specFunctionEntityAdapter.getDependentType());
@@ -493,10 +498,36 @@ public class NodeSpecUpdateAdapterTest {
         Assert.assertNull(specFunctionEntityAdapter.getStreamLaunchMode());
         Assert.assertNull(specFunctionEntityAdapter.getIgnoreBranchConditionSkip());
         Assert.assertNull(specFunctionEntityAdapter.getParentId());
-        Assert.assertEquals(specFunctionEntityAdapter.getCu(), runtime.getCu());
+        assertEquals(specFunctionEntityAdapter.getCu(), runtime.getCu());
         Assert.assertNull(specFunctionEntityAdapter.getOrigin());
         Assert.assertNull(specFunctionEntityAdapter.getWorkflowName());
         Assert.assertNull(specFunctionEntityAdapter.getConfigPack());
     }
 
+    @Test
+    public void testParseEmrCode() throws Exception {
+        Method method = NodeSpecUpdateAdapter.class.getDeclaredMethod("parseEmrCode", SpecScriptRuntime.class, String.class);
+        method.setAccessible(true);
+
+        JSONObject advanceSettings = new JSONObject();
+        advanceSettings.put("priority", "1");
+        advanceSettings.put("vcores", "4");
+        advanceSettings.put("memory", "8g");
+        advanceSettings.put("queue", "default");
+        advanceSettings.put("userName", "admin");
+
+        advanceSettings.put("SPARK_CONF", "--conf spark.driver.memory=2g");
+
+        NodeSpecUpdateAdapter nodeSpecUpdateAdapter = new NodeSpecUpdateAdapter();
+        SpecScriptRuntime runtime = new SpecScriptRuntime();
+        method.invoke(nodeSpecUpdateAdapter, runtime, advanceSettings.toJSONString());
+
+        assertEquals("1", runtime.getEmrJobConfig().get("priority"));
+        assertEquals("4", runtime.getEmrJobConfig().get("cores"));
+        assertEquals("8g", runtime.getEmrJobConfig().get("memory"));
+        assertEquals("default", runtime.getEmrJobConfig().get("queue"));
+        assertEquals("admin", runtime.getEmrJobConfig().get("submitter"));
+
+        assertEquals("--conf spark.driver.memory=2g", runtime.getSparkConf().get("SPARK_CONF"));
+    }
 }

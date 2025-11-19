@@ -26,11 +26,13 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecFile;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecRuntimeResource;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecScheduleStrategy;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.file.SpecLocalFile;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
+import com.aliyun.dataworks.common.spec.domain.ref.runtime.container.SpecContainer;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.File;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.FileDetail;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.FileNodeCfg;
@@ -339,6 +341,7 @@ public class DataWorksSpecNodeConverter {
                 nd.setOutputs(specWorkflow.getOutputs());
                 nd.setTrigger(specWorkflow.getTrigger());
                 nd.setDescription(specWorkflow.getDescription());
+                nd.setRecurrence(Optional.ofNullable(specWorkflow.getStrategy()).map(SpecScheduleStrategy::getRecurrenceType).orElse(null));
                 Optional.ofNullable(specWorkflow.getStrategy()).ifPresent(strategy -> {
                     nd.setInstanceMode(strategy.getInstanceMode());
                     nd.setRerunMode(strategy.getRerunMode());
@@ -346,6 +349,7 @@ public class DataWorksSpecNodeConverter {
                     nd.setRerunInterval(strategy.getRerunInterval());
                     nd.setIgnoreBranchConditionSkip(strategy.getIgnoreBranchConditionSkip());
                     nd.setTimeout(strategy.getTimeout());
+                    nd.setTimeoutUnit(strategy.getTimeoutUnit());
                     nd.setPriority(strategy.getPriority());
                 });
                 return nd;
@@ -415,6 +419,9 @@ public class DataWorksSpecNodeConverter {
             nodeCfg.setIsStop(null);
             nodeCfg.setLastModifyTime(null);
             nodeCfg.setLastModifyUser(null);
+            nodeCfg.setCu(Optional.ofNullable(specNode.getScript()).map(SpecScript::getRuntime).map(SpecScriptRuntime::getCu).orElse(null));
+            nodeCfg.setCustomImageId(Optional.ofNullable(specNode.getScript()).map(SpecScript::getRuntime).map(SpecScriptRuntime::getContainer)
+                .map(SpecContainer::getImageId).orElse(null));
             nodeCfg.setMultiinstCheckType(null);
             nodeCfg.setNodeId(Long.valueOf(specNode.getId()));
             nodeCfg.setNodeName(specNode.getName());
@@ -518,6 +525,7 @@ public class DataWorksSpecNodeConverter {
         }).collect(Collectors.toList()));
         nodeCfg.setParaValue(adapter.getParaValue());
         nodeCfg.setExtConfig(GsonUtils.toJsonString(adapter.getExtConfig()));
+        nodeCfg.setNodeType(adapter.getNodeType());
     }
 
     public static FileDetail snapshotContentToFileDetail(DataSnapshot snapshotDto) {

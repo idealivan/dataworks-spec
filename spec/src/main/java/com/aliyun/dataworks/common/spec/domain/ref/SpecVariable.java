@@ -36,6 +36,10 @@ public class SpecVariable extends SpecArtifact {
         setArtifactType(ArtifactType.VARIABLE);
     }
 
+    /**
+     * 当SpecVariable作为节点的input.variables表示该节点的输入变量名称, name字段作为依赖的上游节点的输出变量名称
+     */
+    private String inputName;
     private String name;
     private VariableScopeType scope;
     private VariableType type;

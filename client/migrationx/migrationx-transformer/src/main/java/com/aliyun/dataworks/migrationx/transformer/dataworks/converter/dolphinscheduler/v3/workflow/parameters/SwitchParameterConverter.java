@@ -66,6 +66,9 @@ public class SwitchParameterConverter extends AbstractParameterConverter<SwitchP
 
     public List<SpecBranches> convertParameter() {
         JsonNode param = JSONUtils.parseObject(taskDefinition.getTaskParams(), JsonNode.class);
+        if (param == null) {
+            throw new RuntimeException("can not get param from " + taskDefinition.getTaskParams());
+        }
         SwitchParameters switchParameters = null;
         if (param.get("switchResult") != null) {
             switchParameters = JSONUtils.parseObject(param.get("switchResult"), SwitchParameters.class);

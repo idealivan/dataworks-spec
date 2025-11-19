@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecObjectStorageFile json schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "extension": {
+      "type": "string"
+    },
+    "storage": {
+      "$ref": "classpath:spec/schema/SpecStorage.schema.json"
+    }
+  },
+  "required": [
+    "storage",
+    "path"
+  ]
+}

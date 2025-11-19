@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Specification json schema",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "CycleWorkflow",
+        "ManualWorkflow",
+        "TriggerWorkflow",
+        "ManualNode",
+        "TemporaryWorkflow",
+        "PaiFlow",
+        "BatchDeployment",
+        "DataSource",
+        "DataQuality",
+        "DataService",
+        "DataCatalog",
+        "Table",
+        "Node",
+        "Component",
+        "Resource",
+        "Function",
+        "Workflow"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "spec": {
+      "$ref": "classpath:spec/schema/DataWorksWorkflowSpec.schema.json"
+    }
+  },
+  "required": [
+    "kind",
+    "version",
+    "spec"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "CycleWorkflow",
+              "ManualWorkflow",
+              "TriggerWorkflow"
+            ]
+          }
+        }
+      },
+      "then": {
+        "anyOf": [
+          {
+            "properties": {
+              "spec": {
+                "required": [
+                  "nodes"
+                ]
+              }
+            }
+          },
+          {
+            "properties": {
+              "spec": {
+                "required": [
+                  "workflows"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "ManualNode",
+              "Node"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "nodes"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "PaiFlow",
+              "Workflow"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "workflows"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "DataSource"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "datasources"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Resource"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "fileResources"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Function"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "functions"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Component"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "components"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Table"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "tables"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "DataQuality"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec": {
+            "required": [
+              "dqcRules"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

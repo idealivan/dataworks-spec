@@ -15,6 +15,8 @@
 
 package com.aliyun.dataworks.common.spec.writer;
 
+import com.aliyun.dataworks.common.spec.domain.enums.SpecVersion;
+
 /**
  * Define a parser for domain classes
  *
@@ -22,6 +24,16 @@ package com.aliyun.dataworks.common.spec.writer;
  * @date 2023/7/4
  */
 public interface Writer<T, V> {
+    /**
+     * support a spec version
+     *
+     * @param version spec version
+     * @return true if support
+     */
+    default boolean support(SpecVersion version) {
+        return true;
+    }
+
     /**
      * write a domain class
      *

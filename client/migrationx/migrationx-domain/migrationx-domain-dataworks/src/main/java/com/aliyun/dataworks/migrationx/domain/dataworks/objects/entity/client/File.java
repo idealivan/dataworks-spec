@@ -91,4 +91,10 @@ public class File {
      * 绝对路径，目前只有ListFiles在needAbsoluteFolderPath时会用到
      */
     private String absoluteFolderPath;
+
+    /**
+     * 资源文件在计算引擎上的存储路径，只有EMR和CDH资源会用到，格式为
+     * [oss|hdfs]://path/to/object
+     */
+    private String storageUri;
 }

@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.aliyun.dataworks.common.spec.annotation.SpecWriter;
+import com.aliyun.dataworks.common.spec.domain.enums.SpecVersion;
+import com.aliyun.dataworks.common.spec.domain.interfaces.LabelEnum;
 import com.aliyun.dataworks.common.spec.utils.ReflectUtils;
 import com.aliyun.dataworks.common.spec.writer.impl.AbstractWriter;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +79,7 @@ public class WriterFactory {
                 }
             })
             .filter(w -> w.matchType(from))
+            .filter(w -> w.support(LabelEnum.getByLabel(SpecVersion.class, context.getVersion())))
             .findFirst().orElse(null);
     }
 }

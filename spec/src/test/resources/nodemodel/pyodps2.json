@@ -7,6 +7,7 @@
         "id": "c6a3bbe198fd4031bbe71ad3e66ceb91",
         "recurrence": "Normal",
         "timeout": 3,
+        "timeoutUnit": "SECONDS",
         "instanceMode": "T+1",
         "rerunMode": "Allowed",
         "rerunTimes": 3,
@@ -84,7 +85,7 @@
           ],
           "outputs": [
             {
-              "artifactType": "Output",
+              "artifactType": "NodeOutput",
               "data": "c6a3bbe198fd4031bbe71ad3e66ceb91",
               "refTableName": "sql_assign_1"
             }

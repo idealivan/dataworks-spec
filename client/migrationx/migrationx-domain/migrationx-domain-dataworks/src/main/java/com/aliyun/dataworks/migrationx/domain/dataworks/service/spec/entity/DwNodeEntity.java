@@ -487,4 +487,13 @@ public interface DwNodeEntity {
     default Integer getLoopCount() {
         return null;
     }
+
+    /**
+     * get storage uri
+     *
+     * @return storage uri
+     */
+    default String getStorageUri() {
+        return null;
+    }
 }

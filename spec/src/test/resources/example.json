@@ -142,6 +142,22 @@
       "datasource": {
         "name": "odps_first"
       },
+      "datasets": [
+        {
+          "identifier": "dataset_1",
+          "version": 1,
+          "mountPath": "/mnt/data",
+          "readOnly": true,
+          "extOptions": "extOptions"
+        },
+        {
+          "identifier": "dataset_2",
+          "version": 2,
+          "mountPath": "/mnt/data2",
+          "readOnly": true,
+          "extOptions": "extOptions"
+        }
+      ],
       "inputs": {
         "tables": [
           "{{tables.table1}}",

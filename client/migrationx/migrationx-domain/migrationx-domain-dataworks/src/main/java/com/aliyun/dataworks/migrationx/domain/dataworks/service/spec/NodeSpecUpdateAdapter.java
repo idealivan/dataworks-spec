@@ -14,12 +14,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import com.aliyun.dataworks.common.spec.domain.DataWorksWorkflowSpec;
 import com.aliyun.dataworks.common.spec.domain.SpecRefEntity;
 import com.aliyun.dataworks.common.spec.domain.Specification;
+import com.aliyun.dataworks.common.spec.domain.dw.codemodel.EmrAllocationSpec;
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.enums.ArtifactType;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
@@ -44,9 +42,13 @@ import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecVariable;
 import com.aliyun.dataworks.common.spec.domain.ref.runtime.SpecScriptRuntime;
+import com.aliyun.dataworks.common.spec.domain.ref.runtime.container.SpecContainer;
+import com.aliyun.dataworks.common.spec.utils.JSONUtils;
+import com.aliyun.dataworks.common.spec.utils.ReflectUtils;
 import com.aliyun.dataworks.common.spec.utils.VariableUtils;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.NodeIo;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client.NodeType;
+import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.CycleType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.DependentType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.IoParseType;
 import com.aliyun.dataworks.migrationx.domain.dataworks.objects.types.NodeUseType;
@@ -55,10 +57,12 @@ import com.aliyun.dataworks.migrationx.domain.dataworks.service.spec.entity.DwNo
 import com.aliyun.dataworks.migrationx.domain.dataworks.utils.DefaultNodeTypeUtils;
 import com.aliyun.migrationx.common.utils.DateUtils;
 import com.aliyun.migrationx.common.utils.UuidUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -322,6 +326,13 @@ public class NodeSpecUpdateAdapter {
                 Optional.ofNullable(dwNode.getEndEffectDate()).map(DateUtils::convertDateToString).ifPresent(trigger::setEndTime);
                 Optional.ofNullable(dwNode.getCronExpress()).map(String::trim).ifPresent(trigger::setCron);
                 Optional.ofNullable(dwNode.getCalendarId()).ifPresent(trigger::setCalendarId);
+                Optional.ofNullable(dwNode.getCycleType()).ifPresent(cycleType -> {
+                    if (CycleType.DAY.getCode() == cycleType) {
+                        trigger.setCycleType(com.aliyun.dataworks.common.spec.domain.enums.CycleType.DAILY);
+                    } else {
+                        trigger.setCycleType(com.aliyun.dataworks.common.spec.domain.enums.CycleType.NOT_DAILY);
+                    }
+                });
                 trigger.setType(TriggerType.SCHEDULER);
                 trigger.setTimezone(ZoneId.systemDefault().getId());
                 break;
@@ -345,14 +356,15 @@ public class NodeSpecUpdateAdapter {
         Optional.ofNullable(dwNode.getName()).ifPresent(specNode::setName);
         Optional.ofNullable(dwNode.getDescription()).ifPresent(specNode::setDescription);
         Optional.ofNullable(dwNode.getOwner()).ifPresent(specNode::setOwner);
+        Optional.ofNullable(dwNode.getAlisaTaskKillTimeout()).ifPresent(specNode::setTimeout);
         Optional.ofNullable(dwNode.getTaskRerunTime()).ifPresent(specNode::setRerunTimes);
         Optional.ofNullable(dwNode.getTaskRerunInterval()).ifPresent(specNode::setRerunInterval);
         Optional.ofNullable(dwNode.getRerunMode()).map(this::convertRerunMode).ifPresent(specNode::setRerunMode);
         Optional.ofNullable(dwNode.getNodeType()).map(this::convertRecurrence).ifPresent(specNode::setRecurrence);
+        Optional.ofNullable(dwNode.getPauseSchedule()).filter(BooleanUtils::isTrue)
+            .ifPresent(ignore -> specNode.setRecurrence(NodeRecurrenceType.PAUSE));
         Optional.ofNullable(dwNode.getNodeUseType()).filter(NodeUseType.SKIP::equals)
             .ifPresent(ignore -> specNode.setRecurrence(NodeRecurrenceType.SKIP));
-        Optional.ofNullable(dwNode.getPauseSchedule()).map(pause -> pause ? NodeRecurrenceType.PAUSE : NodeRecurrenceType.NORMAL)
-            .ifPresent(specNode::setRecurrence);
         Optional.ofNullable(dwNode.getStartRightNow())
             .map(startRightNow -> startRightNow ? NodeInstanceModeType.IMMEDIATELY : NodeInstanceModeType.T_PLUS_1)
             .ifPresent(specNode::setInstanceMode);
@@ -399,12 +411,21 @@ public class NodeSpecUpdateAdapter {
         Optional.ofNullable(dwNode.getType())
             .map(CodeProgramType::getNodeTypeByName)
             .ifPresent(codeProgramType -> {
-                runtime.setCommand(codeProgramType.getName());
+                runtime.setCommand(codeProgramType.name());
                 runtime.setEngine(codeProgramType.getCalcEngineType().getLabel());
             });
+        Optional.ofNullable(dwNode.getTypeId())
+            .ifPresent(runtime::setCommandTypeId);
 
         Optional.ofNullable(dwNode.getCu())
             .ifPresent(runtime::setCu);
+
+        Optional.ofNullable(dwNode.getImageId())
+            .ifPresent(imageId -> {
+                SpecContainer specContainer = Optional.ofNullable(runtime.getContainer()).orElseGet(SpecContainer::new);
+                runtime.setContainer(specContainer);
+                specContainer.setImageId(imageId);
+            });
 
         parseAdvancedSettings(dwNode.getAdvanceSettings(), dwNode.getStreamLaunchMode(), runtime);
     }
@@ -422,11 +443,7 @@ public class NodeSpecUpdateAdapter {
             || CodeProgramType.EMR_STREAMING_SQL.getName().equalsIgnoreCase(command)) {
             // set spark config
             if (StringUtils.isNotBlank(advancedSettings)) {
-                if (MapUtils.isEmpty(runtime.getSparkConf())) {
-                    runtime.setSparkConf(new HashMap<>());
-                }
-                JSONObject sparkConfig = JSON.parseObject(advancedSettings);
-                runtime.getSparkConf().putAll(sparkConfig);
+                parseEmrCode(runtime, advancedSettings);
             }
 
             // set stream job config
@@ -437,6 +454,48 @@ public class NodeSpecUpdateAdapter {
                 runtime.getStreamJobConfig().put(STREAM_LAUNCH_MODE, startImmediately);
             }
         }
+    }
+
+    private void parseEmrCode(SpecScriptRuntime specScriptRuntime, String code) {
+        Map<String, Object> allocSpecMap = JSONUtils.parseObject(code, new TypeReference<Map<String, Object>>() {});
+        EmrAllocationSpec allocSpec = EmrAllocationSpec.of(allocSpecMap);
+        if (allocSpec != null) {
+            Map<String, Object> emrJobConfig = Optional.ofNullable(specScriptRuntime).map(SpecScriptRuntime::getEmrJobConfig)
+                .orElseGet(() -> {
+                    Map<String, Object> emrJobConfigMap = new HashMap<>();
+                    Optional.ofNullable(specScriptRuntime).ifPresent(runtime -> runtime.setEmrJobConfig(emrJobConfigMap));
+                    return emrJobConfigMap;
+                });
+            emrJobConfig.put("priority", allocSpec.getPriority());
+            emrJobConfig.put("cores", allocSpec.getVcores());
+            emrJobConfig.put("memory", allocSpec.getMemory());
+            emrJobConfig.put("queue", allocSpec.getQueue());
+            emrJobConfig.put("submitter", allocSpec.getUserName());
+            Optional.ofNullable(allocSpec.getDataworksSessionDisable()).ifPresent(
+                disable -> emrJobConfig.put(EmrAllocationSpec.UPPER_KEY_DATAWORKS_SESSION_DISABLE, disable));
+            Optional.ofNullable(allocSpec.getEnableJdbcSql()).ifPresent(
+                enable -> emrJobConfig.put(EmrAllocationSpec.UPPER_KEY_ENABLE_SPARKSQL_JDBC, enable));
+            Optional.ofNullable(allocSpec.getReuseSession()).ifPresent(
+                reuse -> emrJobConfig.put(EmrAllocationSpec.UPPER_KEY_REUSE_SESSION, reuse));
+            Optional.ofNullable(allocSpec.getUseGateway()).ifPresent(useGateway ->
+                emrJobConfig.put(EmrAllocationSpec.UPPER_KEY_USE_GATEWAY, useGateway));
+            Optional.ofNullable(allocSpec.getBatchMode()).ifPresent(batchMode ->
+                emrJobConfig.put(EmrAllocationSpec.UPPER_KEY_FLOW_SKIP_SQL_ANALYZE, batchMode));
+        }
+
+        Optional.ofNullable(allocSpecMap).map(Map::entrySet)
+            .orElse(Collections.emptySet()).stream()
+            .filter(ent -> ReflectUtils.getPropertyFields(allocSpec).stream().noneMatch(f -> f.getName().equals(ent.getKey())))
+            .filter(ent -> !EmrAllocationSpec.UPPER_KEYS.contains(ent.getKey()))
+            .forEach(ent -> {
+                Map<String, Object> sparkConf = Optional.ofNullable(specScriptRuntime).map(SpecScriptRuntime::getSparkConf)
+                    .orElseGet(() -> {
+                        Map<String, Object> sparkConfMap = new HashMap<>();
+                        Optional.ofNullable(specScriptRuntime).ifPresent(runtime -> runtime.setSparkConf(sparkConfMap));
+                        return sparkConfMap;
+                    });
+                sparkConf.put(ent.getKey(), ent.getValue());
+            });
     }
 
     /**

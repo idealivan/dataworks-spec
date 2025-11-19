@@ -1,0 +1,507 @@
+{
+  "kind": "CycleWorkflow",
+  "version": "1.1.2",
+  "spec": {
+    "name": "归并节点测试0715",
+    "id": "7013290684765061267",
+    "type": "CycleWorkflow",
+    "owner": "1107550004253538",
+    "workflows": [
+      {
+        "script": {
+          "path": "0工作流对比测试/归并节点测试0715",
+          "runtime": {
+            "command": "WORKFLOW"
+          },
+          "id": "9082966270064750454"
+        },
+        "id": "7013290684765061267",
+        "trigger": {
+          "type": "Scheduler",
+          "cron": "00 00 00 * * ?",
+          "startTime": "1970-01-01 00:00:00",
+          "endTime": "9999-01-01 00:00:00",
+          "timezone": "GMT+8",
+          "delaySeconds": 0
+        },
+        "strategy": {
+          "priority": 1,
+          "priorityWeightStrategy": "Disabled",
+          "maxInternalConcurrency": 0,
+          "timeout": 0,
+          "instanceMode": "T+1",
+          "rerunMode": "Allowed",
+          "rerunTimes": 3,
+          "rerunInterval": 180000,
+          "failureStrategy": "Break",
+          "recurrenceType": "Normal"
+        },
+        "name": "归并节点测试0715",
+        "owner": "1107550004253538",
+        "citable": false,
+        "metadata": {
+          "owner": "1107550004253538",
+          "tenantId": "524257424564736",
+          "project": {
+            "projectIdentifier": "update_test10",
+            "projectName": "update_test10",
+            "projectId": "610727"
+          },
+          "ownerName": "dw_on_emr_qa3_testcloud_com",
+          "projectId": "610727"
+        },
+        "inputs": {},
+        "outputs": {
+          "nodeOutputs": [
+            {
+              "data": "7013290684765061267",
+              "artifactType": "NodeOutput",
+              "sourceType": "System",
+              "refTableName": "归并节点测试0715",
+              "isDefault": true
+            },
+            {
+              "data": "update_test10.归并节点测试0715",
+              "artifactType": "NodeOutput",
+              "refTableName": "归并节点测试0715",
+              "isDefault": false
+            }
+          ]
+        },
+        "nodes": [
+          {
+            "recurrence": "Normal",
+            "id": "7525339864785788978",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "script": {
+              "path": "克隆测试1/workflow1/branch",
+              "content": "[\n\t{\n\t\t\"condition\":\"'x' in '${in1}'\",\n\t\t\"nodeoutput\":\"reg_upgrade0702.x_in_input_true\"\n\t},\n\t{\n\t\t\"condition\":\"'x' not in '${in1}'\",\n\t\t\"nodeoutput\":\"reg_upgrade0702.x_in_input_false\"\n\t}\n]",
+              "runtime": {
+                "command": "CONTROLLER_BRANCH",
+                "commandTypeId": 1101,
+                "cu": "0.25"
+              },
+              "id": "8159060808803814353"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1751013862820",
+              "resourceGroupId": "86214319"
+            },
+            "branch": {
+              "branches": [
+                {
+                  "when": "'x' in '${in1}'",
+                  "output": {
+                    "data": "reg_upgrade0702.x_in_input_true",
+                    "artifactType": "NodeOutput"
+                  }
+                },
+                {
+                  "when": "'x' not in '${in1}'",
+                  "output": {
+                    "data": "reg_upgrade0702.x_in_input_false",
+                    "artifactType": "NodeOutput"
+                  }
+                }
+              ]
+            },
+            "name": "branch",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7322159560488851894"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-08 14:22:43",
+              "schedulerNodeId": 700008024000,
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "reg_upgrade0702",
+                "projectName": "reg_upgrade0702",
+                "projectId": "873483"
+              },
+              "projectId": "873483"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "7525339864785788978",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "branch",
+                  "isDefault": true
+                },
+                {
+                  "data": "reg_upgrade0702.x_in_input_false",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "branch"
+                },
+                {
+                  "data": "reg_upgrade0702.x_in_input_true",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "branchssssssss"
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "4651370018817822572",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "script": {
+              "path": "0工作流对比测试/归并节点测试0715/归并测试",
+              "content": "{\n  \"branchList\": \"[\\n  {\\n    \\\"logic\\\": 1,\\n    \\\"node\\\": \\\"6181565218970946826\\\",\\n    \\\"nodeName\\\": \\\"运行失败节点01\\\",\\n    \\\"nodeUuid\\\": \\\"6181565218970946826\\\",\\n    \\\"projectIdentifier\\\": \\\"update_test10\\\",\\n    \\\"runStatus\\\": [\\n      \\\"2\\\",\\n      \\\"0\\\"\\n    ]\\n  },\\n  {\\n    \\\"logic\\\": 1,\\n    \\\"node\\\": \\\"5075273744222348485\\\",\\n    \\\"nodeName\\\": \\\"运行成功节点\\\",\\n    \\\"nodeUuid\\\": \\\"5075273744222348485\\\",\\n    \\\"projectIdentifier\\\": \\\"update_test10\\\",\\n    \\\"runStatus\\\": [\\n      \\\"1\\\",\\n      \\\"2\\\"\\n    ]\\n  }\\n]\",\n  \"resultStatus\": \"1\"\n}",
+              "runtime": {
+                "command": "CONTROLLER_JOIN",
+                "commandTypeId": 1102,
+                "cu": "0.25"
+              },
+              "id": "8487983691033004583"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1700556771640",
+              "resourceGroupId": "65414319"
+            },
+            "join": {
+              "branches": [
+                {
+                  "name": "b_1",
+                  "output": {
+                    "data": "6181565218970946826",
+                    "artifactType": "NodeOutput"
+                  },
+                  "assertion": {
+                    "field": "status",
+                    "in": [
+                      "2",
+                      "0"
+                    ]
+                  }
+                },
+                {
+                  "name": "b_2",
+                  "output": {
+                    "data": "5075273744222348485",
+                    "artifactType": "NodeOutput"
+                  },
+                  "assertion": {
+                    "field": "status",
+                    "in": [
+                      "1",
+                      "2"
+                    ]
+                  }
+                }
+              ],
+              "logic": {
+                "expression": "b_1 and b_2"
+              }
+            },
+            "name": "归并测试",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7013290684765061267"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-15 15:01:36",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "update_test10",
+                "projectName": "update_test10",
+                "projectId": "610727"
+              },
+              "projectId": "610727"
+            },
+            "inputs": {
+              "nodeOutputs": [
+                {
+                  "data": "5075273744222348485",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "运行成功节点",
+                  "isDefault": true
+                },
+                {
+                  "data": "6181565218970946826",
+                  "artifactType": "NodeOutput",
+                  "refTableName": "运行失败节点01",
+                  "isDefault": true
+                }
+              ]
+            },
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "4651370018817822572",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "归并测试",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "5075273744222348485",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 3,
+            "rerunInterval": 120000,
+            "datasource": {
+              "name": "mc_test120601",
+              "type": ""
+            },
+            "script": {
+              "language": "odps-sql",
+              "path": "0工作流对比测试/归并节点测试0715/运行成功节点",
+              "runtime": {
+                "command": "ODPS_SQL",
+                "commandTypeId": 10,
+                "cu": "0.25"
+              },
+              "id": "6652649453609612834"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1700556771640",
+              "resourceGroupId": "65414319"
+            },
+            "name": "运行成功节点",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7013290684765061267"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-15 15:00:36",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "update_test10",
+                "projectName": "update_test10",
+                "projectId": "610727"
+              },
+              "projectId": "610727"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "5075273744222348485",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "运行成功节点",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "6181565218970946826",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "datasource": {
+              "name": "mc_test120601",
+              "type": ""
+            },
+            "script": {
+              "language": "odps-sql",
+              "path": "0工作流对比测试/归并节点测试0715/运行失败节点01",
+              "runtime": {
+                "command": "ODPS_SQL",
+                "commandTypeId": 10,
+                "cu": "0.25"
+              },
+              "id": "7662097059947898484"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1700556771640",
+              "resourceGroupId": "65414319"
+            },
+            "name": "运行失败节点01",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7013290684765061267"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-15 14:59:43",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "update_test10",
+                "projectName": "update_test10",
+                "projectId": "610727"
+              },
+              "projectId": "610727"
+            },
+            "inputs": {},
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "6181565218970946826",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "运行失败节点01",
+                  "isDefault": true
+                }
+              ]
+            }
+          },
+          {
+            "recurrence": "Normal",
+            "id": "6713421366056921047",
+            "timeout": 0,
+            "instanceMode": "T+1",
+            "rerunMode": "Allowed",
+            "rerunTimes": 0,
+            "rerunInterval": 0,
+            "datasource": {
+              "name": "mc_test120601",
+              "type": ""
+            },
+            "script": {
+              "path": "0工作流对比测试/归并节点测试0715/Paid",
+              "runtime": {
+                "command": "PAI_STUDIO",
+                "commandTypeId": 1117,
+                "cu": "0.25"
+              },
+              "id": "7835273006850819918"
+            },
+            "trigger": {
+              "type": "Scheduler",
+              "cron": "00 00 00 * * ?",
+              "startTime": "1970-01-01 00:00:00",
+              "endTime": "9999-01-01 00:00:00",
+              "timezone": "GMT+8",
+              "delaySeconds": 0
+            },
+            "runtimeResource": {
+              "resourceGroup": "S_res_group_524257424564736_1715081652096",
+              "resourceGroupId": "69614319"
+            },
+            "name": "Paid",
+            "owner": "1107550004253538",
+            "metadata": {
+              "owner": "1107550004253538",
+              "container": {
+                "type": "Flow",
+                "uuid": "7013290684765061267"
+              },
+              "ownerName": "dw_on_emr_qa3_testcloud_com",
+              "createTime": "2025-07-15 15:05:27",
+              "tenantId": "524257424564736",
+              "project": {
+                "projectIdentifier": "update_test10",
+                "projectName": "update_test10",
+                "projectId": "610727"
+              },
+              "projectId": "610727"
+            },
+            "inputs": {
+              "tables": [
+                {
+                  "artifactType": "Table",
+                  "guid": "pai_online_project.wumai_data"
+                }
+              ]
+            },
+            "outputs": {
+              "nodeOutputs": [
+                {
+                  "data": "6713421366056921047",
+                  "artifactType": "NodeOutput",
+                  "sourceType": "System",
+                  "refTableName": "Paid",
+                  "isDefault": true
+                }
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "nodeId": "4651370018817822572",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "5075273744222348485",
+                "refTableName": "运行成功节点"
+              },
+              {
+                "type": "Normal",
+                "output": "6181565218970946826",
+                "sourceType": "Manual",
+                "refTableName": "运行失败节点01"
+              }
+            ]
+          },
+          {
+            "nodeId": "6713421366056921047",
+            "depends": [
+              {
+                "type": "Normal",
+                "output": "4651370018817822572",
+                "sourceType": "Manual",
+                "refTableName": "归并测试"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

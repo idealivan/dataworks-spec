@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.aliyun.dataworks.common.spec.domain.SpecNoRefEntity;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
+import com.aliyun.dataworks.common.spec.domain.enums.SourceType;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,13 @@ public class SpecDepend extends SpecNoRefEntity {
     private SpecNode nodeId;
     private DependencyType type;
     private SpecNodeOutput output;
+    private SourceType sourceType;
+
+    public SpecDepend(SpecNode nodeId, DependencyType type, SpecNodeOutput output) {
+        this.nodeId = nodeId;
+        this.type = type;
+        this.output = output;
+    }
 
     public void replaceNodeId(Map<String, String> replaceNodeIdMap) {
         if (null != nodeId && replaceNodeIdMap.containsKey(nodeId.getId())) {

@@ -17,7 +17,9 @@ package com.aliyun.dataworks.migrationx.domain.dataworks.objects.entity.client;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 
 import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter;
@@ -25,6 +27,7 @@ import com.aliyun.migrationx.common.utils.GsonUtils;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Slf4j
 public class FileNodeCfg {
     Long appId;
     Long baselineId;
@@ -54,6 +58,8 @@ public class FileNodeCfg {
     List<FileNodeInputOutput> inputList;
     Integer isAutoParse;
     Integer nodeType;
+    String cu;
+    String customImageId;
     Integer isStop;
     Date lastModifyTime;
     String lastModifyUser;
@@ -76,6 +82,7 @@ public class FileNodeCfg {
     String extConfig;
 
     private Integer streamLaunchMode;
+    private String imageId;
 
     public void setOutputByOutputList() {
         if (StringUtils.isBlank(output) && !CollectionUtils.isEmpty(outputList)) {
@@ -106,4 +113,57 @@ public class FileNodeCfg {
         return null;
     }
 
+    public Boolean getIgnoreBranchConditionSkip() {
+        try {
+            return Optional.ofNullable(getExtConfig())
+                .filter(StringUtils::isNotBlank)
+                .map(JSON::parseObject)
+                .map(extConfig -> extConfig.get("ignoreBranchConditionSkip"))
+                .filter(Boolean.class::isInstance)
+                .map(Boolean.class::cast)
+                .orElse(null);
+        } catch (Exception e) {
+            log.warn("parse extConfig failed: {}, ", getExtConfig(), e);
+            return null;
+        }
+    }
+
+    public void setIgnoreBranchConditionSkip(Boolean ignoreBranchConditionSkip) {
+        try {
+            JSONObject extConfig = Optional.ofNullable(getExtConfig())
+                .filter(StringUtils::isNotBlank)
+                .map(JSON::parseObject)
+                .orElse(new JSONObject());
+            extConfig.put("ignoreBranchConditionSkip", ignoreBranchConditionSkip);
+            this.setExtConfig(extConfig.toJSONString());
+        } catch (Exception e) {
+            log.warn("set extConfig ignoreBranchConditionSkip failed: {}, ", getExtConfig(), e);
+        }
+    }
+
+    public Integer getAlisaTaskKillTimeout() {
+        try {
+            return Optional.ofNullable(getExtConfig())
+                .filter(StringUtils::isNotBlank)
+                .map(JSON::parseObject)
+                .map(extConfig -> extConfig.getInteger("alisaTaskKillTimeout"))
+                .orElse(null);
+        } catch (Exception e) {
+            log.warn("parse extConfig failed: {}, ", getExtConfig(), e);
+            return null;
+        }
+    }
+
+    public void setAlisaTaskKillTimeout(Integer timeout) {
+        try {
+            JSONObject extConfig = Optional.ofNullable(getExtConfig())
+                .filter(StringUtils::isNotBlank)
+                .map(JSON::parseObject)
+                .orElse(new JSONObject());
+            extConfig.put("alisaTaskKillTimeout", timeout);
+            this.setExtConfig(extConfig.toJSONString());
+        } catch (Exception e) {
+            log.warn("set extConfig alisaTaskKillTimeout failed: {}, ", getExtConfig(), e);
+        }
+    }
 }

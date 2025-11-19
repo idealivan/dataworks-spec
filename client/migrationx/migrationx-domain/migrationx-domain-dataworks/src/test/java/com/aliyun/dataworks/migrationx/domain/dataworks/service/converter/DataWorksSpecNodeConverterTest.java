@@ -468,11 +468,13 @@ public class DataWorksSpecNodeConverterTest {
                     + ".0\\\",\\n\\t\\\"kind\\\":\\\"CycleWorkflow\\\","
                     + "\\n\\t\\\"spec\\\":{\\n\\t\\t\\\"name\\\":\\\"User_profile_analysis_odps\\\","
                     + "\\n\\t\\t\\\"id\\\":\\\"8995243295979710770\\\",\\n\\t\\t\\\"type\\\":\\\"CycleWorkflow\\\","
+                    + "\\n\\t\\t\\\"recurrence\\\":\\\"Normal\\\",\\n"
                     + "\\n\\t\\t\\\"owner\\\":\\\"1396993924585947\\\",\\n\\t\\t\\\"workflows\\\":[\\n\\t\\t\\t{\\n\\t\\t\\t\\t\\\"script\\\":{\\n"
                     + "\\t\\t\\t\\t\\t\\\"path\\\":\\\"User_profile_analysis_odps\\\","
                     + "\\n\\t\\t\\t\\t\\t\\\"runtime\\\":{\\n\\t\\t\\t\\t\\t\\t\\\"command\\\":\\\"WORKFLOW\\\"\\n\\t\\t\\t\\t\\t},"
                     + "\\n\\t\\t\\t\\t\\t\\\"id\\\":\\\"5237309427622107925\\\"\\n\\t\\t\\t\\t},"
                     + "\\n\\t\\t\\t\\t\\\"id\\\":\\\"8995243295979710770\\\","
+                    + "\\n\\t\\t\\\"recurrence\\\":\\\"Normal\\\",\\n"
                     + "\\n\\t\\t\\t\\t\\\"trigger\\\":{\\n\\t\\t\\t\\t\\t\\\"type\\\":\\\"Scheduler\\\","
                     + "\\n\\t\\t\\t\\t\\t\\\"id\\\":\\\"4663518870996556378\\\",\\n\\t\\t\\t\\t\\t\\\"cron\\\":\\\"00 11 00 * * ?\\\","
                     + "\\n\\t\\t\\t\\t\\t\\\"startTime\\\":\\\"1970-01-01 00:00:00\\\",\\n\\t\\t\\t\\t\\t\\\"endTime\\\":\\\"9999-01-01 "
@@ -698,7 +700,8 @@ public class DataWorksSpecNodeConverterTest {
             + "\t\t\t\t\"script\":{\n"
             + "\t\t\t\t\t\"path\":\"业务流程/建模引擎/MaxCompute/数据开发/config_driver数据同步/model_table\",\n"
             + "\t\t\t\t\t\"runtime\":{\n"
-            + "\t\t\t\t\t\t\"command\":\"ODPS_SQL\"\n"
+            + "\t\t\t\t\t\t\"command\":\"ODPS_SQL\",\n"
+            + "\t\t\t\t\t\t\"cu\":\"1\"\n"
             + "\t\t\t\t\t},\n"
             + "\t\t\t\t\t\"parameters\":[\n"
             + "\t\t\t\t\t\t{\n"
@@ -771,6 +774,8 @@ public class DataWorksSpecNodeConverterTest {
         Assert.assertEquals(10, (int)fileDetail.getFile().getFileType());
         Assert.assertEquals(content.getContent(), fileDetail.getFile().getContent());
         Assert.assertNotNull(fileDetail.getNodeCfg());
+        Assert.assertEquals(0, (int)fileDetail.getNodeCfg().getNodeType());
+        Assert.assertEquals("1", fileDetail.getNodeCfg().getCu());
     }
 
     @Test

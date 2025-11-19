@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson2.JSON;
@@ -34,12 +36,14 @@ import com.aliyun.dataworks.common.spec.domain.dw.nodemodel.DataWorksNodeAdapter
 import com.aliyun.dataworks.common.spec.domain.dw.types.CodeProgramType;
 import com.aliyun.dataworks.common.spec.domain.enums.DependencyType;
 import com.aliyun.dataworks.common.spec.domain.enums.NodeRecurrenceType;
+import com.aliyun.dataworks.common.spec.domain.enums.TriggerType;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecDepend;
 import com.aliyun.dataworks.common.spec.domain.noref.SpecFlowDepend;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNode;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecNodeOutput;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScheduleStrategy;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecScript;
+import com.aliyun.dataworks.common.spec.domain.ref.SpecTrigger;
 import com.aliyun.dataworks.common.spec.domain.ref.SpecWorkflow;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponent;
 import com.aliyun.dataworks.common.spec.domain.ref.component.SpecComponentParameter;
@@ -151,6 +155,7 @@ public class DataWorksNodeAdapterTest {
         Assert.assertNotNull(dowhile.getDoWhile().getSpecWhile());
         Assert.assertNotNull(dowhile.getDoWhile().getNodes());
         Assert.assertEquals(4, (int)dowhile.getDoWhile().getMaxIterations());
+        Assert.assertEquals(3, (int)dowhile.getDoWhile().getParallelism());
         DataWorksNodeAdapter dataWorksNodeAdapter = new DataWorksNodeAdapter(specObj, dowhile.getDoWhile().getSpecWhile());
         System.out.println(dataWorksNodeAdapter.getCode());
         System.out.println(dataWorksNodeAdapter.getInputs());
@@ -160,6 +165,7 @@ public class DataWorksNodeAdapterTest {
         Map<String, Object> extConfig = dowhileAdapter.getExtConfig();
         Assert.assertNotNull(extConfig);
         Assert.assertEquals(4, (int)extConfig.get(DataWorksNodeAdapter.LOOP_COUNT));
+        Assert.assertEquals(3, (int)extConfig.get(DataWorksNodeAdapter.PARALLELISM));
     }
 
     @Test
@@ -283,6 +289,8 @@ public class DataWorksNodeAdapterTest {
         Assert.assertNotNull(adapter.getExtConfig());
         Assert.assertTrue(adapter.getExtConfig().containsKey(DataWorksNodeAdapter.IGNORE_BRANCH_CONDITION_SKIP));
         Assert.assertFalse(adapter.getExtConfig().containsKey(DataWorksNodeAdapter.TIMEOUT));
+        Assert.assertTrue(adapter.getExtConfig().containsKey(DataWorksNodeAdapter.TIMEOUT_UNIT));
+        Assert.assertEquals(TimeUnit.SECONDS, adapter.getExtConfig().get(DataWorksNodeAdapter.TIMEOUT_UNIT));
 
         Assert.assertEquals(0, (int)adapter.getNodeType());
     }
@@ -1066,6 +1074,7 @@ public class DataWorksNodeAdapterTest {
         sparkConf.put("spark.executor.cores", 4);
         runtime.setSparkConf(sparkConf);
         runtime.setCommand(CodeProgramType.ADB_SPARK.name());
+        runtime.setMaxComputeConf(Map.of("quota", "123"));
         script.setRuntime(runtime);
         JSONObject sparkSubmitCode = new JSONObject();
         sparkSubmitCode.put("command", "spark-submit --master yarn");
@@ -1083,5 +1092,57 @@ public class DataWorksNodeAdapterTest {
         Assert.assertEquals("4", advanceSettings.getString("spark.executor.cores"));
         Assert.assertEquals(4, (int)advanceSettings.getInteger("spark.executor.cores"));
         Assert.assertEquals("spark-submit --master yarn", dataWorksNodeAdapter.getCode());
+        Assert.assertEquals("123", dataWorksNodeAdapter.getQuota());
+    }
+
+    @Test
+    public void testEmptyParaValue() throws IOException {
+        String spec = IOUtils.toString(
+            Objects.requireNonNull(DataWorksNodeAdapterTest.class.getClassLoader().getResource("nodemodel/assignment.json")),
+            StandardCharsets.UTF_8);
+
+        System.out.println(spec);
+        Specification<DataWorksWorkflowSpec> specObj = SpecUtil.parseToDomain(spec);
+        DataWorksWorkflowSpec specification = specObj.getSpec();
+        Assert.assertNotNull(specification);
+
+        Assert.assertNotNull(specification.getNodes());
+        SpecNode node = specification.getNodes().get(0);
+        node.getScript().setParameters(null);
+        DataWorksNodeAdapter adapter = new DataWorksNodeAdapter(specObj, node);
+        Assert.assertEquals("", adapter.getParaValue());
+    }
+
+    @Test
+    public void testNodeType() throws IOException {
+        Specification<DataWorksWorkflowSpec> specObj = new Specification<>();
+        DataWorksWorkflowSpec dwSpec = new DataWorksWorkflowSpec();
+        SpecWorkflow triggerWorkflow = new SpecWorkflow();
+        SpecTrigger trigger = new SpecTrigger();
+        trigger.setType(TriggerType.CUSTOM);
+        triggerWorkflow.setTrigger(trigger);
+        triggerWorkflow.setStrategy(new SpecScheduleStrategy());
+        triggerWorkflow.getStrategy().setRecurrenceType(NodeRecurrenceType.NORMAL);
+        SpecNode node = new SpecNode();
+        node.setTrigger(trigger);
+        triggerWorkflow.setNodes(List.of(node));
+        dwSpec.setWorkflows(List.of(triggerWorkflow));
+        specObj.setSpec(dwSpec);
+
+        DataWorksNodeAdapter workflowAdapter = new DataWorksNodeAdapter(specObj, triggerWorkflow);
+        Assert.assertEquals(1, (int)workflowAdapter.getNodeType());
+
+        DataWorksNodeAdapter nodeAdapter = new DataWorksNodeAdapter(specObj, node);
+        Assert.assertEquals(1, (int)nodeAdapter.getNodeType());
+
+        trigger.setType(TriggerType.SCHEDULER);
+        Assert.assertEquals(0, (int)workflowAdapter.getNodeType());
+
+        trigger.setType(TriggerType.MANUAL);
+        Assert.assertEquals(1, (int)nodeAdapter.getNodeType());
+
+        trigger.setType(TriggerType.SCHEDULER);
+        node.setRecurrence(NodeRecurrenceType.PAUSE);
+        Assert.assertEquals(2, (int)nodeAdapter.getNodeType());
     }
 }

@@ -35,7 +35,11 @@ public enum SpecStorageType implements LabelEnum {
     /**
      * hdfs
      */
-    HDFS("hdfs");
+    HDFS("hdfs"),
+    /**
+     * maven repo
+     */
+    MAVEN("maven");
 
     private final String label;
 

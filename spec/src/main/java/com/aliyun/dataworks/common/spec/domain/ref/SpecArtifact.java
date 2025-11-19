@@ -17,6 +17,7 @@ package com.aliyun.dataworks.common.spec.domain.ref;
 
 import com.aliyun.dataworks.common.spec.domain.SpecRefEntity;
 import com.aliyun.dataworks.common.spec.domain.enums.ArtifactType;
+import com.aliyun.dataworks.common.spec.domain.enums.SourceType;
 import com.aliyun.dataworks.common.spec.domain.interfaces.Input;
 import com.aliyun.dataworks.common.spec.domain.interfaces.Output;
 import lombok.Data;
@@ -30,4 +31,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class SpecArtifact extends SpecRefEntity implements Output, Input {
     private ArtifactType artifactType;
+    /**
+     * artifacts的来源类型
+     */
+    private SourceType sourceType;
 }

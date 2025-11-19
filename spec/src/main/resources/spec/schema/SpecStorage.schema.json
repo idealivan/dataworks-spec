@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecStorage json schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Storage type, e.g., OSS, LOCAL, HDFS.",
+      "enum": [
+        "oss",
+        "local",
+        "hdfs",
+        "maven"
+      ]
+    }
+  },
+  "required": [
+    "type"
+  ]
+}

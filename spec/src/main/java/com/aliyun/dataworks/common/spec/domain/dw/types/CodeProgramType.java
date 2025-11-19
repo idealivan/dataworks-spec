@@ -66,6 +66,7 @@ public enum CodeProgramType {
     ODPS_XLIB(8, "ODPS_XLIB", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mc.xlib.py"),
     ODPS_PERL(9, "odps_pl", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mc.pl"),
     ODPS_SQL(10, "ODPS_SQL", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".sql"),
+    LIGHTNING_SQL(61, "LIGHTNING_SQL", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".sql"),
     EXTREME_STORAGE(30, "EXTREME_STORAGE", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mc.extreme.store.sh"),
     ODPS_SPARK_SQL(226, "ODPS_SPARK_SQL", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".sql"),
     ODPS_MR(11, "ODPS_MR", CalcEngineType.ODPS, LabelType.DATA_PROCESS, ".mr.sql"),
@@ -167,6 +168,10 @@ public enum CodeProgramType {
     ADB_for_MySQL(1317, "ADB for MySQL", CalcEngineType.DATABASE, LabelType.DATA_PROCESS, ".sql"),
     ADB_SPARK(1990, "ADB Spark", CalcEngineType.ADB_SPARK, LabelType.DATA_PROCESS, ".adb.spark.json"),
     ADB_SPARK_SQL(1991, "ADB Spark SQL", CalcEngineType.ADB_SPARK, LabelType.DATA_PROCESS, ".adb.spark.sql"),
+    SERVERLESS_SPARK_BATCH(2100, "SERVERLESS_SPARK_BATCH", CalcEngineType.EMR, LabelType.DATA_PROCESS,".sh"),
+    SERVERLESS_SPARK_SQL(2101, "SERVERLESS_SPARK_SQL", CalcEngineType.EMR, LabelType.DATA_PROCESS, ".sql"),
+    SERVERLESS_SPARK_STREAMING(2102, "SERVERLESS_SPARK_STREAMING", CalcEngineType.EMR,LabelType.DATA_PROCESS,".sh" ),
+    SERVERLESS_KYUUBI(2103, "SERVERLESS_KYUUBI", CalcEngineType.EMR,LabelType. DATA_PROCESS, ".sql"),
 
     //only for temp
     CUSTOM(9999, "CUSTOM", CalcEngineType.CUSTOM, LabelType.DATA_PROCESS, ".json");

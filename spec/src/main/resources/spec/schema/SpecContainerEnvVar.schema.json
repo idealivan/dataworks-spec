@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecContainerEnvVar json schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the environment variable."
+    },
+    "value": {
+      "type": "string",
+      "description": "Value of the environment variable."
+    }
+  },
+  "required": [
+    "name",
+    "value"
+  ]
+}
