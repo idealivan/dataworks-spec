@@ -20,7 +20,7 @@ export ALIYUN_DATAWORKS_WORKSPACE_ID=your_dataworks_workspace_id
 ```
 
 ### Step2: customize DAG operators transformation settings 
-A default configuration file [flowspec-airflowV2-transformer-config.json](../../client/migrationx-transformer/src/main/conf/flowspec-airflowV2-transformer-config.json) is provided, it can be customized according to your needs.
+A default configuration file [flowspec-airflowV2-transformer-config.json](../../client/migrationx/migrationx-transformer/src/main/conf/flowspec-airflowV2-transformer-config.json) is provided, it can be customized according to your needs.
 - Customize imported workflow location in IDE, you can assign expected path to key `workflowPathPrefix`
 - Customize `HiveOperator` targeting node implementation to `ODPS_SQL` in DataWorks, you can overwrite corresponding entry with `"HiveOperator": "ODPS_SQL"` 
 

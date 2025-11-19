@@ -1,3 +1,37 @@
+# AirWorks
+通过单命令实现Airflow DAGs向DataWorks工作流转换的客户端工具`AirWorks`使用案例
+
+## 单命令完成Airflow DAGs到DataWorks工作流转换
+
+### 步骤1: 设置环境变量
+```shell
+# Airflow DAG转换所需环境变量
+export PYTHON_HOME=/path/to/python/home/which/is/used/by/airflow
+export PATH=${PYTHON_HOME}/bin:${PATH}
+export AIRFLOW_V2_DAG_FOLDER=/path/to/airflow/dags/floder/
+export FLOWSPECT_FOLDER_FOR_AIRFLOW_DAGS=/path/to/folder/for/saving/exported/flowspecs/
+export MIGRATIONX_HOME=/path/to/migration/tool/root/folder/
+
+# environment variables fro commiting to DataWorks
+export ALIYUN_REGION_ID=dataworks-located-region(e.g. cn-shanghai)
+export ALIYUN_ACCESS_KEY_ID=your_access_key_id
+export ALIYUN_ACCESS_KEY_SECRET=your_access_key_secret
+export ALIYUN_DATAWORKS_WORKSPACE_ID=your_dataworks_workspace_id
+```
+
+### 步骤2: 自定义DAG Operator转换配置
+
+我们提供了默认配置文件 [flowspec-airflowV2-transformer-config.json](../../client/migrationx/migrationx-transformer/src/main/conf/flowspec-airflowV2-transformer-config.json)，您可根据需求进行定制：
+
+- 自定义工作流在IDE中的存储路径：通过修改`workflowPathPrefix` 指定目标路径
+- 自定义`HiveOperator` 在DataWorks中的实现方式：将对应条目修改为`"HiveOperator": "ODPS_SQL"` 即可映射为ODPS_SQL节点
+
+### 步骤3: 运行AirWorks
+```shell
+bin/airworks.py
+```
+
+
 # MigrationX
 
 流程聚合场景
